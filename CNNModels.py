@@ -183,8 +183,21 @@ def _fc_layer( bottom, name, num_classes=None,
             filt = get_fc_weight_reshape(name, [1, 1, 4096, 4096])
 
         _add_wd_and_summary(filt, wd, "fc_wlosses")
-
+        
         if use=="vgg":
+            shape = bottom.get_shape().as_list()
+            dim = 1
+            for d in shape[1:]:
+                 dim *= d
+            bottom = tf.reshape(bottom, [-1, dim])
+            if name == 'fc6':
+                filt = get_fc_weight(name)
+            elif name == 'score_fr':
+                name = 'fc8'  # Name of score_fr layer in VGG Model
+                filt = get_fc_weight_reshape(name)
+            else:
+                filt = get_fc_weight_reshape(name)
+            print "filt",filt.get_shape().as_list()
             conv = tf.matmul(bottom, filt)
         else:
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
