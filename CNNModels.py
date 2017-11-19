@@ -374,7 +374,7 @@ def _summary_reshape( fweight, shape, num_new):
     Returns:
       Filter weights for `num_new` classes.
     """
-    lastdim=len(shape-1)
+    lastdim=len(shape)-1
     num_orig = shape[lastdim]
     shape[lastdim] = num_new
     assert(num_new < num_orig)
