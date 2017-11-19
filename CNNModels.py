@@ -171,18 +171,6 @@ def _conv_layer( bottom, name):
 def _fc_layer( bottom, name, num_classes=None,
               relu=True, debug=False,use=""):
     with tf.variable_scope(name) as scope:
-        shape = bottom.get_shape().as_list()
-
-        if name == 'fc6':
-            filt = get_fc_weight_reshape(name, [7, 7, 512, 4096])
-        elif name == 'score_fr':
-            name = 'fc8'  # Name of score_fr layer in VGG Model
-            filt = get_fc_weight_reshape(name, [1, 1, 4096, 1000],
-                                              num_classes=num_classes)
-        else:
-            filt = get_fc_weight_reshape(name, [1, 1, 4096, 4096])
-
-        _add_wd_and_summary(filt, wd, "fc_wlosses")
         
         if use=="vgg":
             shape = bottom.get_shape().as_list()
@@ -200,6 +188,18 @@ def _fc_layer( bottom, name, num_classes=None,
             print "filt",filt.get_shape().as_list()
             conv = tf.matmul(bottom, filt)
         else:
+            shape = bottom.get_shape().as_list()
+
+            if name == 'fc6':
+                filt = get_fc_weight_reshape(name, [7, 7, 512, 4096])
+            elif name == 'score_fr':
+                name = 'fc8'  # Name of score_fr layer in VGG Model
+                filt = get_fc_weight_reshape(name, [1, 1, 4096, 1000],
+                                                  num_classes=num_classes)
+            else:
+                filt = get_fc_weight_reshape(name, [1, 1, 4096, 4096])
+
+            _add_wd_and_summary(filt, wd, "fc_wlosses")
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
 
         conv_biases = get_bias(name, num_classes=num_classes)
