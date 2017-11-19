@@ -77,7 +77,7 @@ def alexnet(x, keep_dropout, train_phase):
     return out
 
 def FCN(x, keep_dropout, train_phase,num_classes=100):
-    return FCN.FCN(x, keep_dropout, train_phase,num_classes=num_classes)
+    return FCN(x, keep_dropout, train_phase,num_classes=num_classes)
 
 def VGG(x, keep_dropout, train_phase,num_classes=100):
-    return FCN.VGG(x, keep_dropout, train_phase,num_classes=num_classes)
+    return VGG(x, keep_dropout, train_phase,num_classes=num_classes)
