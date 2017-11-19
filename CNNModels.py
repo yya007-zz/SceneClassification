@@ -182,10 +182,9 @@ def _fc_layer( bottom, name, num_classes=None,
                 filt = get_fc_weight(name)
             elif name == 'score_fr':
                 name = 'fc8'  # Name of score_fr layer in VGG Model
-                filt = get_fc_weight_reshape(name)
+                filt = get_fc_weight_reshape(name, [4096, 1000],num_classes=num_classes)
             else:
-                filt = get_fc_weight_reshape(name)
-            print "filt",filt.get_shape().as_list()
+                filt = get_fc_weight(name)
             conv = tf.matmul(bottom, filt)
         else:
             shape = bottom.get_shape().as_list()
