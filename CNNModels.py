@@ -33,14 +33,16 @@ def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
     conv5_3 = _conv_layer(conv5_2, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
     
+   
     fc6 = _fc_layer(pool5, "fc6")
     fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
+   
     fc7 = _fc_layer(fc6, "fc7")
     fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
 
-    score_fr = _fc_layer(fc7, "score_fr",
-                                       num_classes=num_classes,
-                                       relu=False)
+    score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False)
+
+    print fc6.get_shape().as_list()
     return score_fr
 
 def FCN(bgr,keep_prob,train_phase, num_classes, random_init_fc8=False,
