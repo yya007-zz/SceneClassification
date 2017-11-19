@@ -185,7 +185,7 @@ def _fc_layer( bottom, name, num_classes=None,
         _add_wd_and_summary(filt, wd, "fc_wlosses")
 
         if use=="vgg":
-            conv = tf.matmul(bottom, weights)
+            conv = tf.matmul(bottom, filt)
         else:
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
 
