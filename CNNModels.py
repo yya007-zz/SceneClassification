@@ -32,20 +32,37 @@ def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
     conv5_2 = _conv_layer(conv5_1, "conv5_2")
     conv5_3 = _conv_layer(conv5_2, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
-    
-   
-    fc6 = _fc_layer(pool5, "fc6")
+
+    fc6 = _fc_layer(pool5, "fc6",use="vgg")
     fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
    
-    fc7 = _fc_layer(fc6, "fc7")
+    fc7 = _fc_layer(fc6, "fc7",use="vgg")
     fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
 
-    score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False)
+    score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
 
+    print pool5.get_shape().as_list()
     print fc6.get_shape().as_list()
     print fc7.get_shape().as_list()
     print score_fr.get_shape().as_list()
     return score_fr
+
+def _fc_layer_vgg(self, bottom, name):
+    with tf.variable_scope(name) as scope:
+        shape = bottom.get_shape().as_list()
+        dim = 1
+        for d in shape[1:]:
+             dim *= d
+        x = tf.reshape(bottom, [-1, dim])
+
+        weights = self.get_fc_weight(name)
+        biases = self.get_bias(name)
+
+        # Fully connected layer. Note that the '+' operation automatically
+        # broadcasts the biases.
+        fc = tf.nn.bias_add(tf.matmul(x, weights), biases)
+
+        return fc
 
 def FCN(bgr,keep_prob,train_phase, num_classes, random_init_fc8=False,
           debug=False):
@@ -169,7 +186,7 @@ def _conv_layer( bottom, name):
         return relu
 
 def _fc_layer( bottom, name, num_classes=None,
-              relu=True, debug=False):
+              relu=True, debug=False,use=""):
     with tf.variable_scope(name) as scope:
         shape = bottom.get_shape().as_list()
 
@@ -184,7 +201,11 @@ def _fc_layer( bottom, name, num_classes=None,
 
         _add_wd_and_summary(filt, wd, "fc_wlosses")
 
-        conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
+        if use="vgg":
+            conv = tf.matmul(bottom, weights)
+        else:
+            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
+
         conv_biases = get_bias(name, num_classes=num_classes)
         bias = tf.nn.bias_add(conv, conv_biases)
 
