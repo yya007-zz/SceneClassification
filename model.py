@@ -2,8 +2,6 @@ import os, datetime
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.layers.python.layers import batch_norm
-from DataLoader import *
-from save import save
 import FCN
 
 # Dataset Parameters
