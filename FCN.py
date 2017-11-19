@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 
 wd = 5e-4
-data_dict = np.load("./data/vgg16.npy", encoding='latin1').item()
+data_dict = np.load("./data/pretrained/vgg16.npy", encoding='latin1').item()
 
 def VGG(x,keep_dropout,train_phase,num_classes):
     num_classes=number_of_classes
