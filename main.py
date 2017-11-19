@@ -5,7 +5,7 @@ from model.tensorflow.DataLoader import *
 from architect import *
 # Dataset Parameters
 
-batch_size = 256
+batch_size = 128
 load_size = 256
 fine_size = 224
 c = 3
