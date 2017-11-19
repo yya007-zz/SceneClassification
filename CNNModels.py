@@ -374,8 +374,9 @@ def _summary_reshape( fweight, shape, num_new):
     Returns:
       Filter weights for `num_new` classes.
     """
-    num_orig = shape[3]
-    shape[3] = num_new
+    lastdim=len(shape-1)
+    num_orig = shape[lastdim]
+    shape[lastdim] = num_new
     assert(num_new < num_orig)
     n_averaged_elements = num_orig//num_new
     avg_fweight = np.zeros(shape)
@@ -385,8 +386,10 @@ def _summary_reshape( fweight, shape, num_new):
         avg_idx = start_idx//n_averaged_elements
         if avg_idx == num_new:
             break
-        avg_fweight[:, :, :, avg_idx] = np.mean(
-            fweight[:, :, :, start_idx:end_idx], axis=3)
+        if lastdim==3:
+            avg_fweight[:, :, :, avg_idx] = np.mean(fweight[:, :, :, start_idx:end_idx], axis=3)
+        if lastdim==1:
+            avg_fweight[:, avg_idx] = np.mean(fweight[:, start_idx:end_idx], axis=1)
     return avg_fweight
 
 def _variable_with_weight_decay( shape, stddev, wd, decoder=False):
