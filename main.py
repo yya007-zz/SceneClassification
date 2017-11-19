@@ -19,12 +19,12 @@ dropout = 0.5 # Dropout, probability to keep units
 training_iters = 50000
 step_display = 50
 step_save = 10000
-path_save = '../../save/exp2'
+path_save = '../../save/exp1/'
 num = 40000 #the model chosen to run on test data
-start_from = '../../save/exp2-'+str(num)
-train = False;
-validation = False;
-test = True;
+start_from = '../../save/exp1-'+str(num)
+
+train = True;
+validation = True;
     
 # Construct dataloader
 opt_data_train = {
@@ -120,9 +120,6 @@ with tf.Session() as sess:
             if step % step_save == 0 or step==1:
                 saver.save(sess, path_save, global_step=step)
                 print("Model saved at Iter %d !" %(step))
-
-            
-
         print("Optimization Finished!")
 
     if validation:

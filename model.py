@@ -16,7 +16,6 @@ def batch_norm_layer(x, train_phase, scope_bn):
     scope=scope_bn)
     
 def alexnet(x, keep_dropout, train_phase):
-    data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
     weights = {
         'wc1': tf.Variable(tf.random_normal([11, 11, 3, 96], stddev=np.sqrt(2./(11*11*3)))),
         'wc2': tf.Variable(tf.random_normal([5, 5, 96, 256], stddev=np.sqrt(2./(5*5*96)))),

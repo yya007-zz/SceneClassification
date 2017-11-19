@@ -3,6 +3,7 @@ data/objects/*
 data/newtrain/*
 data/data/*
 data/pretrained/*
+log
 save/*
 cmd.txt
 .DS_Store
