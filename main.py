@@ -17,9 +17,10 @@ dropout = 0.5 # Dropout, probability to keep units
 training_iters = 50000
 step_display = 50
 step_save = 10000
-path_save = '../../save/exp1/'
+path_save = './save/exp1/'
 num = 40000 #the model chosen to run on test data
-start_from = '../../save/exp1-'+str(num)
+# start_from = './save/exp1-'+str(num)
+start_from = ''
 
 train = True;
 validation = True;
@@ -27,8 +28,8 @@ validation = True;
 # Construct dataloader
 opt_data_train = {
     #'data_h5': 'miniplaces_256_train.h5',
-    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
-    'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,
@@ -38,8 +39,8 @@ opt_data_train = {
 
 opt_data_val = {
     #'data_h5': 'miniplaces_256_val.h5',
-    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
-    'data_list': '../../data/val.txt',   # MODIFY PATH ACCORDINGLY
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/val.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,
