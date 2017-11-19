@@ -2,7 +2,7 @@ import os, datetime
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.layers.python.layers import batch_norm
-from DataLoader import *
+from model.tensorflow.DataLoader import *
 from save import save
 from model import *
 # Dataset Parameters
@@ -52,6 +52,7 @@ opt_data_val = {
 loader_train = DataLoaderDisk(**opt_data_train)
 loader_val = DataLoaderDisk(**opt_data_val)
 
+print ("finish loading data")
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 y = tf.placeholder(tf.int64, None)
