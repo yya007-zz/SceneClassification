@@ -8,4 +8,5 @@
 #SBATCH --time=120:00:00
 #SBATCH --output=/scratch/yaoy4/SceneClassification/log/run.log
 setpkgs -a tensorflow_0.12
+cd /scratch/yaoy4/SceneClassification/
 python  /scratch/yaoy4/SceneClassification/main.py 
