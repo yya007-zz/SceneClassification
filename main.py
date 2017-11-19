@@ -58,8 +58,9 @@ y = tf.placeholder(tf.int64, None)
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
-# Construct model
-logits = alexnet(x, keep_dropout, train_phase)
+# # Construct model
+# logits = alexnet(x, keep_dropout, train_phase)
+logits = VGG(x, keep_dropout, train_phase)
 
 # Define loss and optimizer
 loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))

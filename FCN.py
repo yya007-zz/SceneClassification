@@ -96,7 +96,7 @@ def FCN(bgr,keep_prob,train_phase, number_of_classes, random_init_fc8=False,
                                        num_classes=num_classes,
                                        relu=False)
 
-    pred = tf.argmax(score_fr, dimension=3)
+    # pred = tf.argmax(score_fr, dimension=3)
 
     upscore5 = _upscore_layer(score_fr,
                                         shape=tf.shape(pool4),
