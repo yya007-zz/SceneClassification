@@ -2,7 +2,7 @@ import os, datetime
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.layers.python.layers import batch_norm
-import FCN
+import CNNModels
 
 # Dataset Parameters
 def batch_norm_layer(x, train_phase, scope_bn):
@@ -77,7 +77,7 @@ def alexnet(x, keep_dropout, train_phase):
     return out
 
 def FCN(x, keep_dropout, train_phase,num_classes=100):
-    return FCN(x, keep_dropout, train_phase,num_classes=num_classes)
+    return CNNModels.FCN(x, keep_dropout, train_phase,num_classes=num_classes)
 
 def VGG(x, keep_dropout, train_phase,num_classes=100):
-    return VGG(x, keep_dropout, train_phase,num_classes=num_classes)
+    return CNNModels.VGG(x, keep_dropout, train_phase,num_classes=num_classes)
