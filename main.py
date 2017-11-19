@@ -2,7 +2,7 @@ import os, datetime
 import numpy as np
 import tensorflow as tf
 from model.tensorflow.DataLoader import *
-from model import *
+from architect import *
 # Dataset Parameters
 
 batch_size = 256
