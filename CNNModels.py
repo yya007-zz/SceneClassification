@@ -47,23 +47,6 @@ def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
     print score_fr.get_shape().as_list()
     return score_fr
 
-def _fc_layer_vgg(self, bottom, name):
-    with tf.variable_scope(name) as scope:
-        shape = bottom.get_shape().as_list()
-        dim = 1
-        for d in shape[1:]:
-             dim *= d
-        x = tf.reshape(bottom, [-1, dim])
-
-        weights = self.get_fc_weight(name)
-        biases = self.get_bias(name)
-
-        # Fully connected layer. Note that the '+' operation automatically
-        # broadcasts the biases.
-        fc = tf.nn.bias_add(tf.matmul(x, weights), biases)
-
-        return fc
-
 def FCN(bgr,keep_prob,train_phase, num_classes, random_init_fc8=False,
           debug=False):
     with tf.name_scope('Processing'):
@@ -201,7 +184,7 @@ def _fc_layer( bottom, name, num_classes=None,
 
         _add_wd_and_summary(filt, wd, "fc_wlosses")
 
-        if use="vgg":
+        if use=="vgg":
             conv = tf.matmul(bottom, weights)
         else:
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
