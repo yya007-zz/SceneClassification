@@ -18,7 +18,7 @@ training_iters = 50000
 step_display = 50
 step_save = 500
 path_save = './save/exp2/'
-num = 40000 #the model chosen to run on test data
+num = 5000 #the model chosen to run on test data
 # start_from = './save/exp1-'+str(num)
 start_from = ''
 
