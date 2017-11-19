@@ -1,4 +1,3 @@
-mkdir ./data
 mkdir ./save
 mkdir ./log
 mkdir ./data/pretrained
