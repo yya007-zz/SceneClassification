@@ -41,21 +41,17 @@ def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
 
     score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
 
-    print pool5.get_shape().as_list()
-    print fc6.get_shape().as_list()
-    print fc7.get_shape().as_list()
-    print score_fr.get_shape().as_list()
     return score_fr
 
-def FCN(bgr,keep_prob,train_phase, num_classes, random_init_fc8=False,
+def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
           debug=False):
     with tf.name_scope('Processing'):
         if debug:
-            bgr = tf.Print(bgr, [tf.shape(bgr)],
+            x = tf.Print(x, [tf.shape(x)],
                            message='Shape of input image: ',
                            summarize=4, first_n=1)
 
-    conv1_1 = _conv_layer(bgr, "conv1_1")
+    conv1_1 = _conv_layer(x, "conv1_1")
     conv1_2 = _conv_layer(conv1_1, "conv1_2")
     pool1 = _max_pool(conv1_2, 'pool1', debug)
 
