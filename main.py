@@ -1,7 +1,7 @@
 import os, datetime
 import numpy as np
 import tensorflow as tf
-from model.tensorflow.DataLoader import *
+from DataLoader import *
 from architect import *
 # Dataset Parameters
 
