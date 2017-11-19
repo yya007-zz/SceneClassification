@@ -1,6 +1,6 @@
 data/images/*
 data/objects/*
-data/newtrain/*
+data/seg_labels/*
 data/data/*
 data/pretrained/*
 log
