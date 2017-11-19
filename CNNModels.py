@@ -9,7 +9,7 @@ import tensorflow as tf
 wd = 5e-4
 data_dict = np.load("./data/pretrained/vgg16.npy", encoding='latin1').item()
 
-def VGG(x,keep_dropout,train_phase,num_classes):
+def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
     conv1_1 = _conv_layer(x, "conv1_1")
     conv1_2 = _conv_layer(conv1_1, "conv1_2")
     pool1 = _max_pool(conv1_2, 'pool1', debug)
