@@ -32,14 +32,17 @@ def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
     conv5_2 = _conv_layer(conv5_1, "conv5_2")
     conv5_3 = _conv_layer(conv5_2, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
+    
+    def dropfc(fc):
+        return tf.nn.dropout(fc, keep_dropout)
+        
+    def doNothing(fc):
+        return fc
 
     fc6 = _fc_layer(pool5, "fc6")
-    if train_phase:
-        fc6 = tf.nn.dropout(fc6, keep_dropout)
-
+    fc6 = tf.cond(train_phase,dropfc(fc6),doNothing(fc6))
     fc7 = _fc_layer(fc6, "fc7")
-    if train_phase:
-        fc7 = tf.nn.dropout(fc7, keep_dropout)
+    fc7 = tf.cond(train_phase,dropfc(fc7),doNothing(fc7))
 
     score_fr = _fc_layer(fc7, "score_fr",
                                        num_classes=num_classes,
