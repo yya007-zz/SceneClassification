@@ -5,8 +5,6 @@ import itertools
 import os.path as osp
 import os
 
-CLASS_NUMBER = 175 # without background
-
 def xml_extract(xml_path, seg_label_path):
     """
     extract information in xml file
@@ -16,13 +14,12 @@ def xml_extract(xml_path, seg_label_path):
     Return:
         image_label: int; the class of this image
     Note:
-        in npy file, it is stored as np3darray (w, h, class_number + 1) in np.bool type
-        the last layer of class is background
+        in the npy file, background has -1, the rest pixel value is its class
     """
     with open(xml_path) as f:
         it = itertools.chain('<root>', f, '</root>')
         root = ET.fromstringlist(it)
-    seg_label = np.zeros([CLASS_NUMBER, 128, 128], dtype=np.uint8)
+    image = np.ones([128, 128],dtype=np.uint8) * (-1)
 
     for obj in root:
         if obj.tag == 'class':
@@ -40,21 +37,8 @@ def xml_extract(xml_path, seg_label_path):
                 pt = np.array([[[x,y]]], dtype=np.int32)
                 polygon_list.append(pt)
             polygon = np.concatenate(polygon_list, axis=1)
-            cv2.fillPoly(seg_label[label], polygon, 255)
-    seg_label = seg_label.astype(bool)
-    background = np.ones([128,128], dtype=bool) - np.sum(seg_label, axis=0).astype(bool)
-    seg_label = np.concatenate([seg_label, np.expand_dims(background, axis=0)], axis=0)
-    seg_label = np.packbits(seg_label, axis=-1)
-
-    """
-    for i in range(seg_label.shape[0]):
-        if np.sum(seg_label[i]) != 0:
-            cv2.imshow('image', seg_label[i].astype(np.uint8) * 255)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-    """
-
-    np.save(seg_label_path, seg_label)
+            cv2.fillPoly( image, polygon, label)
+    np.save(seg_label_path, image)
     return image_label
 
 if __name__ == '__main__':
