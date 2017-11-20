@@ -145,10 +145,17 @@ with tf.Session() as sess:
                       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
                       "{:.4f}".format(acc1) + ", Top5 = " + \
                       "{:.4f}".format(acc5))
-                train_accs.append(accuracy5)
+                train_accs.append(acc5)
 
-                acc1_t, acc5_t=validation()
-                val_accs.append(acc5t)
+                # # Calculate batch loss and accuracy on validation set
+                # images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
+                # l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
+                # print("-Iter " + str(step) + ", Validation Loss= " + \
+                #       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
+                #       "{:.4f}".format(acc1) + ", Top5 = " + \
+                #       "{:.4f}".format(acc5))
+                acc1, acc5=validation()
+                val_accs.append(acc5)
 
                 fig = plt.figure()
                 a=np.arange(1,len(val_accs)+1,1)
@@ -163,13 +170,7 @@ with tf.Session() as sess:
                 plt.close(fig)
                 print "finish saving figure to view"
 
-                # # Calculate batch loss and accuracy on validation set
-                # images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
-                # l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
-                # print("-Iter " + str(step) + ", Validation Loss= " + \
-                #       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
-                #       "{:.4f}".format(acc1) + ", Top5 = " + \
-                #       "{:.4f}".format(acc5))
+                
             
             # Run optimization op (backprop)
             sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
