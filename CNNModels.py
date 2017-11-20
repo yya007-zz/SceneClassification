@@ -4,39 +4,50 @@ from math import ceil
 import sys
 
 import numpy as np
-import tensorflow as tf
+import tensorflow as tf 
+from tensorflow.contrib.layers.python.layers import batch_norm
 
 wd = 5e-4
 data_dict = np.load("./data/pretrained/vgg16.npy", encoding='latin1').item()
 
+def batch_norm_layer(x, train_phase, scope_bn):
+    return batch_norm(x, decay=0.9, center=True, scale=True,
+    updates_collections=None,
+    is_training=train_phase,
+    reuse=None,
+    trainable=True,
+    scope=scope_bn)
+
 def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
-    conv1_1 = _conv_layer(x, "conv1_1")
-    conv1_2 = _conv_layer(conv1_1, "conv1_2")
+    conv1_1 = _conv_layer(x, train_phase, "conv1_1")
+    conv1_2 = _conv_layer(conv1_1, train_phase, "conv1_2")
     pool1 = _max_pool(conv1_2, 'pool1', debug)
 
-    conv2_1 = _conv_layer(pool1, "conv2_1")
-    conv2_2 = _conv_layer(conv2_1, "conv2_2")
+    conv2_1 = _conv_layer(pool1, train_phase, "conv2_1")
+    conv2_2 = _conv_layer(conv2_1, train_phase, "conv2_2")
     pool2 = _max_pool(conv2_2, 'pool2', debug)
 
-    conv3_1 = _conv_layer(pool2, "conv3_1")
-    conv3_2 = _conv_layer(conv3_1, "conv3_2")
-    conv3_3 = _conv_layer(conv3_2, "conv3_3")
+    conv3_1 = _conv_layer(pool2, train_phase, "conv3_1")
+    conv3_2 = _conv_layer(conv3_1, train_phase, "conv3_2")
+    conv3_3 = _conv_layer(conv3_2, train_phase, "conv3_3")
     pool3 = _max_pool(conv3_3, 'pool3', debug)
 
-    conv4_1 = _conv_layer(pool3, "conv4_1")
-    conv4_2 = _conv_layer(conv4_1, "conv4_2")
-    conv4_3 = _conv_layer(conv4_2, "conv4_3")
+    conv4_1 = _conv_layer(pool3, train_phase, "conv4_1")
+    conv4_2 = _conv_layer(conv4_1, train_phase, "conv4_2")
+    conv4_3 = _conv_layer(conv4_2, train_phase, "conv4_3")
     pool4 = _max_pool(conv4_3, 'pool4', debug)
 
     conv5_1 = _conv_layer(pool4, "conv5_1")
-    conv5_2 = _conv_layer(conv5_1, "conv5_2")
-    conv5_3 = _conv_layer(conv5_2, "conv5_3")
+    conv5_2 = _conv_layer(conv5_1, train_phase, "conv5_2")
+    conv5_3 = _conv_layer(conv5_2, train_phase, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
 
-    fc6 = _fc_layer(pool5, "fc6",use="vgg")
+    fc6 = _fc_layer(pool5, "fc6", use="vgg")
+    fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
     fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
    
-    fc7 = _fc_layer(fc6, "fc7",use="vgg")
+    fc7 = _fc_layer(fc6, "fc7", use="vgg")
+    fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
     fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
 
     score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
@@ -155,6 +166,9 @@ def _conv_layer( bottom, name):
     with tf.variable_scope(name) as scope:
         filt = get_conv_filter(name)
         conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
+
+        # newly add
+        conv = batch_norm_layer(conv1, train_phase, 'bn-'+name)
 
         conv_biases = get_bias(name)
         bias = tf.nn.bias_add(conv, conv_biases)

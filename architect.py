@@ -1,17 +1,8 @@
 import os, datetime
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.layers.python.layers import batch_norm
 import CNNModels
 
-# Dataset Parameters
-def batch_norm_layer(x, train_phase, scope_bn):
-    return batch_norm(x, decay=0.9, center=True, scale=True,
-    updates_collections=None,
-    is_training=train_phase,
-    reuse=None,
-    trainable=True,
-    scope=scope_bn)
     
 def alexnet(x, keep_dropout, train_phase):
     weights = {

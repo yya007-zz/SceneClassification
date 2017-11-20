@@ -86,44 +86,8 @@ with tf.Session() as sess:
         saver.restore(sess, start_from)
     else:
         sess.run(init)
-    
-    step = 0
 
-    if train:
-        while step < training_iters:
-            # Load a batch of training data
-            images_batch, labels_batch = loader_train.next_batch(batch_size)
-            
-            if step % step_display == 0:
-                print('[%s]:' %(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-
-                # Calculate batch loss and accuracy on training set
-                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False}) 
-                print("-Iter " + str(step) + ", Training Loss= " + \
-                      "{:.6f}".format(l) + ", Accuracy Top1 = " + \
-                      "{:.4f}".format(acc1) + ", Top5 = " + \
-                      "{:.4f}".format(acc5))
-
-                # Calculate batch loss and accuracy on validation set
-                images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
-                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
-                print("-Iter " + str(step) + ", Validation Loss= " + \
-                      "{:.6f}".format(l) + ", Accuracy Top1 = " + \
-                      "{:.4f}".format(acc1) + ", Top5 = " + \
-                      "{:.4f}".format(acc5))
-            
-            # Run optimization op (backprop)
-            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
-            
-            step += 1
-            
-            # Save model
-            if step % step_save == 0 or step==1:
-                saver.save(sess, path_save, global_step=step)
-                print("Model saved at Iter %d !" %(step))
-        print("Optimization Finished!")
-
-    if validation:
+    def validation():
         # Evaluate on the whole validation set
         print('Evaluation on the whole validation set...')
         num_batch = loader_val.size()//batch_size+1
@@ -142,3 +106,44 @@ with tf.Session() as sess:
         acc1_total /= num_batch
         acc5_total /= num_batch
         print('Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total))
+
+    
+    step = 0
+
+    if train:
+        while step < training_iters:
+            # Load a batch of training data
+            images_batch, labels_batch = loader_train.next_batch(batch_size)
+            
+            if step % step_display == 0:
+                print('[%s]:' %(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+
+                # Calculate batch loss and accuracy on training set
+                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False}) 
+                print("-Iter " + str(step) + ", Training Loss= " + \
+                      "{:.6f}".format(l) + ", Accuracy Top1 = " + \
+                      "{:.4f}".format(acc1) + ", Top5 = " + \
+                      "{:.4f}".format(acc5))
+
+                validation()
+                # # Calculate batch loss and accuracy on validation set
+                # images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
+                # l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
+                # print("-Iter " + str(step) + ", Validation Loss= " + \
+                #       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
+                #       "{:.4f}".format(acc1) + ", Top5 = " + \
+                #       "{:.4f}".format(acc5))
+            
+            # Run optimization op (backprop)
+            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
+            
+            step += 1
+            
+            # Save model
+            if step % step_save == 0 or step==1:
+                saver.save(sess, path_save, global_step=step)
+                print("Model saved at Iter %d !" %(step))
+        print("Optimization Finished!")
+
+    if validation:
+        validation()
