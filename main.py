@@ -9,6 +9,7 @@ from exp import *
 from exp2 import *
 import sys
 # Dataset Parameters
+print "Running command: ",sys.argv
 ParametersDict=sys.argv[1]
 Parameters=sys.argv[2]
 if ParametersDict == 'exp2':
@@ -17,7 +18,7 @@ else:
     experiment=exp
 if Parameters in experiment:
     settings = experiment[Parameters]
-    print experiment[Parameters]
+    print "Parameters: ",experiment[Parameters]
 else:
     print ("no dict of parameters found")
     assert 1==2
