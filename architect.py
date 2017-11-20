@@ -72,3 +72,7 @@ def FCN(x, keep_dropout, train_phase,num_classes=100):
 
 def VGG(x, keep_dropout, train_phase,num_classes=100):
     return CNNModels.VGG(x, keep_dropout, train_phase,num_classes=num_classes)
+    
+def VGG_BN(x, keep_dropout, train_phase,num_classes=100):
+    return CNNModels.VGG(x, keep_dropout, train_phase,num_classes=num_classes)
+  

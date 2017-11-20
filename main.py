@@ -1,6 +1,7 @@
 import os, datetime
 import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from DataLoaderOld import *
 from architect import *
 from exp import *
