@@ -18,11 +18,11 @@ training_iters = 50000
 step_display = 50
 step_save = 500
 path_save = './save/exp2/'
-num = 5000 #the model chosen to run on test data
-# start_from = './save/exp1-'+str(num)
-start_from = ''
+num = 500 #the model chosen to run on test data
+start_from = './save/exp2/-'+str(num)
+#start_from = ''
 
-train = True;
+train = False;
 validation = True;
     
 # Construct dataloader
