@@ -168,7 +168,7 @@ def _conv_layer( bottom, train_phase, name):
         conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
 
         # newly add
-        conv = batch_norm_layer(conv1, train_phase, 'bn-'+name)
+        conv = batch_norm_layer(conv, train_phase, 'bn-'+name)
 
         conv_biases = get_bias(name)
         bias = tf.nn.bias_add(conv, conv_biases)
