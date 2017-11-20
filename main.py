@@ -6,18 +6,18 @@ from architect import *
 from exp import *
 # Dataset Parameters
 
-settings = exp3
+settings = expVal
 # Training Parameters
-learning_rate = exp2['learning_rate']
-training_iters = exp2['training_iters']
-step_display = exp2['step_display']
-step_save = exp2['step_save']
-exp_name = exp2['exp_name']
-num = exp2['num']
-selectedmodel= exp2['selectedmodel']
+learning_rate = settings['learning_rate']
+training_iters = settings['training_iters']
+step_display = settings['step_display']
+step_save = settings['step_save']
+exp_name = settings['exp_name']
+num = settings['num']
+selectedmodel= settings['selectedmodel']
 
-train = exp2['train']
-validation = exp2['validation']
+train = settings['train']
+validation = settings['validation']
 
 path_save = './save/'+exp_name+'/'
 start_from=''
