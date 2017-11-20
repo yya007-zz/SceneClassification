@@ -15,8 +15,9 @@ if ParametersDict == 'exp2':
     experiment=exp2
 else:
     experiment=exp
-if Parameters in exp:
+if Parameters in experiment:
     settings = experiment[Parameters]
+    print experiment[Parameters]
 else:
     print ("no dict of parameters found")
     assert 1==2
