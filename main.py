@@ -30,13 +30,14 @@ selectedmodel= settings['selectedmodel']
 
 train = settings['train']
 validation = settings['validation']
+batch_size = settings['batch_size']
 
 path_save = './save/'+exp_name+'/'
 start_from=''
 if len(num)>0:
     start_from = path_save+'-'+num
 
-batch_size = 64
+
 load_size = 256
 fine_size = 224
 c = 3

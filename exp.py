@@ -10,6 +10,7 @@ exp1={
 	'train' : True,
 	'validation' : True,
 	'selectedmodel':"VGG"
+	'batch_size':64
 }
 
 exp2={
@@ -19,6 +20,7 @@ exp2={
 	'step_save' : 500,
 	'exp_name' : 'exp2',
 	'num' : '',
+	'batch_size':40
 
 	'train' : True,
 	'validation' : True,
@@ -32,6 +34,7 @@ exp3={
 	'step_save' : 500,
 	'exp_name' : 'exp3',
 	'num' : '',
+	'batch_size':40
 
 	'train' : True,
 	'validation' : True,
@@ -46,6 +49,7 @@ expVal={
 	'step_save' : 500,
 	'exp_name' : 'exp1',
 	'num' : '10000',
+	'batch_size':64
 
 	'train' : False,
 	'validation' : True,
