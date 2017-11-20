@@ -4,10 +4,8 @@ exp2={
 	'training_iters' = 50000
 	'step_display' = 50
 	'step_save' = 500
-	'path_save' = './save/exp2/'
-	'num = 500' #the model chosen to run on test data
-	# start_from = './save/exp2/-'+str(num)
-	'start_from' = ''
+	'exp_name' = 'exp2'
+	'num' = ''
 
 	'train' = True;
 	'validation' = True;
@@ -19,10 +17,8 @@ expVal={
 	'training_iters' = 50000
 	'step_display' = 50
 	'step_save' = 500
-	'path_save' = './save/exp2/'
-	'num = 500' #the model chosen to run on test data
-	# start_from = './save/exp2/-'+str(num)
-	'start_from' = ''
+	'exp_name' = 'exp2'
+	'num' = '500'
 
 	'train' = False;
 	'validation' = True;

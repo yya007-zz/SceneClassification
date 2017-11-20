@@ -12,14 +12,17 @@ learning_rate = exp2['learning_rate']
 training_iters = exp2['training_iters']
 step_display = exp2['step_display']
 step_save = exp2['step_save']
-path_save = exp2['path_save']
+exp_name = exp2['exp_name']
+
 num = exp2['num']
 start_from = exp2['start_from']
 selectedmodel= exp2['selectedmodel']
 train = exp2['train']
 validation = exp2['validation']
 
-
+path_save = './save/'+exp_name+'/'
+if len(num)>0:
+    start_from = path_save+'-'+num
 
 batch_size = 64
 load_size = 256
@@ -107,11 +110,13 @@ with tf.Session() as sess:
         acc1_total /= num_batch
         acc5_total /= num_batch
         print('Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total))
-
+        return acc1_total,acc5_total
     
     step = 0
 
     if train:
+        train_accs=[]
+        val_accs=[]
         while step < training_iters:
             # Load a batch of training data
             images_batch, labels_batch = loader_train.next_batch(batch_size)
@@ -125,8 +130,22 @@ with tf.Session() as sess:
                       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
                       "{:.4f}".format(acc1) + ", Top5 = " + \
                       "{:.4f}".format(acc5))
+                train_accs.append(accuracy5)
 
-                validation()
+                acc1, acc5=validation()
+                val_accs.append(acc5)
+
+                fig = plt.figure()
+                a=np.arange(1,len(val_accs)+1,1)
+                plt.plot(a,train_accs,'-',label='Training')
+                plt.plot(a,val_accs,'-',label='Validation')
+                plt.xlabel("Iteration")
+                plt.ylabel("Accuracy")
+                plt.legend()
+                fig.savefig("./pic_"+str(modelind)+".png")   # save the figure to file
+                plt.close(fig)
+                print "finish saving figure to view"
+
                 # # Calculate batch loss and accuracy on validation set
                 # images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
                 # l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
