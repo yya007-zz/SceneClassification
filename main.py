@@ -5,20 +5,16 @@ import matplotlib.pyplot as plt
 from DataLoaderOld import *
 from architect import *
 from exp import *
+from exp2 import *
 import sys
 # Dataset Parameters
 Parameters=sys.argv[1]
-if Parameters =="exp1":
-    settings = exp1
-elif Parameters =="exp2":
-    settings = exp2
-elif Parameters =="exp3":
-    settings = exp3
-elif Parameters =="val":
-    settings = expVal
+if Parameters in exp:
+    settings = exp[Parameters]
 else:
     print ("no dict of parameters found")
     assert 1==2
+
 # Training Parameters
 learning_rate = settings['learning_rate']
 training_iters = settings['training_iters']
@@ -77,16 +73,16 @@ keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # # Construct model
-# logits = alexnet(x, keep_dropout, train_phase)
-
 if selectedmodel=="VGG":
-    logits = VGG(x, keep_dropout, train_phase)
+    myModel = vgg_model(x, y, keep_dropout, train_phase)
 if selectedmodel=="VGG_BN":
-    logits = VGG_BN(x, keep_dropout, train_phase)
+    myModel = vgg_bn_model(x, y, keep_dropout, train_phase)
 if alexnet=="alexnet":
-    logits = alexnet(x, keep_dropout, train_phase)  
+    myModel = alexnet_model(x, y, keep_dropout, train_phase)
+
 # Define loss and optimizer
-loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+logits= myModel.logits
+loss = myModel.loss
 train_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
 
 # Evaluate model
