@@ -3,6 +3,7 @@ data/objects/*
 data/seg_labels/*
 data/data/*
 data/pretrained/*
+fig/*
 log
 save/*
 cmd.txt
