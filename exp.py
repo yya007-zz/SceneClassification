@@ -31,7 +31,7 @@ expVal={
 	'step_display' : 50,
 	'step_save' : 500,
 	'exp_name' : 'exp2',
-	'num' : '500',
+	'num' : '6000',
 
 	'train' : False,
 	'validation' : True,
