@@ -34,7 +34,7 @@ exp={
 		'step_save' : 500,
 		'exp_name' : 'exp3',
 		'num' : '',
-		'batch_size':40
+		'batch_size':40,
 
 		'train' : True,
 		'validation' : True,
@@ -49,7 +49,7 @@ exp={
 		'step_save' : 500,
 		'exp_name' : 'exp1',
 		'num' : '10000',
-		'batch_size':64
+		'batch_size':64,
 
 		'train' : False,
 		'validation' : True,
