@@ -5,15 +5,10 @@ from DataLoaderOld import *
 from architect import *
 # Dataset Parameters
 
-batch_size = 64
-load_size = 256
-fine_size = 224
-c = 3
-data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
+
 
 # Training Parameters
 learning_rate = 0.001
-dropout = 0.5 # Dropout, probability to keep units
 training_iters = 50000
 step_display = 50
 step_save = 500
@@ -24,7 +19,15 @@ start_from = ''
 
 train = True;
 validation = True;
-    
+
+
+
+batch_size = 64
+load_size = 256
+fine_size = 224
+c = 3
+data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
+dropout = 0.5 # Dropout, probability to keep units
 # Construct dataloader
 opt_data_train = {
     #'data_h5': 'miniplaces_256_train.h5',
@@ -99,10 +102,7 @@ with tf.Session() as sess:
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
-            print("Validation Accuracy Top1 = " + \
-                  "{:.4f}".format(acc1) + ", Top5 = " + \
-                  "{:.4f}".format(acc5))
-
+            # print("Validation Accuracy Top1 = " + "{:.4f}".format(acc1) + ", Top5 = " + "{:.4f}".format(acc5))
         acc1_total /= num_batch
         acc5_total /= num_batch
         print('Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total))
