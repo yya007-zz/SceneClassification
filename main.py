@@ -6,7 +6,7 @@ from architect import *
 from exp import *
 # Dataset Parameters
 
-settings = exp2
+settings = exp3
 # Training Parameters
 learning_rate = exp2['learning_rate']
 training_iters = exp2['training_iters']
