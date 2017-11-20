@@ -162,7 +162,7 @@ def _max_pool( bottom, name, debug):
                         summarize=4, first_n=1)
     return pool
 
-def _conv_layer( bottom, name):
+def _conv_layer( bottom, train_phase, name):
     with tf.variable_scope(name) as scope:
         filt = get_conv_filter(name)
         conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
