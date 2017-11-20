@@ -13,10 +13,9 @@ training_iters = exp2['training_iters']
 step_display = exp2['step_display']
 step_save = exp2['step_save']
 exp_name = exp2['exp_name']
-
 num = exp2['num']
-start_from = exp2['start_from']
 selectedmodel= exp2['selectedmodel']
+
 train = exp2['train']
 validation = exp2['validation']
 
