@@ -1,6 +1,6 @@
 exp={
 	'exp1':{
-		'learning_rate' : 0.0001,
+		'learning_rate' : 1e-4,
 		'training_iters' : 10000,
 		'step_display' : 100,
 		'step_save' : 500,
@@ -12,6 +12,21 @@ exp={
 		'validation' : True,
 		'selectedmodel':"VGG"
 	},
+
+	'exp4':{
+		'learning_rate' : 1e-5,
+		'training_iters' : 10000,
+		'step_display' : 100,
+		'step_save' : 500,
+		'exp_name' : 'exp4',
+		'num' : '',
+		'batch_size':64,
+
+		'train' : True,
+		'validation' : True,
+		'selectedmodel':"VGG"
+	},
+
 
 	'exp2':{
 		'learning_rate' : 0.0001,
