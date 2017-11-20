@@ -148,7 +148,7 @@ with tf.Session() as sess:
                 train_accs.append(accuracy5)
 
                 acc1, acc5=validation()
-                val_accs.append(acc5)
+                val_accs.append(tf.to_float(acc5))
 
                 fig = plt.figure()
                 a=np.arange(1,len(val_accs)+1,1)
