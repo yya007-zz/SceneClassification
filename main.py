@@ -159,14 +159,12 @@ with tf.Session() as sess:
 
                 fig = plt.figure()
                 a=np.arange(1,len(val_accs)+1,1)
-                print a
-                print train_accs
                 plt.plot(a,train_accs,'-',label='Training')
                 plt.plot(a,val_accs,'-',label='Validation')
                 plt.xlabel("Iteration")
                 plt.ylabel("Accuracy")
                 plt.legend()
-                fig.savefig("./fig/pic_"+str(modelind)+".png")   # save the figure to file
+                fig.savefig("./fig/pic_"+str(exp_name)+".png")   # save the figure to file
                 plt.close(fig)
                 print "finish saving figure to view"
 
