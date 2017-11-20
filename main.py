@@ -20,6 +20,7 @@ train = exp2['train']
 validation = exp2['validation']
 
 path_save = './save/'+exp_name+'/'
+start_from=''
 if len(num)>0:
     start_from = path_save+'-'+num
 
