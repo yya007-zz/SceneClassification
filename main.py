@@ -4,6 +4,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoaderOld import *
 from architect import *
+from architect2 import *
 from exp import *
 from exp2 import *
 import sys

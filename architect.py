@@ -2,6 +2,7 @@ import os, datetime
 import numpy as np
 import tensorflow as tf
 import CNNModels
+import CNNModels2
 
 class alexnet_model:
     def __init__(x, y, keep_dropout, train_phase):
