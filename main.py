@@ -6,7 +6,7 @@ from architect import *
 from exp import *
 # Dataset Parameters
 
-settings = exp2
+settings = exp3
 # Training Parameters
 learning_rate = exp2['learning_rate']
 training_iters = exp2['training_iters']
@@ -142,7 +142,7 @@ with tf.Session() as sess:
                 plt.xlabel("Iteration")
                 plt.ylabel("Accuracy")
                 plt.legend()
-                fig.savefig("./pic_"+str(modelind)+".png")   # save the figure to file
+                fig.savefig("./fig/pic_"+str(modelind)+".png")   # save the figure to file
                 plt.close(fig)
                 print "finish saving figure to view"
 
