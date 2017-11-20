@@ -9,7 +9,7 @@ exp1={
 
 	'train' : True,
 	'validation' : True,
-	'selectedmodel':"VGG"
+	'selectedmodel':"VGG_BN"
 }
 
 exp2={
@@ -22,7 +22,7 @@ exp2={
 
 	'train' : True,
 	'validation' : True,
-	'selectedmodel':"VGG"
+	'selectedmodel':"VGG_BN"
 }
 
 exp3={
@@ -35,7 +35,7 @@ exp3={
 
 	'train' : True,
 	'validation' : True,
-	'selectedmodel':"VGG"
+	'selectedmodel':"VGG_BN"
 }
 
 

@@ -68,7 +68,10 @@ train_phase = tf.placeholder(tf.bool)
 
 if selectedmodel=="VGG":
     logits = VGG(x, keep_dropout, train_phase)
-
+if selectedmodel=="VGG_BN":
+    logits = VGG_BN(x, keep_dropout, train_phase)
+if alexnet=="alexnet":
+    logits = alexnet(x, keep_dropout, train_phase)  
 # Define loss and optimizer
 loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 train_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
