@@ -6,9 +6,9 @@
 #SBATCH --ntasks=4
 #SBATCH --mem=40G
 #SBATCH --time=120:00:00
-#SBATCH --output=/scratch/yaoy4/SceneClassification/log/run.log
+#SBATCH --output=/scratch/yaoy4/SceneClassification/log/val.log
 setpkgs -a tensorflow_0.12
 setpkgs -a anaconda2
 source activate FCN
 cd /scratch/yaoy4/SceneClassification/
-python  /scratch/yaoy4/SceneClassification/main.py exp1
+python  /scratch/yaoy4/SceneClassification/main.py val

@@ -4,9 +4,20 @@ import tensorflow as tf
 from DataLoaderOld import *
 from architect import *
 from exp import *
+import sys
 # Dataset Parameters
-
-settings = expVal
+Parameters=sys.argv[1]
+if Parameters =="exp1":
+    settings = exp1
+elif Parameters =="exp2":
+    settings = exp2
+elif Parameters =="exp3":
+    settings = exp3
+elif Parameters =="val":
+    settings = expVal
+else:
+    print ("no dict of parameters found")
+    assert 1==2
 # Training Parameters
 learning_rate = settings['learning_rate']
 training_iters = settings['training_iters']
