@@ -37,7 +37,7 @@ def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
     conv4_3 = _conv_layer(conv4_2, train_phase, "conv4_3")
     pool4 = _max_pool(conv4_3, 'pool4', debug)
 
-    conv5_1 = _conv_layer(pool4, "conv5_1")
+    conv5_1 = _conv_layer(pool4, train_phase, "conv5_1")
     conv5_2 = _conv_layer(conv5_1, train_phase, "conv5_2")
     conv5_3 = _conv_layer(conv5_2, train_phase, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
