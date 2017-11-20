@@ -11,7 +11,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'selectedmodel':"VGG"
-	}
+	},
 
 	'exp2':{
 		'learning_rate' : 0.0001,
@@ -25,7 +25,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'selectedmodel':"VGG_BN"
-	}
+	},
 
 	'exp3':{
 		'learning_rate' : 0.01,
@@ -39,7 +39,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'selectedmodel':"VGG_BN"
-	}
+	},
 
 
 	'expVal':{
