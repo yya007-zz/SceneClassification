@@ -1,19 +1,19 @@
 
 exp1={
-	'learning_rate' : 1e-7,
+	'learning_rate' : 0.001,
 	'training_iters' : 10000,
 	'step_display' : 50,
 	'step_save' : 500,
 	'exp_name' : 'exp1',
-	'num' : '',
+	'num' : '10000',
 
 	'train' : True,
 	'validation' : True,
-	'selectedmodel':"VGG_BN"
+	'selectedmodel':"VGG"
 }
 
 exp2={
-	'learning_rate' : 1e-5,
+	'learning_rate' : 0.0001,
 	'training_iters' : 10000,
 	'step_display' : 50,
 	'step_save' : 500,
@@ -26,7 +26,7 @@ exp2={
 }
 
 exp3={
-	'learning_rate' : 1e-7,
+	'learning_rate' : 0.01,
 	'training_iters' : 10000,
 	'step_display' : 50,
 	'step_save' : 500,
