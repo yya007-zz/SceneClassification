@@ -1,6 +1,6 @@
 #! /bin/bash
 #SBATCH --account=p_masi_gpu
-#SBATCH --partition=pascal
+#SBATCH --partition=Maxwell
 #SBATCH --gres=gpu:2
 #SBATCH --nodes=1
 #SBATCH --ntasks=4

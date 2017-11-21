@@ -35,6 +35,7 @@ selectedmodel= settings['selectedmodel']
 
 train = settings['train']
 validation = settings['validation']
+test = settings['test']
 batch_size = settings['batch_size']
 
 path_save = './save/'+exp_name+'/'
@@ -192,3 +193,23 @@ with tf.Session() as sess:
 
     if validation:
         validation()
+    
+    if test:
+        # Predict on the test set
+        print('Evaluation on the test set...')
+        num_batch = loader_test.size()//batch_size+1
+        loader_test.reset()
+        result=[]
+        for i in range(num_batch):
+            images_batch, labels_batch = loader_test.next_batch(batch_size) 
+            l = sess.run([logits], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
+            l = np.array(l)
+            l = l.reshape(l.shape[1:])
+            print l.shape
+            for ind in range(l.shape[0]):
+                top5 = np.argsort(l[ind])[-5:][::-1]
+                result.append(top5)
+        result=np.array(result)
+        result=result[:10000,:]
+        save(result, "./fig/"+exp_name+str(num))
+

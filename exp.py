@@ -10,6 +10,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
+		'test': True,
 		'selectedmodel':"VGG"
 	},
 
@@ -24,6 +25,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
+		'test': True,
 		'selectedmodel':"VGG"
 	},
 
@@ -38,6 +40,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
+		'test': True,
 		'selectedmodel':"VGG_BN"
 	},
 
@@ -52,6 +55,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
+		'test': True,
 		'selectedmodel':"VGG_BN"
 	},
 
@@ -67,6 +71,7 @@ exp={
 
 		'train' : False,
 		'validation' : True,
+		'test': True,
 		'selectedmodel':"VGG"
 	}
 }
