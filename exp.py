@@ -35,7 +35,7 @@ exp={
 		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp2',
-		'num' : '',
+		'num' : '10000',
 		'batch_size':40,
 
 		'train' : True,
@@ -50,7 +50,7 @@ exp={
 		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp3',
-		'num' : '',
+		'num' : '10000',
 		'batch_size':40,
 
 		'train' : True,
