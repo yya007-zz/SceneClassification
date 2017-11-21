@@ -2,7 +2,7 @@ exp={
 	'exp1':{
 		'learning_rate' : 1e-6,
 		'training_iters' : 10000,
-		'step_display' : 250,
+		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp1',
 		'num' : '',
@@ -15,9 +15,9 @@ exp={
 	},
 
 	'exp4':{
-		'learning_rate' : 1e-5,
+		'learning_rate' : 1e-6,
 		'training_iters' : 10000,
-		'step_display' : 250,
+		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp4',
 		'num' : '',
@@ -30,9 +30,9 @@ exp={
 	},
 
 	'exp2':{
-		'learning_rate' : 0.0001,
+		'learning_rate' : 0.00001,
 		'training_iters' : 10000,
-		'step_display' : 250,
+		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp2',
 		'num' : '',
@@ -47,7 +47,7 @@ exp={
 	'exp3':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 10000,
-		'step_display' : 250,
+		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp3',
 		'num' : '',
@@ -63,9 +63,9 @@ exp={
 	'expVal':{
 		'learning_rate' : 0.001,
 		'training_iters' : 10000,
-		'step_display' : 250,
+		'step_display' : 100,
 		'step_save' : 500,
-		'exp_name' : 'exp4',
+		'exp_name' : 'expVal',
 		'num' : '10000',
 		'batch_size':64,
 
