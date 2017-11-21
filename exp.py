@@ -66,7 +66,7 @@ exp={
 		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp4',
-		'num' : '4000',
+		'num' : '5000',
 		'batch_size':64,
 
 		'train' : False,
