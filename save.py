@@ -3,7 +3,7 @@ import time
 
 def save(result, address):
 	name = []
-	with open('../../data/test.txt', 'r') as f:
+	with open('./data/test.txt', 'r') as f:
 		for line in f:
 			path, lab =line.rstrip().split(' ')
 			name.append(path)
