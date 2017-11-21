@@ -97,4 +97,6 @@ def VGG(x, keep_dropout, train_phase,num_classes=100):
 
 def VGG_BN(x, keep_dropout, train_phase,num_classes=100):
     return CNNModels.VGG_BN(x, keep_dropout, train_phase,num_classes=num_classes)
-  
+
+def VGG16_Simple(x, keep_dropout, train_phase,num_classes=100):
+    return CNNModels.VGG16_Simple(x, keep_dropout, train_phase,num_classes=num_classes)
