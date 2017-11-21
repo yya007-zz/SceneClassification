@@ -1,6 +1,6 @@
 exp={
 	'exp1':{
-		'learning_rate' : 1e-4,
+		'learning_rate' : 1e-6,
 		'training_iters' : 10000,
 		'step_display' : 100,
 		'step_save' : 500,
@@ -27,7 +27,6 @@ exp={
 		'selectedmodel':"VGG"
 	},
 
-
 	'exp2':{
 		'learning_rate' : 0.0001,
 		'training_iters' : 10000,
@@ -43,7 +42,7 @@ exp={
 	},
 
 	'exp3':{
-		'learning_rate' : 0.01,
+		'learning_rate' : 1e-5,
 		'training_iters' : 10000,
 		'step_display' : 100,
 		'step_save' : 500,
