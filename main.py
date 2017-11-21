@@ -115,6 +115,7 @@ with tf.Session() as sess:
         sess.run(init)
 
     def validation():
+        t=time.time()
         # Evaluate on the whole validation set
         print('Evaluation on the whole validation set...')
         num_batch = loader_val.size()//batch_size+1
@@ -129,6 +130,8 @@ with tf.Session() as sess:
             print("Validation Accuracy Top1 = " + "{:.4f}".format(acc1) + ", Top5 = " + "{:.4f}".format(acc5))
         acc1_total /= num_batch
         acc5_total /= num_batch
+        t=int(time.time()-t)
+        print('used'+str(t)+'s to validate')
         print('Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total))
         return acc1_total,acc5_total
     
