@@ -17,7 +17,7 @@ def batch_norm_layer(x, train_phase, scope_bn):
     reuse=None,
     trainable=True,
     scope=scope_bn)
-    
+
 def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
     # conv1_1
     with tf.name_scope('conv1_1') as scope:
@@ -194,7 +194,7 @@ def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
         pool5_flat = tf.reshape(pool5, [-1, shape])
         fc1l = tf.nn.bias_add(tf.matmul(pool5_flat, fc1w), fc1b)
         fc1 = tf.nn.relu(fc1l)
-        fc1 = tf.cond(train_phase,lambda: tf.nn.dropout(fc1, keep_dropout),lambda: fc7)
+        fc1 = tf.cond(train_phase,lambda: tf.nn.dropout(fc1, keep_dropout),lambda: fc1)
 
     # fc2
     with tf.name_scope('fc2') as scope:
@@ -205,7 +205,7 @@ def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
                              trainable=True, name='biases')
         fc2l = tf.nn.bias_add(tf.matmul(fc1, fc2w), fc2b)
         fc2 = tf.nn.relu(fc2l)
-        fc2 = tf.cond(train_phase,lambda: tf.nn.dropout(fc2, keep_dropout),lambda: fc7)
+        fc2 = tf.cond(train_phase,lambda: tf.nn.dropout(fc2, keep_dropout),lambda: fc2)
 
 
     # fc3
