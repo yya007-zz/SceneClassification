@@ -9,6 +9,6 @@
 #SBATCH --output=/scratch/yaoy4/SceneClassification/log/run4.log
 module load Anaconda2
 source activate FCN
-setpkgs -a tensorflow_0.12cd
+setpkgs -a tensorflow_0.12
 cd /scratch/yaoy4/SceneClassification/
 python  /scratch/yaoy4/SceneClassification/main.py exp exp4
