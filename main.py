@@ -95,15 +95,15 @@ y = tf.placeholder(tf.int64, None)
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
-# # Construct model
-# if selectedmodel=="VGG":
-#     myModel = vgg_model(x, y, keep_dropout, train_phase)
-# if selectedmodel=="VGG_BN":
-#     myModel = vgg_bn_model(x, y, keep_dropout, train_phase)
-# if alexnet=="alexnet":
-#     myModel = alexnet_model(x, y, keep_dropout, train_phase)
+# Construct model
+if selectedmodel=="VGG":
+    myModel = vgg_model(x, y, keep_dropout, train_phase)
+if selectedmodel=="VGG_BN":
+    myModel = vgg_bn_model(x, y, keep_dropout, train_phase)
+if alexnet=="alexnet":
+    myModel = alexnet_model(x, y, keep_dropout, train_phase)
 
-myModel = vgg_simple_model(x, y, keep_dropout, train_phase)
+# myModel = vgg_simple_model(x, y, keep_dropout, train_phase)
 # Define loss and optimizer
 logits= myModel.logits
 loss = myModel.loss
