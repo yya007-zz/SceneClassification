@@ -107,7 +107,7 @@ elif selectedmodel=='VGG_simple':
     myModel = vgg_simple_model(x, y, keep_dropout, train_phase)
 else:
     raise ValueError('no such model, end of the program')
-    
+
 # Define loss and optimizer
 logits= myModel.logits
 loss = myModel.loss
@@ -135,7 +135,6 @@ with tf.Session() as sess:
         sess.run(init)
 
     def use_validation():
-        print 'validation:',validation
         if not validation:
             return 0,0
         t=time.time()
@@ -186,10 +185,11 @@ with tf.Session() as sess:
                 #       '{:.4f}'.format(acc1) + ', Top5 = ' + \
                 #       '{:.4f}'.format(acc5))
                 acc1, acc5=use_validation()
+                val_accs.append(acc5)
+                print val_accs
+                print train_accs
 
             if plot:
-                val_accs.append(acc5)
-
                 fig = plt.figure()
                 a=np.arange(1,len(val_accs)+1,1)
                 plt.plot(a,train_accs,'-',label='Training')
