@@ -31,7 +31,7 @@ training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
 exp_name = settings['exp_name']
-num = settings['num']
+pretrainedStep = settings['pretrainedStep']
 selectedmodel= settings['selectedmodel']
 plot=settings['plot']
 
@@ -42,10 +42,9 @@ batch_size = settings['batch_size']
 
 path_save = './save/'+exp_name+'/'
 start_from=''
-pretrainedStep=0
-if len(num)>0:
-    start_from = path_save+'-'+num
-    pretrainedStep=int(num)
+
+if pretrainedStep > 0:
+    start_from = path_save+'-'+str(pretrainedStep)
 
 
 load_size = 256
