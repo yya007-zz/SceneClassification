@@ -133,7 +133,7 @@ with tf.Session() as sess:
     else:
         sess.run(init)
 
-    def validation():
+    def use_validation():
         print "validation:",validation
         if not validation:
             return 0,0
@@ -184,7 +184,7 @@ with tf.Session() as sess:
                 #       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
                 #       "{:.4f}".format(acc1) + ", Top5 = " + \
                 #       "{:.4f}".format(acc5))
-                acc1, acc5=validation()
+                acc1, acc5=use_validation()
 
             if plot:
                 val_accs.append(acc5)
@@ -214,7 +214,7 @@ with tf.Session() as sess:
         print("Optimization Finished!")
 
     
-    validation()
+    use_validation()
     
     if test:
         # Predict on the test set
