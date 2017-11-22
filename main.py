@@ -11,7 +11,7 @@ from exp2 import *
 import sys
 from save import *
 # Dataset Parameters
-print "Running command: ",sys.argv
+print 'Running command: ',sys.argv
 ParametersDict=sys.argv[1]
 Parameters=sys.argv[2]
 if ParametersDict == 'exp2':
@@ -20,10 +20,9 @@ else:
     experiment=exp
 if Parameters in experiment:
     settings = experiment[Parameters]
-    print "Parameters: ",experiment[Parameters]
+    print 'Parameters: ',experiment[Parameters]
 else:
-    print ("no dict of parameters found")
-    assert 1==2
+    raise ValueError('no dict of parameters found')
 
 # Training Parameters
 learning_rate = settings['learning_rate']
@@ -90,22 +89,25 @@ loader_train = DataLoaderDisk(**opt_data_train)
 loader_val = DataLoaderDisk(**opt_data_val)
 loader_test = DataLoaderDisk(**opt_data_test)
 
-print ("finish loading data")
+print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 y = tf.placeholder(tf.int64, None)
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
-Construct model
-if selectedmodel=="VGG":
+# Construct model
+if selectedmodel=='VGG':
     myModel = vgg_model(x, y, keep_dropout, train_phase)
-if selectedmodel=="VGG_BN":
+elif selectedmodel=='VGG_BN':
     myModel = vgg_bn_model(x, y, keep_dropout, train_phase)
-if selectedmodel=="alexnet":
+elif selectedmodel=='alexnet':
     myModel = alexnet_model(x, y, keep_dropout, train_phase)
-if selectedmodel=="VGG_simple":
+elif selectedmodel=='VGG_simple':
     myModel = vgg_simple_model(x, y, keep_dropout, train_phase)
+else:
+    raise ValueError('no such model, end of the program')
+    
 # Define loss and optimizer
 logits= myModel.logits
 loss = myModel.loss
@@ -133,7 +135,7 @@ with tf.Session() as sess:
         sess.run(init)
 
     def use_validation():
-        print "validation:",validation
+        print 'validation:',validation
         if not validation:
             return 0,0
         t=time.time()
@@ -148,12 +150,12 @@ with tf.Session() as sess:
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
-            print("Validation Accuracy Top1 = " + "{:.4f}".format(acc1) + ", Top5 = " + "{:.4f}".format(acc5))
+            print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
         acc1_total /= num_batch
         acc5_total /= num_batch
         t=int(time.time()-t)
         print('used'+str(t)+'s to validate')
-        print('Evaluation Finished! Accuracy Top1 = ' + "{:.4f}".format(acc1_total) + ", Top5 = " + "{:.4f}".format(acc5_total))
+        print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
         return acc1_total,acc5_total
     
     step = 0
@@ -166,23 +168,23 @@ with tf.Session() as sess:
             images_batch, labels_batch = loader_train.next_batch(batch_size)
             
             if step % step_display == 0:
-                print('[%s]:' %(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on training set
                 l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False}) 
-                print("-Iter " + str(step) + ", Training Loss= " + \
-                      "{:.6f}".format(l) + ", Accuracy Top1 = " + \
-                      "{:.4f}".format(acc1) + ", Top5 = " + \
-                      "{:.4f}".format(acc5))
+                print('-Iter ' + str(step) + ', Training Loss= ' + \
+                      '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
+                      '{:.4f}'.format(acc1) + ', Top5 = ' + \
+                      '{:.4f}'.format(acc5))
                 train_accs.append(acc5)
 
                 # # Calculate batch loss and accuracy on validation set
                 # images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
                 # l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
-                # print("-Iter " + str(step) + ", Validation Loss= " + \
-                #       "{:.6f}".format(l) + ", Accuracy Top1 = " + \
-                #       "{:.4f}".format(acc1) + ", Top5 = " + \
-                #       "{:.4f}".format(acc5))
+                # print('-Iter ' + str(step) + ', Validation Loss= ' + \
+                #       '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
+                #       '{:.4f}'.format(acc1) + ', Top5 = ' + \
+                #       '{:.4f}'.format(acc5))
                 acc1, acc5=use_validation()
 
             if plot:
@@ -192,12 +194,12 @@ with tf.Session() as sess:
                 a=np.arange(1,len(val_accs)+1,1)
                 plt.plot(a,train_accs,'-',label='Training')
                 plt.plot(a,val_accs,'-',label='Validation')
-                plt.xlabel("Iteration")
-                plt.ylabel("Accuracy")
+                plt.xlabel('Iteration')
+                plt.ylabel('Accuracy')
                 plt.legend()
-                fig.savefig("./fig/pic_"+str(exp_name)+".png")   # save the figure to file
+                fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
                 plt.close(fig)
-                print "finish saving figure to view"
+                print 'finish saving figure to view'
 
                 
             
@@ -209,8 +211,8 @@ with tf.Session() as sess:
             # Save model
             if step % step_save == 0 or step==1:
                 saver.save(sess, path_save, global_step=step+pretrainedStep)
-                print("Model saved at Iter %d !" %(step))
-        print("Optimization Finished!")
+                print('Model saved at Iter %d !' %(step))
+        print('Optimization Finished!')
 
     
     use_validation()
@@ -232,5 +234,5 @@ with tf.Session() as sess:
                 result.append(top5)
         result=np.array(result)
         result=result[:10000,:]
-        save(result, "./fig/"+exp_name+str(num))
+        save(result, './fig/'+exp_name+str(num))
 
