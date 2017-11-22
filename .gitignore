@@ -4,6 +4,9 @@ data/seg_labels/*
 data/data/*
 data/pretrained/*
 fig/*
+*.swp
+*.icloud
+*/.DS_Store
 log
 save/*
 cmd.txt

@@ -33,6 +33,7 @@ step_save = settings['step_save']
 exp_name = settings['exp_name']
 num = settings['num']
 selectedmodel= settings['selectedmodel']
+plot=settings['plot']
 
 train = settings['train']
 validation = settings['validation']
@@ -133,6 +134,8 @@ with tf.Session() as sess:
         sess.run(init)
 
     def validation():
+        if not validation:
+            return 0,0
         t=time.time()
         # Evaluate on the whole validation set
         print('Evaluation on the whole validation set...')
@@ -181,6 +184,7 @@ with tf.Session() as sess:
                 #       "{:.4f}".format(acc1) + ", Top5 = " + \
                 #       "{:.4f}".format(acc5))
                 acc1, acc5=validation()
+            if plot:
                 val_accs.append(acc5)
 
                 fig = plt.figure()
@@ -207,8 +211,8 @@ with tf.Session() as sess:
                 print("Model saved at Iter %d !" %(step))
         print("Optimization Finished!")
 
-    if validation:
-        validation()
+    
+    validation()
     
     if test:
         # Predict on the test set
