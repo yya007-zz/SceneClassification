@@ -210,10 +210,10 @@ def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
 
     # fc3
     with tf.name_scope('fc3') as scope:
-        fc3w = tf.Variable(tf.truncated_normal([4096, 1000],
+        fc3w = tf.Variable(tf.truncated_normal([4096, num_classes],
                                                      dtype=tf.float32,
                                                      stddev=1e-1), name='weights')
-        fc3b = tf.Variable(tf.constant(1.0, shape=[1000], dtype=tf.float32),
+        fc3b = tf.Variable(tf.constant(1.0, shape=[num_classes], dtype=tf.float32),
                              trainable=True, name='biases')
         fc3l = tf.nn.bias_add(tf.matmul(fc2, fc3w), fc3b)
 
