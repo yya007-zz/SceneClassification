@@ -134,6 +134,7 @@ with tf.Session() as sess:
         sess.run(init)
 
     def validation():
+        print "validation:",validation
         if not validation:
             return 0,0
         t=time.time()
@@ -184,6 +185,7 @@ with tf.Session() as sess:
                 #       "{:.4f}".format(acc1) + ", Top5 = " + \
                 #       "{:.4f}".format(acc5))
                 acc1, acc5=validation()
+
             if plot:
                 val_accs.append(acc5)
 
