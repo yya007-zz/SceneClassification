@@ -5,7 +5,7 @@ exp={
 		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp1',
-		'num' : '',
+		'num' : '10000',
 		'batch_size':64,
 
 		'train' : True,
@@ -30,7 +30,7 @@ exp={
 	},
 
 	'exp2':{
-		'learning_rate' : 0.00001,
+		'learning_rate' : 1e-5,
 		'training_iters' : 10000,
 		'step_display' : 100,
 		'step_save' : 500,

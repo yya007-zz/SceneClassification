@@ -41,8 +41,10 @@ batch_size = settings['batch_size']
 
 path_save = './save/'+exp_name+'/'
 start_from=''
+pretrainedStep=0
 if len(num)>0:
     start_from = path_save+'-'+num
+    pretrainedStep=int(num)
 
 
 load_size = 256
@@ -201,7 +203,7 @@ with tf.Session() as sess:
             
             # Save model
             if step % step_save == 0 or step==1:
-                saver.save(sess, path_save, global_step=step)
+                saver.save(sess, path_save, global_step=step+pretrainedStep)
                 print("Model saved at Iter %d !" %(step))
         print("Optimization Finished!")
 
