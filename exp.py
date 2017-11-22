@@ -10,9 +10,9 @@ exp={
 		'plot':False,
 
 		'train' : True,
-		'validation' : False,
+		'validation' : True,
 		'test': False,
-		'selectedmodel':"VGG"
+		'selectedmodel':"VGG_simple"
 	},
 
 	'exp1':{
