@@ -3,7 +3,7 @@ import time
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from DataLoader import *
+from DataLoaderOld import *
 from architect import *
 from architect2 import *
 from exp import *
@@ -48,48 +48,41 @@ if pretrainedStep > 0:
 
 load_size = 256
 fine_size = 224
-seg_size = 7
 c = 3
-data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842], dtype=np.float32)
+data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842])
 dropout = 0.5 # Dropout, probability to keep units
 # Construct dataloader
 opt_data_train = {
-    'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
-    'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
-    'data_list': './data/new_train.txt', # MODIFY PATH ACCORDINGLY
+    #'data_h5': 'miniplaces_256_train.h5',
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
-    'seg_size': seg_size,
     'data_mean': data_mean,
     'randomize': True,
-    'perm' : True,
-    'test': False
+    'perm' : True
     }
 
 opt_data_val = {
-    'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
-    'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
-    'data_list': './data/new_val.txt', # MODIFY PATH ACCORDINGLY
+    #'data_h5': 'miniplaces_256_val.h5',
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/val.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
-    'seg_size': seg_size,
     'data_mean': data_mean,
-    'randomize': True,
-    'perm' : True,
-    'test': False
+    'randomize': False,
+    'perm' : False
     }
 
 opt_data_test = {
-    'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
-    'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
-    'data_list': './data/test.txt', # MODIFY PATH ACCORDINGLY
+    #'data_h5': 'miniplaces_256_val.h5',
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/test.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
-    'seg_size': seg_size,
     'data_mean': data_mean,
     'randomize': False,
-    'perm' : False,
-    'test': True
+    'perm' : False
     }
 
 loader_train = DataLoaderDisk(**opt_data_train)
@@ -152,7 +145,7 @@ with tf.Session() as sess:
         acc5_total = 0.
         loader_val.reset()
         for i in range(num_batch):
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_val.next_batch(batch_size)    
+            images_batch, labels_batch = loader_val.next_batch(batch_size)    
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
@@ -171,7 +164,7 @@ with tf.Session() as sess:
         val_accs=[]
         while step < training_iters:
             # Load a batch of training data
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train.next_batch(batch_size)
+            images_batch, labels_batch = loader_train.next_batch(batch_size)
             
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
