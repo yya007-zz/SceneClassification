@@ -193,6 +193,11 @@ class DataLoaderDisk(object):
         else:
             self.order = np.arange(self.num)
         return
+    def size(self):
+        return self.num
+
+    def reset(self):
+        self._idx = 0
 
 if __name__ == '__main__':
     opt_data_train = {
