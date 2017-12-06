@@ -1,3 +1,19 @@
+# 
+```
+python data_processsor.py
+```
+
+Table of contents:
+  1. Overview of challenge dataset
+  2. Challenge details
+    2.1 Images and annotations
+    2.2 Submission format
+    2.3 Evaluation routines
+  3. Baselines
+
+
+
+
 # MiniPlaces Challenge: Image Classification Benchmark for the Education of Deep Learning in Computer Vision
 ![teaser](teaser.jpg)
 

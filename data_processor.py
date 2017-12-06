@@ -57,9 +57,7 @@ def xml_extract(xml_path, seg_label_path):
     np.save(seg_label_path, seg_label)
     return image_label
 
-if __name__ == '__main__':
-    #tv_subdir = 'val'
-    tv_subdir = 'train'
+def run(tv_subdir):
     cwd = os.getcwd()
     if not osp.exists(osp.join(cwd, 'data')):
         raise ValueError('Not in the root directory running this file')
@@ -117,3 +115,8 @@ if __name__ == '__main__':
         for line in txt_list:
             f.write(line)
     print "successfully saved the txt file in {} !".format(save_path)
+
+if __name__ == '__main__':
+    #tv_subdir = 'val'
+    # run('train')
+    run('val')

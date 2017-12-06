@@ -12,3 +12,5 @@ save/*
 cmd.txt
 .DS_Store
 *.pyc
+*.icloud
+*.bk
