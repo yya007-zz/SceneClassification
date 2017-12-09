@@ -4,6 +4,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
+from DataLoaderOld import *
 from architect import *
 from architect2 import *
 from exp import *
@@ -53,7 +54,7 @@ c = 3
 data_mean = np.asarray([0.45834960097,0.44674252445,0.41352266842], dtype=np.float32)
 dropout = 0.5 # Dropout, probability to keep units
 # Construct dataloader
-opt_data_train = {
+opt_data_train_seg = {
     'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
     'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
     'data_list': './data/new_train.txt', # MODIFY PATH ACCORDINGLY
@@ -66,6 +67,15 @@ opt_data_train = {
     'test': False
     }
 
+opt_data_train = {
+    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
+    'load_size': load_size,
+    'fine_size': fine_size,
+    'data_mean': data_mean,
+    'randomize': True
+    }
+
 opt_data_val = {
     'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
     'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
@@ -74,31 +84,29 @@ opt_data_val = {
     'fine_size': fine_size,
     'seg_size': seg_size,
     'data_mean': data_mean,
-    'randomize': True,
-    'perm' : True,
+    'randomize': False,
+    'perm' : False,
     'test': False
     }
 
 opt_data_test = {
-    'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
-    'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
-    'data_list': './data/test.txt', # MODIFY PATH ACCORDINGLY
+    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': '../../data/val.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
-    'seg_size': seg_size,
     'data_mean': data_mean,
-    'randomize': False,
-    'perm' : False,
-    'test': True
+    'randomize': False
     }
 
-loader_train = DataLoaderDisk(**opt_data_train)
+loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
+loader_train = DataLoaderDiskOld(**opt_data_train)
 loader_val = DataLoaderDisk(**opt_data_val)
-loader_test = DataLoaderDisk(**opt_data_test)
+loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
+seg = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 y = tf.placeholder(tf.int64, None)
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
@@ -112,6 +120,8 @@ elif selectedmodel=='alexnet':
     myModel = alexnet_model(x, y, keep_dropout, train_phase)
 elif selectedmodel=='VGG_simple':
     myModel = vgg_simple_model(x, y, keep_dropout, train_phase)
+elif selectedmodel=='VGG_simple':
+    myModel = conveSeg2(x, y, segs, keep_dropout, train_phase)   
 else:
     raise ValueError('no such model, end of the program')
 
@@ -171,6 +181,7 @@ with tf.Session() as sess:
         val_accs=[]
         while step < training_iters:
             # Load a batch of training data
+            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train.next_batch(batch_size)
             
             if step % step_display == 0:

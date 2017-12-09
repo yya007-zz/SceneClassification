@@ -219,75 +219,55 @@ def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
 
     return fc3l
 
-def VGG_BN(x,keep_dropout,train_phase,num_classes,debug=False):
-    conv1_1 = _conv_layer_bn(x, train_phase, "conv1_1")
-    conv1_2 = _conv_layer_bn(conv1_1, train_phase, "conv1_2")
+def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, num_classes_seg=0, debug=False):
+    conv1_1 = _conv_layer(x, train_phase, "conv1_1",batch_norm)
+    conv1_2 = _conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
     pool1 = _max_pool(conv1_2, 'pool1', debug)
 
-    conv2_1 = _conv_layer_bn(pool1, train_phase, "conv2_1")
-    conv2_2 = _conv_layer_bn(conv2_1, train_phase, "conv2_2")
+    conv2_1 = _conv_layer(pool1, train_phase, "conv2_1",batch_norm)
+    conv2_2 = _conv_layer(conv2_1, train_phase, "conv2_2",batch_norm)
     pool2 = _max_pool(conv2_2, 'pool2', debug)
 
-    conv3_1 = _conv_layer_bn(pool2, train_phase, "conv3_1")
-    conv3_2 = _conv_layer_bn(conv3_1, train_phase, "conv3_2")
-    conv3_3 = _conv_layer_bn(conv3_2, train_phase, "conv3_3")
+    conv3_1 = _conv_layer(pool2, train_phase, "conv3_1",batch_norm)
+    conv3_2 = _conv_layer(conv3_1, train_phase, "conv3_2",batch_norm)
+    conv3_3 = _conv_layer(conv3_2, train_phase, "conv3_3",batch_norm)
     pool3 = _max_pool(conv3_3, 'pool3', debug)
 
-    conv4_1 = _conv_layer_bn(pool3, train_phase, "conv4_1")
-    conv4_2 = _conv_layer_bn(conv4_1, train_phase, "conv4_2")
-    conv4_3 = _conv_layer_bn(conv4_2, train_phase, "conv4_3")
+    conv4_1 = _conv_layer(pool3, train_phase, "conv4_1",batch_norm)
+    conv4_2 = _conv_layer(conv4_1, train_phase, "conv4_2",batch_norm)
+    conv4_3 = _conv_layer(conv4_2, train_phase, "conv4_3",batch_norm)
     pool4 = _max_pool(conv4_3, 'pool4', debug)
 
-    conv5_1 = _conv_layer_bn(pool4, train_phase, "conv5_1")
-    conv5_2 = _conv_layer_bn(conv5_1, train_phase, "conv5_2")
-    conv5_3 = _conv_layer_bn(conv5_2, train_phase, "conv5_3")
+    conv5_1 = _conv_layer(pool4, train_phase, "conv5_1",batch_norm)
+    conv5_2 = _conv_layer(conv5_1, train_phase, "conv5_2",batch_norm)
+    conv5_3 = _conv_layer(conv5_2, train_phase, "conv5_3",batch_norm)
     pool5 = _max_pool(conv5_3, 'pool5', debug)
 
     fc6 = _fc_layer(pool5, "fc6", use="vgg")
-    fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
+    if batch_norm:
+        fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
     fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
    
     fc7 = _fc_layer(fc6, "fc7", use="vgg")
-    fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
+    if batch_norm:
+        fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
     fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
 
-    score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
+    class_logits = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
 
-    return score_fr
+    logits_seg = None
+    if seg:
+        fc8 = _fc_layer(pool5, "fc8", use="vgg")
+        fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
+        fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
+       
+        fc9 = _fc_layer(fc9, "fc9", use="vgg")
+        fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
+        fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
 
-def VGG(x,keep_dropout,train_phase,num_classes,debug=False):
-    conv1_1 = _conv_layer(x, train_phase, "conv1_1")
-    conv1_2 = _conv_layer(conv1_1, train_phase, "conv1_2")
-    pool1 = _max_pool(conv1_2, 'pool1', debug)
+        logits_seg = _fc_layer(fc9, "score_fr",num_classes=num_classes_seg,relu=False,use="vgg")
 
-    conv2_1 = _conv_layer(pool1, train_phase, "conv2_1")
-    conv2_2 = _conv_layer(conv2_1, train_phase, "conv2_2")
-    pool2 = _max_pool(conv2_2, 'pool2', debug)
-
-    conv3_1 = _conv_layer(pool2, train_phase, "conv3_1")
-    conv3_2 = _conv_layer(conv3_1, train_phase, "conv3_2")
-    conv3_3 = _conv_layer(conv3_2, train_phase, "conv3_3")
-    pool3 = _max_pool(conv3_3, 'pool3', debug)
-
-    conv4_1 = _conv_layer(pool3, train_phase, "conv4_1")
-    conv4_2 = _conv_layer(conv4_1, train_phase, "conv4_2")
-    conv4_3 = _conv_layer(conv4_2, train_phase, "conv4_3")
-    pool4 = _max_pool(conv4_3, 'pool4', debug)
-
-    conv5_1 = _conv_layer(pool4, train_phase, "conv5_1")
-    conv5_2 = _conv_layer(conv5_1, train_phase, "conv5_2")
-    conv5_3 = _conv_layer(conv5_2, train_phase, "conv5_3")
-    pool5 = _max_pool(conv5_3, 'pool5', debug)
-
-    fc6 = _fc_layer(pool5, "fc6", use="vgg")
-    fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
-   
-    fc7 = _fc_layer(fc6, "fc7", use="vgg")
-    fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
-
-    score_fr = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
-
-    return score_fr
+    return class_logits，logits_seg
 
 def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
           debug=False):
@@ -397,27 +377,13 @@ def _max_pool( bottom, name, debug):
                         summarize=4, first_n=1)
     return pool
 
-def _conv_layer( bottom, train_phase, name):
+def _conv_layer( bottom, train_phase, name, batch_norm=False):
     with tf.variable_scope(name) as scope:
         filt = get_conv_filter(name)
         conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
 
-        conv_biases = get_bias(name)
-        bias = tf.nn.bias_add(conv, conv_biases)
-
-        relu = tf.nn.relu(bias)
-        # Add summary to Tensorboard
-        _activation_summary(relu)
-        return relu
-
-def _conv_layer_bn( bottom, train_phase, name):
-    with tf.variable_scope(name) as scope:
-        filt = get_conv_filter(name)
-        conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
-
-        # newly add
-        conv = batch_norm_layer(conv, train_phase, 'bn-'+name)
-
+        if batch_norm:
+            conv = batch_norm_layer(conv, train_phase, 'bn-'+name)
         conv_biases = get_bias(name)
         bias = tf.nn.bias_add(conv, conv_biases)
 

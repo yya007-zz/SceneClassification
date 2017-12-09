@@ -66,7 +66,7 @@ np.random.seed(123)
 #         self.lab_set = self.lab_set[perm]
 
 # Loading data from disk
-class DataLoaderDisk(object):
+class DataLoaderDiskOld(object):
     def __init__(self, **kwargs):
 
         self.load_size = int(kwargs['load_size'])
