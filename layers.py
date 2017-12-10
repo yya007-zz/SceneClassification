@@ -58,10 +58,10 @@ def fc_layer( bottom, name, weight_use, num_classes=None, relu=True, debug=False
         else:
             shape = bottom.get_shape().as_list()
 
-            if name == 'fc6':
+            if weight_use == 'fc6':
                 filt = get_fc_weight_reshape(weight_use, [7, 7, 512, 4096])
-            elif name == 'score_fr':
-                name = 'fc8'  # Name of score_fr layer in VGG Model
+            elif weight_use == 'score_fr':
+                weight_use = 'fc8'  # Name of score_fr layer in VGG Model
                 filt = get_fc_weight_reshape(weight_use, [1, 1, 4096, 1000],
                                                   num_classes=num_classes)
             else:
