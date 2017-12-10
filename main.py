@@ -177,7 +177,7 @@ with tf.Session() as sess:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
             elif mode == 'test':
                 images_batch, labels_batch = loader.next_batch(batch_size)
-                seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
+                seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
                 obj_class_batch = np.zeros([batch_size, num_seg_class])
 
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
@@ -208,7 +208,7 @@ with tf.Session() as sess:
         val_accs=[]
         while step < training_iters:
             # Load a batch of training data
-            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
+            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
             obj_class_batch = np.zeros([batch_size, num_seg_class])
             flip = np.random.random_integers(0, 1)
             mylam=set_lam
