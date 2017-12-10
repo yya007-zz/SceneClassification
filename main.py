@@ -133,7 +133,7 @@ elif selectedmodel=='vgg_simple':
 elif selectedmodel=='vgg_seg2':
     myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 elif selectedmodel=='vgg_bn_seg2':
-    myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 else:
     raise ValueError('no such model, end of the program')
 
@@ -217,6 +217,7 @@ with tf.Session(config=config) as sess:
             flip = np.random.random_integers(0, 1)
             mylam=set_lam
             if flip<joint_ratio:
+                print("Use Joint")
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             else:
                 mylam=0;    
