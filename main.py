@@ -37,6 +37,7 @@ pretrainedStep = settings['pretrainedStep']
 selectedmodel= settings['selectedmodel']
 plot=settings['plot']
 
+joint_ratio= settings['joint_ratio']
 train = settings['train']
 validation = settings['validation']
 test = settings['test']
@@ -211,7 +212,7 @@ with tf.Session() as sess:
             obj_class_batch = np.zeros([batch_size, num_seg_class])
             flip = np.random.random_integers(0, 1)
             mylam=set_lam
-            if flip>0.5:
+            if flip>joint_ratio:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             else:
                 mylam=0;

@@ -8,6 +8,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':40,
 		'lam': 0.5,
+		'joint_ratio':0,
 		'plot':False,
 
 		'train' : True,
@@ -25,6 +26,7 @@ exp={
 		'pretrainedStep' : 10000,
 		'batch_size':64,
 		'lam': 0.5,
+		'joint_ratio':0,
 		'plot':True,
 
 		'train' : True,
@@ -42,6 +44,7 @@ exp={
 		'pretrainedStep' : 10000,
 		'batch_size':64,
 		'lam': 0.5,
+		'joint_ratio':0,
 		'plot':True,
 
 		'train' : True,
@@ -59,6 +62,7 @@ exp={
 		'pretrainedStep' : 10000,
 		'batch_size':40,
 		'lam': 0.5,
+		'joint_ratio':0,
 		'plot':True,
 
 		'train' : True,
@@ -76,6 +80,7 @@ exp={
 		'pretrainedStep' : 10000,
 		'batch_size':40,
 		'lam': 0.5,
+		'joint_ratio':0,
 		'plot':True,
 
 		'train' : True,
@@ -93,6 +98,7 @@ exp={
 		'pretrainedStep' : 10000,
 		'batch_size':40,
 		'lam': 0.5,
+		'joint_ratio':0.5,
 		'plot':True,
 
 		'train' : True,
