@@ -217,7 +217,7 @@ with tf.Session(config=config) as sess:
             flip = np.random.random_integers(0, 1)
             mylam=set_lam
             print(flip)
-            if flip<joint_ratio:
+            if flip<=joint_ratio:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             else:
                 mylam=0  
