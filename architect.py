@@ -36,7 +36,6 @@ class vgg_seg2_model:
         self.logits_class,logits_seg=CNNModels.VGG(x, keep_dropout, train_phase, num_classes=100, seg=True, num_classes_seg=176)
         self.loss_class =loss_class(y,self.logits_class)
         self.loss_seg = loss_seg(obj_class,logits_seg)
-        print("wwwwwww",self.loss_seg.get_shape().as_list()) 
         self.loss=self.loss_class+lam*self.loss_seg
 
 class vgg_bn_seg2_model:
@@ -44,7 +43,6 @@ class vgg_bn_seg2_model:
         self.logits_class,logits_seg=CNNModels.VGG(x, keep_dropout, train_phase,num_classes=100, batch_norm=True, seg=True, num_classes_seg=176)
         self.loss_class =loss_class(y,self.logits_class)
         self.loss_seg = loss_seg(obj_class,logits_seg)
-
         self.loss=self.loss_class+lam*self.loss_seg
 
 def loss_class(y,logits):
