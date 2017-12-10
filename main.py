@@ -213,35 +213,36 @@ with tf.Session(config=config) as sess:
 
     if train:
         train_accs=[]
+        train_seg_accs=[]
         val_accs=[]
+        seg_labels_batch_1 = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+        obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
         while step < training_iters:
             # Load a batch of training data
-            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
-            obj_class_batch = np.zeros([batch_size, num_seg_class])
+            
             flip = np.random.random_integers(0, 1)
+            images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
+            images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
             mylam=set_lam
             if flip<=joint_ratio:
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
             else:
                 mylam=0  
-                images_batch, labels_batch = loader_train.next_batch(batch_size)
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
             
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-
                 # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:mylam, keep_dropout: 1., train_phase: False}) 
-                
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, lam:mylam, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_accs.append(acc5)
 
-                # # Calculate batch loss and accuracy on validation set
-                # images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)    
-                # l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch_val, y: labels_batch_val, keep_dropout: 1., train_phase: False}) 
-                # print('-Iter ' + str(step) + ', Validation Loss= ' + \
-                #       '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
-                #       '{:.4f}'.format(acc1) + ', Top5 = ' + \
-                #       '{:.4f}'.format(acc5))
+                 # Calculate batch loss and accuracy on training set
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, lam:mylam, keep_dropout: 1., train_phase: False}) 
+                print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                train_seg_accs.append(acc5)
+
+
                 acc1, acc5=use_validation()
                 val_accs.append(acc5)
                 print val_accs
@@ -251,6 +252,7 @@ with tf.Session(config=config) as sess:
                     fig = plt.figure()
                     a=np.arange(1,len(val_accs)+1,1)
                     plt.plot(a,train_accs,'-',label='Training')
+                    plt.plot(a,train_seg_accs,'-',label='Training with segm')
                     plt.plot(a,val_accs,'-',label='Validation')
                     plt.xlabel('Iteration')
                     plt.ylabel('Accuracy')
