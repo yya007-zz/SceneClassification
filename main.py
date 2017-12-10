@@ -74,7 +74,8 @@ opt_data_train = {
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,
-    'randomize': True
+    'randomize': True,
+    'perm' : True,
     }
 
 opt_data_val = {
