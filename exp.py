@@ -17,8 +17,8 @@ exp={
 		# 'selectedmodel':"vgg"
 
 		'learning_rate' : 1e-4,
-		'training_iters' : 1500,
-		'step_display' : 50,
+		'training_iters' : 100,
+		'step_display' : 10,
 		'step_save' : 500,
 		'exp_name' : 'test',
 		'pretrainedStep' : 0,
@@ -29,7 +29,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2"
 	},
 
