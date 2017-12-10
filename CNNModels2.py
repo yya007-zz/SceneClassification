@@ -8,7 +8,7 @@ import tensorflow as tf
 
 import layers
 
-def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
+def VGG_Seg1(x, keep_prob, train_phase, num_classes, num_seg_classes, random_init_seg_score_fr=False,
           debug=False):
     with tf.name_scope('Processing'):
         if debug:
@@ -39,72 +39,34 @@ def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
     conv5_3 = _conv_layer(conv5_2, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
 
-    fc6 = _fc_layer(pool5, "fc6")
+    # classification final 3 layers
+    fc6_class = _fc_layer(pool5, "fc6_class", "fc6", use="vgg")
+    if batch_norm:
+        fc6_class = batch_norm_layer(fc6_class, train_phase, 'bn6')
+    fc6_class = tf.cond(train_phase, lambda: tf.nn.dropout(fc6_class, keep_dropout), lambda:fc6_class)
 
+    fc7_class = _fc_layer(fc6_class, "fc7_class", "fc7", use="vgg")
+    if batch_norm:
+        fc7_class = batch_norm_layer(fc7_class, train_phase, 'bn7')
+    fc7_class = tf.cond(train_phase, lambda: tf.nn.dropout(fc7_class, keep_dropout), lambda:fc7_class)
+
+    logits_class = _fc_layer(fc7_class, "score_fr_class", "score_fr", num_classes=num_classes, relu=False, use="vgg")
+
+    # segmentation final 3 layers
+    fc6_seg = _fc_layer(pool5, "fc6_seg", "fc6", use="seg")
     if train_phase:
-        fc6 = tf.nn.dropout(fc6, keep_prob)
+        fc6_seg = tf.nn.dropout(fc6_seg, keep_prob)
 
-    fc7 = _fc_layer(fc6, "fc7")
+    fc7_seg = _fc_layer(fc6, "fc7_seg", "fc7", use="seg")
     if train_phase:
-        fc7 = tf.nn.dropout(fc7, keep_prob)
+        fc7_seg = tf.nn.dropout(fc7_seg, keep_prob)
 
-    if random_init_fc8:
-        score_fr = _score_layer(fc7, "score_fr",
-                                          num_classes)
+    if random_init_seg_score_fr:
+        seg_logits = _score_layer(fc7_seg, "score_fr_seg",
+                                          num_seg_classes)
     else:
-        score_fr = _fc_layer(fc7, "score_fr",
-                                       num_classes=num_classes,
+        logits_seg = _fc_layer(fc7_seg, "score_fr_seg",
+                                       num_seg_classes=num_seg_classes,
                                        relu=False)
 
-    # pred = tf.argmax(score_fr, dimension=3)
-
-    print score_fr.get_shape().aslist()
-    upscore5 = _upscore_layer(score_fr,
-                                        shape=tf.shape(pool4),
-                                        num_classes=num_classes,
-                                        debug=debug, name='upscore5',
-                                        ksize=4, stride=2)
-    print upscore5.get_shape().aslist()
-                                        
-    score_pool4 = _score_layer(pool4, "score_pool4",
-                                         num_classes=num_classes)
-    fuse_pool4 = tf.add(upscore5, score_pool4)
-
-    upscore4 = _upscore_layer(fuse_pool4,
-                                        shape=tf.shape(pool3),
-                                        num_classes=num_classes,
-                                        debug=debug, name='upscore4',
-                                        ksize=4, stride=2)
-    
-    score_pool3 = _score_layer(pool3, "score_pool3",
-                                         num_classes=num_classes)
-    fuse_pool3 = tf.add(upscore4, score_pool3)
-
-    upscore3 = _upscore_layer(fuse_pool3,
-                                         shape=tf.shape(pool2),
-                                         num_classes=num_classes,
-                                         debug=debug, name='upscore3',
-                                         ksize=4, stride=2)
-    score_pool2 = _score_layer(pool2, "score_pool2",
-                                         num_classes=num_classes)
-    fuse_pool2 = tf.add(upscore3, score_pool2)
-
-    upscore2 = _upscore_layer(fuse_pool2,
-                                         shape=tf.shape(pool1),
-                                         num_classes=num_classes,
-                                         debug=debug, name='upscore2',
-                                         ksize=4, stride=2)
-    score_pool1 = _score_layer(pool1, "score_pool1",num_classes=num_classes)
-    
-    fuse_pool1 = tf.add(upscore2, score_pool1)
-    
-
-    upscore1 = _upscore_layer(fuse_pool1,
-                                         shape=tf.shape(bgr),
-                                         num_classes=num_classes,
-                                         debug=debug, name='upscore1',
-                                         ksize=4, stride=2)
-                                         
-    # pred_up = tf.argmax(upscore1, dimension=3)
-    return upscore1
-
+    return logits_class, logits_seg
