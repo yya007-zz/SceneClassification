@@ -1,20 +1,3 @@
-default={
-		'learning_rate' : 1e-6,
-		'training_iters' : 10000,
-		'step_display' : 50,
-		'step_save' : 500,
-		'exp_name' : 'test',
-		'pretrainedStep' : 0,
-		'batch_size':40,
-		'lam'=0.5,
-		'plot':False,
-
-		'train' : True,
-		'validation' : True,
-		'test': False,
-		'selectedmodel':"VGG"
-}
-
 exp={
 	'test':{
 		'learning_rate' : 1e-6,
@@ -24,6 +7,7 @@ exp={
 		'exp_name' : 'test',
 		'pretrainedStep' : 0,
 		'batch_size':40,
+		'lam'=0.5,
 		'plot':False,
 
 		'train' : True,
@@ -40,6 +24,7 @@ exp={
 		'exp_name' : 'exp1',
 		'pretrainedStep' : 10000,
 		'batch_size':64,
+		'lam'=0.5,
 		'plot':True,
 
 		'train' : True,
@@ -56,6 +41,7 @@ exp={
 		'exp_name' : 'exp4',
 		'pretrainedStep' : 10000,
 		'batch_size':64,
+		'lam'=0.5,
 		'plot':True,
 
 		'train' : True,
@@ -72,6 +58,7 @@ exp={
 		'exp_name' : 'exp2',
 		'pretrainedStep' : 10000,
 		'batch_size':40,
+		'lam'=0.5,
 		'plot':True,
 
 		'train' : True,
@@ -88,6 +75,7 @@ exp={
 		'exp_name' : 'exp3',
 		'pretrainedStep' : 10000,
 		'batch_size':40,
+		'lam'=0.5,
 		'plot':True,
 
 		'train' : True,
@@ -105,6 +93,7 @@ exp={
 		'exp_name' : 'expVal',
 		'num' : '10000',
 		'batch_size':64,
+		'lam'=0.5,
 		'plot':True,
 
 		'train' : False,

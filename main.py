@@ -107,22 +107,27 @@ loader_test = DataLoaderDiskOld(**opt_data_test)
 print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
-seg = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
+seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, c])
+obj_class = tf.placeholder(tf.float32, [None, seg_size, seg_size, c])
 y = tf.placeholder(tf.int64, None)
+
+
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
 if selectedmodel=='VGG':
-    myModel = vgg_model(x, y, keep_dropout, train_phase)
+    myModel = vgg_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 elif selectedmodel=='VGG_BN':
-    myModel = vgg_bn_model(x, y, keep_dropout, train_phase)
+    myModel = vgg_bn_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 elif selectedmodel=='alexnet':
-    myModel = alexnet_model(x, y, keep_dropout, train_phase)
+    myModel = alexnet_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 elif selectedmodel=='VGG_simple':
-    myModel = vgg_simple_model(x, y, keep_dropout, train_phase)
-elif selectedmodel=='VGG_simple':
-    myModel = conveSeg2(x, y, segs, keep_dropout, train_phase)   
+    myModel = vgg_simple_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+elif selectedmodel=='vgg_seg2':
+    myModel = vgg_seg2(x, y, segs, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+elif selectedmodel=='vgg_bn_seg2':
+    myModel = vgg_seg2(x, y, segs, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 else:
     raise ValueError('no such model, end of the program')
 
