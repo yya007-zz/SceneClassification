@@ -219,7 +219,7 @@ with tf.Session() as sess:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on training set
-                l, ls, acc1, acc5 = sess.run([loss, loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:mylam, keep_dropout: 1., train_phase: False}) 
+                l, acc1, acc5 = sess.run([loss, loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:mylam, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + \
                       '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
                       '{:.4f}'.format(acc1) + ', Top5 = ' + \
