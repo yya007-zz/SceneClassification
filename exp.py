@@ -6,13 +6,13 @@ exp={
 		'step_save' : 500,
 		'exp_name' : 'test',
 		'pretrainedStep' : 0,
-		'batch_size':64,
+		'batch_size':40,
 		'plot':False,
 
 		'train' : True,
 		'validation' : True,
 		'test': False,
-		'selectedmodel':"VGG_simple"
+		'selectedmodel':"VGG"
 	},
 
 	'exp1':{
