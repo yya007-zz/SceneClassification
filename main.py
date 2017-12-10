@@ -27,6 +27,7 @@ else:
 
 # Training Parameters
 learning_rate = settings['learning_rate']
+lam = settings['lam']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']

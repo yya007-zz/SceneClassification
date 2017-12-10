@@ -1,3 +1,20 @@
+default={
+		'learning_rate' : 1e-6,
+		'training_iters' : 10000,
+		'step_display' : 50,
+		'step_save' : 500,
+		'exp_name' : 'test',
+		'pretrainedStep' : 0,
+		'batch_size':40,
+		'lam'=0.5,
+		'plot':False,
+
+		'train' : True,
+		'validation' : True,
+		'test': False,
+		'selectedmodel':"VGG"
+}
+
 exp={
 	'test':{
 		'learning_rate' : 1e-6,
