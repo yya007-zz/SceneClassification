@@ -26,6 +26,7 @@ if Parameters in experiment:
 else:
     raise ValueError('no dict of parameters found')
 
+debug = True
 # Training Parameters
 learning_rate = settings['learning_rate']
 set_lam = settings['lam']
@@ -45,6 +46,7 @@ batch_size = settings['batch_size']
 
 path_save = './save/'+exp_name+'/'
 start_from=''
+
 
 num_seg_class=176
 
@@ -184,8 +186,9 @@ with tf.Session(config=config) as sess:
         for i in range(num_batch):
             if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
-                acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, lam:set_lam, keep_dropout: 1., train_phase: False})
-                print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                if debug:
+                    acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, lam:set_lam, keep_dropout: 1., train_phase: False})
+                    print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
         
             elif mode == 'test':
                 images_batch, labels_batch = loader.next_batch(batch_size)
@@ -195,12 +198,14 @@ with tf.Session(config=config) as sess:
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
-            print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+            if debug:
+                print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
         
         acc1_total /= num_batch
         acc5_total /= num_batch
         t=int(time.time()-t)
-        print('used'+str(t)+'s to validate')
+        if debug:
+            print('used'+str(t)+'s to validate')
         print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
         return acc1_total,acc5_total
     
