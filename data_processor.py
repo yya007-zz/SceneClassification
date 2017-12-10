@@ -118,5 +118,5 @@ def run(tv_subdir):
 
 if __name__ == '__main__':
     #tv_subdir = 'val'
-    # run('train')
-    run('val')
+    run('train')
+    #run('val')

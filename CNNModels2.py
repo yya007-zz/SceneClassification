@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import tensorflow as tf 
 
-import layers
+from layers import *
 
 def VGG_Seg1(x, keep_prob, train_phase, num_classes, num_seg_classes, random_init_seg_score_fr=False,
           debug=False):
@@ -16,28 +16,29 @@ def VGG_Seg1(x, keep_prob, train_phase, num_classes, num_seg_classes, random_ini
                            message='Shape of input image: ',
                            summarize=4, first_n=1)
 
-    conv1_1 = conv_layer(x, "conv1_1")
-    conv1_2 = conv_layer(conv1_1, "conv1_2")
+    conv1_1 = conv_layer(x, train_phase, "conv1_1",batch_norm)
+    conv1_2 = conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
     pool1 = max_pool(conv1_2, 'pool1', debug)
 
-    conv2_1 = conv_layer(pool1, "conv2_1")
-    conv2_2 = conv_layer(conv2_1, "conv2_2")
+    conv2_1 = conv_layer(pool1, train_phase, "conv2_1",batch_norm)
+    conv2_2 = conv_layer(conv2_1, train_phase, "conv2_2",batch_norm)
     pool2 = max_pool(conv2_2, 'pool2', debug)
 
-    conv3_1 = conv_layer(pool2, "conv3_1")
-    conv3_2 = conv_layer(conv3_1, "conv3_2")
-    conv3_3 = conv_layer(conv3_2, "conv3_3")
+    conv3_1 = conv_layer(pool2, train_phase, "conv3_1",batch_norm)
+    conv3_2 = conv_layer(conv3_1, train_phase, "conv3_2",batch_norm)
+    conv3_3 = conv_layer(conv3_2, train_phase, "conv3_3",batch_norm)
     pool3 = max_pool(conv3_3, 'pool3', debug)
 
-    conv4_1 = conv_layer(pool3, "conv4_1")
-    conv4_2 = conv_layer(conv4_1, "conv4_2")
-    conv4_3 = conv_layer(conv4_2, "conv4_3")
+    conv4_1 = conv_layer(pool3, train_phase, "conv4_1",batch_norm)
+    conv4_2 = conv_layer(conv4_1, train_phase, "conv4_2",batch_norm)
+    conv4_3 = conv_layer(conv4_2, train_phase, "conv4_3",batch_norm)
     pool4 = max_pool(conv4_3, 'pool4', debug)
 
-    conv5_1 = conv_layer(pool4, "conv5_1")
-    conv5_2 = conv_layer(conv5_1, "conv5_2")
-    conv5_3 = conv_layer(conv5_2, "conv5_3")
+    conv5_1 = conv_layer(pool4, train_phase, "conv5_1",batch_norm)
+    conv5_2 = conv_layer(conv5_1, train_phase, "conv5_2",batch_norm)
+    conv5_3 = conv_layer(conv5_2, train_phase, "conv5_3",batch_norm)
     pool5 = max_pool(conv5_3, 'pool5', debug)
+
 
     # classification final 3 layers
     fc6_class = fc_layer(pool5, "fc6_class", "fc6", use="vgg")
