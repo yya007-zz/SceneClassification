@@ -185,8 +185,6 @@ with tf.Session(config=config) as sess:
             if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
                 acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, lam:set_lam, keep_dropout: 1., train_phase: False})
-                acc1_total += acc1
-                acc5_total += acc5
                 print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
         
             elif mode == 'test':
@@ -224,6 +222,8 @@ with tf.Session(config=config) as sess:
         train_accs=[]
         train_seg_accs=[]
         val_accs=[]
+        test_accs=[]
+
         seg_labels_batch_1 = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
         while step < training_iters:
@@ -251,9 +251,11 @@ with tf.Session(config=config) as sess:
                 print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_seg_accs.append(acc5)
 
-
                 acc1, acc5=use_validation()
                 val_accs.append(acc5)
+                acc1, acc5=use_test()
+                test_accs.append(acc5)
+
                 print val_accs
                 print train_accs
 

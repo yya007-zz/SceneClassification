@@ -92,7 +92,7 @@ exp={
 	'exp401':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 10000,
-		'step_display' : 100,
+		'step_display' : 50,
 		'step_save' : 500,
 		'exp_name' : 'exp401',
 		'pretrainedStep' : 0,
