@@ -14,7 +14,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': False,
-		'selectedmodel':"VGG"
+		'selectedmodel':"vgg"
 	},
 
 	'exp1':{
@@ -50,7 +50,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"vggv"
+		'selectedmodel':"vgg"
 	},
 
 	'exp2':{
@@ -95,7 +95,7 @@ exp={
 		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp401',
-		'pretrainedStep' : 10000,
+		'pretrainedStep' : 0,
 		'batch_size':40,
 		'lam': 0.5,
 		'joint_ratio':1,
