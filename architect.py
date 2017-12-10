@@ -5,32 +5,32 @@ import CNNModels
 import CNNModels2
 
 class alexnet_model:
-    def __init__(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
         self.logits_class=CNNModels.alexnet(x, keep_dropout, train_phase)
         self.loss_class =loss_class(y,self.logits_class)
 
 class vgg_simple_model:
-    def __init__(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
         self.logits_class=CNNModels.VGG16_Simple(x, keep_dropout, train_phase)
         self.loss_class =loss_class(y,logits_class)
 
 class vgg_model:
-    def __init__(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
         self.logits_class = CNNModels.VGG(x, keep_dropout, train_phase, num_classes=100)
         self.loss_class =loss_class(y,self.logits_class)
 
 class vgg_bn:
-    def __init__(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
         self.logits_class=CNNModels.VGG(x, keep_dropout, train_phase, num_classes=100, batch_norm=True)
         self.loss_class =loss_class(y,self.logits_class)
 
 class vgg_seg2:
-    def __init__(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
         self.logits_class,logits_seg=CNNModels.VGG(x, keep_dropout, train_phase, num_classes=100, seg=True, num_classes_seg=176)
         self.loss_class =loss_class(y,self.logits_class)
 
 class vgg_bn_seg2:
-    def __init__(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, y, seg_labels, obj_class, lam, keep_dropout, train_phase):
         self.logits_class,logits_seg=CNNModels.VGG(x, keep_dropout, train_phase,num_classes=100, batch_norm=True, seg=True, num_classes_seg=176)
         self.loss_class =loss_class(y,self.logits_class)
 
