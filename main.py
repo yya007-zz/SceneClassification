@@ -96,8 +96,8 @@ opt_data_test = {
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,
-    'randomize': False
-    'perm' : False,
+    'randomize': False,
+    'perm' : False
     }
 
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
