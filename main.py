@@ -27,7 +27,7 @@ else:
 
 # Training Parameters
 learning_rate = settings['learning_rate']
-lam = settings['lam']
+set_lam = settings['lam']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
@@ -176,7 +176,7 @@ with tf.Session() as sess:
                 seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
                 obj_class_batch = np.zeros([batch_size, 176])
 
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:lam, keep_dropout: 1., train_phase: False})
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
             print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
@@ -208,7 +208,7 @@ with tf.Session() as sess:
             seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
             obj_class_batch = np.zeros([batch_size, 176])
             flip = np.random.random_integers(0, 1)
-            mylam=lam
+            mylam=set_lam
             if flip>0.5:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             else:
