@@ -166,9 +166,9 @@ with tf.Session() as sess:
         acc5_total = 0.
         loader_val.reset()
         for i in range(num_batch):
-            if mode='val':
+            if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
-            elif mode = 'test':
+            elif mode == 'test':
                 images_batch, labels_batch = loader.next_batch(batch_size)
                 seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
                 obj_class_batch = np.zeros([batch_size, 176])
