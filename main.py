@@ -157,7 +157,9 @@ saver = tf.train.Saver()
 #writer = tf.train.SummaryWriter('.', graph=tf.get_default_graph())
 
 # Launch the graph
-with tf.Session() as sess:
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
+with tf.Session(config=config) as sess:
     # Initialization
     if len(start_from)>1:
         saver.restore(sess, start_from)
