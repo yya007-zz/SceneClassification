@@ -35,4 +35,4 @@ class vgg_bn_seg2:
         self.loss_class =loss_class(y,self.logits_class)
 
 def loss_class(y,logits):
-    return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
+    return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
