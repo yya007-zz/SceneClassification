@@ -1,20 +1,36 @@
 exp={
 	'test':{
-		'learning_rate' : 1e-6,
-		'training_iters' : 10000,
+		# 'learning_rate' : 1e-6,
+		# 'training_iters' : 10000,
+		# 'step_display' : 50,
+		# 'step_save' : 500,
+		# 'exp_name' : 'test',
+		# 'pretrainedStep' : 0,
+		# 'batch_size':40,
+		# 'lam': 0.5,
+		# 'joint_ratio':0.5,
+		# 'plot':False,
+
+		# 'train' : True,
+		# 'validation' : True,
+		# 'test': True,
+		# 'selectedmodel':"vgg"
+
+		'learning_rate' : 1e-4,
+		'training_iters' : 1500,
 		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'test',
+		'exp_name' : 'exp401',
 		'pretrainedStep' : 0,
-		'batch_size':40,
+		'batch_size':32,
 		'lam': 0.5,
-		'joint_ratio':0.5,
-		'plot':False,
+		'joint_ratio':1,
+		'plot':True,
 
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"vgg"
+		'selectedmodel':"vgg_bn_seg2"
 	},
 
 	'exp1':{
@@ -90,8 +106,8 @@ exp={
 	},
 
 	'exp401':{
-		'learning_rate' : 1e-5,
-		'training_iters' : 10000,
+		'learning_rate' : 1e-4,
+		'training_iters' : 1500,
 		'step_display' : 50,
 		'step_save' : 500,
 		'exp_name' : 'exp401',
