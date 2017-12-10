@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import logging
 
 wd = 5e-4
 data_dict = np.load("./data/pretrained/vgg16.npy", encoding='latin1').item()
