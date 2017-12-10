@@ -27,7 +27,7 @@ else:
 
 # Training Parameters
 learning_rate = settings['learning_rate']
-lam = settings['lam']
+set_lam = settings['lam']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
@@ -36,6 +36,7 @@ pretrainedStep = settings['pretrainedStep']
 selectedmodel= settings['selectedmodel']
 plot=settings['plot']
 
+joint_ratio= settings['joint_ratio']
 train = settings['train']
 validation = settings['validation']
 test = settings['test']
@@ -44,9 +45,10 @@ batch_size = settings['batch_size']
 path_save = './save/'+exp_name+'/'
 start_from=''
 
+num_seg_class=176
+
 if pretrainedStep > 0:
     start_from = path_save+'-'+str(pretrainedStep)
-
 
 load_size = 256
 fine_size = 224
@@ -69,12 +71,13 @@ opt_data_train_seg = {
     }
 
 opt_data_train = {
-    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
-    'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,
-    'randomize': True
+    'randomize': True,
+    'perm' : True,
     }
 
 opt_data_val = {
@@ -91,15 +94,15 @@ opt_data_val = {
     }
 
 opt_data_test = {
-    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
-    'data_list': '../../data/val.txt',   # MODIFY PATH ACCORDINGLY
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/val.txt',   # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,
-    'randomize': False
+    'randomize': False,
+    'perm' : False
     }
 
-# data loader objects
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
 loader_train = DataLoaderDiskOld(**opt_data_train)
 loader_val = DataLoaderDisk(**opt_data_val)
@@ -108,12 +111,13 @@ loader_test = DataLoaderDiskOld(**opt_data_test)
 print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
-seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, c])
-obj_class = tf.placeholder(tf.float32, 176)
+seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, num_seg_class])
+obj_class = tf.placeholder(tf.float32, [None, num_seg_class])
 y = tf.placeholder(tf.int64, None)
 
 
 keep_dropout = tf.placeholder(tf.float32)
+lam = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
@@ -124,7 +128,8 @@ else:
 
 # Define loss and optimizer
 logits= myModel.logits_class
-loss = myModel.loss_class
+loss = myModel.loss
+loss_seg = myModel.loss_seg
 train_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
 
 # Evaluate model
@@ -141,7 +146,9 @@ saver = tf.train.Saver()
 #writer = tf.train.SummaryWriter('.', graph=tf.get_default_graph())
 
 # Launch the graph
-with tf.Session() as sess:
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
+with tf.Session(config=config) as sess:
     # Initialization
     if len(start_from)>1:
         saver.restore(sess, start_from)
@@ -157,14 +164,15 @@ with tf.Session() as sess:
         acc5_total = 0.
         loader_val.reset()
         for i in range(num_batch):
-            if mode='val':
+            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+            obj_class_batch = np.zeros([batch_size, num_seg_class])
+            if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
-            elif mode = 'test':
+            elif mode == 'test':
                 images_batch, labels_batch = loader.next_batch(batch_size)
-                seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
-                obj_class_batch = np.zeros([batch_size, 176])
+                
 
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False})
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
             print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
@@ -178,14 +186,13 @@ with tf.Session() as sess:
     def use_validation():
         if not validation:
             return 0,0
-        acc1_total, acc5_total = use_evaluation(loader_val)
+        acc1_total, acc5_total = use_evaluation(loader_val,'val')
 
     def use_test():
         if not test:
             return 0,0
-        acc1_total, acc5_total = use_evaluation(loader_test)
+        acc1_total, acc5_total = use_evaluation(loader_test,'test')
         
-    
     step = 0
 
     if train:
@@ -193,18 +200,23 @@ with tf.Session() as sess:
         val_accs=[]
         while step < training_iters:
             # Load a batch of training data
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train.next_batch(batch_size)
+            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+            obj_class_batch = np.zeros([batch_size, num_seg_class])
+            flip = np.random.random_integers(0, 1)
+            mylam=set_lam
+            if flip<joint_ratio:
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
+            else:
+                mylam=0;    
+                images_batch, labels_batch = loader_train.next_batch(batch_size)
             
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on training set
-                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False}) 
-                print('-Iter ' + str(step) + ', Training Loss= ' + \
-                      '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
-                      '{:.4f}'.format(acc1) + ', Top5 = ' + \
-                      '{:.4f}'.format(acc5))
+                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:mylam, keep_dropout: 1., train_phase: False}) 
+                print(l, acc1, acc5)
+                print('-Iter ' + str(step) + ', Validation Loss= ' + '{:.6f}'.format(l) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_accs.append(acc5)
 
                 # # Calculate batch loss and accuracy on validation set
@@ -232,7 +244,7 @@ with tf.Session() as sess:
                 print 'finish saving figure to view'
             
             # Run optimization op (backprop)
-            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
             
             step += 1
             
