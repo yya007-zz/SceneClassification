@@ -20,7 +20,7 @@ exp={
 		'training_iters' : 1500,
 		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'exp401',
+		'exp_name' : 'test',
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'lam': 0.5,
