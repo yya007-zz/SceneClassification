@@ -18,75 +18,75 @@ exp={
 	},
 
 	'exp1':{
-		'learning_rate' : 1e-6,
-		'training_iters' : 10000,
-		'step_display' : 100,
+		'learning_rate' : 1e-4,
+		'training_iters' : 20000,
+		'step_display' : 50,
 		'step_save' : 500,
 		'exp_name' : 'exp1',
-		'pretrainedStep' : 10000,
-		'batch_size':64,
+		'pretrainedStep' : 0,
+		'batch_size':32,
 		'lam': 0.5,
-		'joint_ratio':0,
+		'joint_ratio':1,
 		'plot':True,
 
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"vgg"
-	},
-
-	'exp4':{
-		'learning_rate' : 1e-6,
-		'training_iters' : 10000,
-		'step_display' : 100,
-		'step_save' : 500,
-		'exp_name' : 'exp4',
-		'pretrainedStep' : 10000,
-		'batch_size':64,
-		'lam': 0.5,
-		'joint_ratio':0,
-		'plot':True,
-
-		'train' : True,
-		'validation' : True,
-		'test': True,
-		'selectedmodel':"vgg"
+		'selectedmodel':"vgg_seg2"
 	},
 
 	'exp2':{
 		'learning_rate' : 1e-5,
-		'training_iters' : 10000,
-		'step_display' : 100,
+		'training_iters' : 20000,
+		'step_display' : 50,
 		'step_save' : 500,
 		'exp_name' : 'exp2',
-		'pretrainedStep' : 10000,
-		'batch_size':40,
+		'pretrainedStep' : 0,
+		'batch_size':32,
 		'lam': 0.5,
-		'joint_ratio':0,
+		'joint_ratio':1,
 		'plot':True,
 
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"vgg_bn"
+		'selectedmodel':"vgg_seg2"
 	},
 
 	'exp3':{
-		'learning_rate' : 1e-5,
-		'training_iters' : 10000,
-		'step_display' : 100,
+		'learning_rate' : 1e-4,
+		'training_iters' : 20000,
+		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'exp3',
-		'pretrainedStep' : 10000,
-		'batch_size':40,
+		'exp_name' : 'exp401',
+		'pretrainedStep' : 0,
+		'batch_size':32,
 		'lam': 0.5,
-		'joint_ratio':0,
+		'joint_ratio':1,
 		'plot':True,
 
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"vgg_bn"
+		'selectedmodel':"vgg_bn_seg2"
+	},
+
+	'exp4':{
+		'learning_rate' : 1e-5,
+		'training_iters' : 20000,
+		'step_display' : 50,
+		'step_save' : 500,
+		'exp_name' : 'exp401',
+		'pretrainedStep' : 10000,
+		'batch_size':32,
+		'lam': 0.5,
+		'joint_ratio':1,
+		'plot':True,
+
+		'train' : True,
+		'validation' : True,
+		'test': True,
+		'selectedmodel':"vgg_bn_seg2"
 	},
 
 	'exp401':{
