@@ -19,7 +19,7 @@ class vgg_model:
         self.logits_class = CNNModels.VGG(x, keep_dropout, train_phase, num_classes=100)
         self.loss_class =loss_class(y,self.logits_class)
 
-class vgg_bn_seg2:
+class vgg_bn:
     def __init__(self, x, y, keep_dropout, lam, train_phase):
         self.logits_class=CNNModels.VGG(x, keep_dropout, train_phase, num_classes=100, batch_norm=True)
         self.loss_class =loss_class(y,self.logits_class)
