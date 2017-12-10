@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import tensorflow as tf 
 
-import layers
+from layers import *
 
 def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
     # conv1_1
@@ -245,7 +245,6 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, n
 
     class_logits = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
 
-    logits_seg = None
     if seg:
         fc8 = _fc_layer(pool5, "fc8", use="vgg")
         fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
@@ -257,7 +256,10 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, n
 
         logits_seg = _fc_layer(fc9, "score_fr",num_classes=num_classes_seg,relu=False,use="vgg")
 
-    return class_logits，logits_seg
+        return logits_class，logits_seg
+    else:
+        return logits_class
+
 
 def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
           debug=False):

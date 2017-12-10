@@ -126,8 +126,8 @@ else:
     raise ValueError('no such model, end of the program')
 
 # Define loss and optimizer
-logits= myModel.logits
-loss = myModel.loss
+logits= myModel.logits_class
+loss = myModel.loss_class
 train_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
 
 # Evaluate model
