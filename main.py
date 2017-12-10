@@ -110,7 +110,7 @@ print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, c])
-obj_class = tf.placeholder(tf.float32, 176)
+obj_class = tf.placeholder(tf.float32, [None,176])
 y = tf.placeholder(tf.int64, None)
 
 
@@ -135,7 +135,7 @@ else:
 
 # Define loss and optimizer
 logits= myModel.logits_class
-loss = myModel.loss_class
+loss = myModel.loss
 train_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
 
 # Evaluate model
