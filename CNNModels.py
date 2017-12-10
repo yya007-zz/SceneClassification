@@ -210,51 +210,51 @@ def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
     return fc3l
 
 def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, num_classes_seg=176, debug=False):
-    conv1_1 = _conv_layer(x, train_phase, "conv1_1",batch_norm)
-    conv1_2 = _conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
-    pool1 = _max_pool(conv1_2, 'pool1', debug)
+    conv1_1 = conv_layer(x, train_phase, "conv1_1",batch_norm)
+    conv1_2 = conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
+    pool1 = max_pool(conv1_2, 'pool1', debug)
 
-    conv2_1 = _conv_layer(pool1, train_phase, "conv2_1",batch_norm)
-    conv2_2 = _conv_layer(conv2_1, train_phase, "conv2_2",batch_norm)
-    pool2 = _max_pool(conv2_2, 'pool2', debug)
+    conv2_1 = conv_layer(pool1, train_phase, "conv2_1",batch_norm)
+    conv2_2 = conv_layer(conv2_1, train_phase, "conv2_2",batch_norm)
+    pool2 = max_pool(conv2_2, 'pool2', debug)
 
-    conv3_1 = _conv_layer(pool2, train_phase, "conv3_1",batch_norm)
-    conv3_2 = _conv_layer(conv3_1, train_phase, "conv3_2",batch_norm)
-    conv3_3 = _conv_layer(conv3_2, train_phase, "conv3_3",batch_norm)
-    pool3 = _max_pool(conv3_3, 'pool3', debug)
+    conv3_1 = conv_layer(pool2, train_phase, "conv3_1",batch_norm)
+    conv3_2 = conv_layer(conv3_1, train_phase, "conv3_2",batch_norm)
+    conv3_3 = conv_layer(conv3_2, train_phase, "conv3_3",batch_norm)
+    pool3 = max_pool(conv3_3, 'pool3', debug)
 
-    conv4_1 = _conv_layer(pool3, train_phase, "conv4_1",batch_norm)
-    conv4_2 = _conv_layer(conv4_1, train_phase, "conv4_2",batch_norm)
-    conv4_3 = _conv_layer(conv4_2, train_phase, "conv4_3",batch_norm)
-    pool4 = _max_pool(conv4_3, 'pool4', debug)
+    conv4_1 = conv_layer(pool3, train_phase, "conv4_1",batch_norm)
+    conv4_2 = conv_layer(conv4_1, train_phase, "conv4_2",batch_norm)
+    conv4_3 = conv_layer(conv4_2, train_phase, "conv4_3",batch_norm)
+    pool4 = max_pool(conv4_3, 'pool4', debug)
 
-    conv5_1 = _conv_layer(pool4, train_phase, "conv5_1",batch_norm)
-    conv5_2 = _conv_layer(conv5_1, train_phase, "conv5_2",batch_norm)
-    conv5_3 = _conv_layer(conv5_2, train_phase, "conv5_3",batch_norm)
-    pool5 = _max_pool(conv5_3, 'pool5', debug)
+    conv5_1 = conv_layer(pool4, train_phase, "conv5_1",batch_norm)
+    conv5_2 = conv_layer(conv5_1, train_phase, "conv5_2",batch_norm)
+    conv5_3 = conv_layer(conv5_2, train_phase, "conv5_3",batch_norm)
+    pool5 = max_pool(conv5_3, 'pool5', debug)
 
-    fc6 = _fc_layer(pool5, "fc6", "fc6", use="vgg")
+    fc6 = fc_layer(pool5, "fc6", "fc6", use="vgg")
     if batch_norm:
         fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
     fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
    
-    fc7 = _fc_layer(fc6, "fc7", "fc7", use="vgg")
+    fc7 = fc_layer(fc6, "fc7", "fc7", use="vgg")
     if batch_norm:
         fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
     fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
 
-    class_logits = _fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
+    class_logits = fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
 
     if seg:
-        fc8 = _fc_layer(pool5, "fc8", "fc6", use="vgg")
+        fc8 = fc_layer(pool5, "fc8", "fc6", use="vgg")
         fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
         fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
        
-        fc9 = _fc_layer(fc9, "fc9", "fc7", use="vgg")
+        fc9 = fc_layer(fc9, "fc9", "fc7", use="vgg")
         fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
         fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
 
-        logits_seg = _fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
+        logits_seg = fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
 
         return logits_class,logits_seg
     else:
@@ -269,88 +269,88 @@ def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
                            message='Shape of input image: ',
                            summarize=4, first_n=1)
 
-    conv1_1 = _conv_layer(x, "conv1_1")
-    conv1_2 = _conv_layer(conv1_1, "conv1_2")
-    pool1 = _max_pool(conv1_2, 'pool1', debug)
+    conv1_1 = conv_layer(x, "conv1_1")
+    conv1_2 = conv_layer(conv1_1, "conv1_2")
+    pool1 = max_pool(conv1_2, 'pool1', debug)
 
-    conv2_1 = _conv_layer(pool1, "conv2_1")
-    conv2_2 = _conv_layer(conv2_1, "conv2_2")
-    pool2 = _max_pool(conv2_2, 'pool2', debug)
+    conv2_1 = conv_layer(pool1, "conv2_1")
+    conv2_2 = conv_layer(conv2_1, "conv2_2")
+    pool2 = max_pool(conv2_2, 'pool2', debug)
 
-    conv3_1 = _conv_layer(pool2, "conv3_1")
-    conv3_2 = _conv_layer(conv3_1, "conv3_2")
-    conv3_3 = _conv_layer(conv3_2, "conv3_3")
-    pool3 = _max_pool(conv3_3, 'pool3', debug)
+    conv3_1 = conv_layer(pool2, "conv3_1")
+    conv3_2 = conv_layer(conv3_1, "conv3_2")
+    conv3_3 = conv_layer(conv3_2, "conv3_3")
+    pool3 = max_pool(conv3_3, 'pool3', debug)
 
-    conv4_1 = _conv_layer(pool3, "conv4_1")
-    conv4_2 = _conv_layer(conv4_1, "conv4_2")
-    conv4_3 = _conv_layer(conv4_2, "conv4_3")
-    pool4 = _max_pool(conv4_3, 'pool4', debug)
+    conv4_1 = conv_layer(pool3, "conv4_1")
+    conv4_2 = conv_layer(conv4_1, "conv4_2")
+    conv4_3 = conv_layer(conv4_2, "conv4_3")
+    pool4 = max_pool(conv4_3, 'pool4', debug)
 
-    conv5_1 = _conv_layer(pool4, "conv5_1")
-    conv5_2 = _conv_layer(conv5_1, "conv5_2")
-    conv5_3 = _conv_layer(conv5_2, "conv5_3")
-    pool5 = _max_pool(conv5_3, 'pool5', debug)
+    conv5_1 = conv_layer(pool4, "conv5_1")
+    conv5_2 = conv_layer(conv5_1, "conv5_2")
+    conv5_3 = conv_layer(conv5_2, "conv5_3")
+    pool5 = max_pool(conv5_3, 'pool5', debug)
 
-    fc6 = _fc_layer(pool5, "fc6", "fc6")
+    fc6 = fc_layer(pool5, "fc6", "fc6")
 
     if train_phase:
         fc6 = tf.nn.dropout(fc6, keep_prob)
 
-    fc7 = _fc_layer(fc6, "fc7", "fc7")
+    fc7 = fc_layer(fc6, "fc7", "fc7")
     if train_phase:
         fc7 = tf.nn.dropout(fc7, keep_prob)
 
     if random_init_fc8:
-        score_fr = _score_layer(fc7, "score_fr",
+        score_fr = score_layer(fc7, "score_fr",
                                           num_classes)
     else:
-        score_fr = _fc_layer(fc7, "score_fr","score_fr",
+        score_fr = fc_layer(fc7, "score_fr","score_fr",
                                        num_classes=num_classes,
                                        relu=False)
 
     # pred = tf.argmax(score_fr, dimension=3)
 
-    upscore5 = _upscore_layer(score_fr,
+    upscore5 = upscore_layer(score_fr,
                                         shape=tf.shape(pool4),
                                         num_classes=num_classes,
                                         debug=debug, name='upscore5',
                                         ksize=4, stride=2)
                                         
-    score_pool4 = _score_layer(pool4, "score_pool4",
+    score_pool4 = score_layer(pool4, "score_pool4",
                                          num_classes=num_classes)
     fuse_pool4 = tf.add(upscore5, score_pool4)
 
-    upscore4 = _upscore_layer(fuse_pool4,
+    upscore4 = upscore_layer(fuse_pool4,
                                         shape=tf.shape(pool3),
                                         num_classes=num_classes,
                                         debug=debug, name='upscore4',
                                         ksize=4, stride=2)
     
-    score_pool3 = _score_layer(pool3, "score_pool3",
+    score_pool3 = score_layer(pool3, "score_pool3",
                                          num_classes=num_classes)
     fuse_pool3 = tf.add(upscore4, score_pool3)
 
-    upscore3 = _upscore_layer(fuse_pool3,
+    upscore3 = upscore_layer(fuse_pool3,
                                          shape=tf.shape(pool2),
                                          num_classes=num_classes,
                                          debug=debug, name='upscore3',
                                          ksize=4, stride=2)
-    score_pool2 = _score_layer(pool2, "score_pool2",
+    score_pool2 = score_layer(pool2, "score_pool2",
                                          num_classes=num_classes)
     fuse_pool2 = tf.add(upscore3, score_pool2)
 
-    upscore2 = _upscore_layer(fuse_pool2,
+    upscore2 = upscore_layer(fuse_pool2,
                                          shape=tf.shape(pool1),
                                          num_classes=num_classes,
                                          debug=debug, name='upscore2',
                                          ksize=4, stride=2)
-    score_pool1 = _score_layer(pool1, "score_pool1",num_classes=num_classes)
+    score_pool1 = score_layer(pool1, "score_pool1",num_classes=num_classes)
     
     fuse_pool1 = tf.add(upscore2, score_pool1)
     
 
-    upscore1 = _upscore_layer(fuse_pool1,
+    upscore1 = upscore_layer(fuse_pool1,
                                          shape=tf.shape(bgr),
                                          num_classes=num_classes,
                                          debug=debug, name='upscore1',
