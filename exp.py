@@ -104,7 +104,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"vgg_bn_seg"
+		'selectedmodel':"vgg_bn_seg2"
 	},
 
 
