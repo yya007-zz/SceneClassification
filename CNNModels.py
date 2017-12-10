@@ -250,7 +250,7 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, n
         fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
         fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
        
-        fc9 = fc_layer(fc9, "fc9", "fc7", use="vgg")
+        fc9 = fc_layer(fc8, "fc9", "fc7", use="vgg")
         fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
         fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
 
