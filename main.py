@@ -216,7 +216,6 @@ with tf.Session(config=config) as sess:
             obj_class_batch = np.zeros([batch_size, num_seg_class])
             flip = np.random.random_integers(0, 1)
             mylam=set_lam
-            print(flip)
             if flip<=joint_ratio:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             else:
@@ -227,7 +226,6 @@ with tf.Session(config=config) as sess:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on training set
-                print("mylam,asdfadjfklajfljas",mylam)
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:mylam, keep_dropout: 1., train_phase: False}) 
                 
                 print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
