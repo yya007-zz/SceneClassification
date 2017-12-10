@@ -199,11 +199,13 @@ with tf.Session(config=config) as sess:
         if not validation:
             return 0,0
         acc1_total, acc5_total = use_evaluation(loader_val,'val')
+        return acc1_total,acc5_total
 
     def use_test():
         if not test:
             return 0,0
         acc1_total, acc5_total = use_evaluation(loader_test,'test')
+        return acc1_total,acc5_total
         
     step = 0
 
