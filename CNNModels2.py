@@ -63,7 +63,7 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes, num_seg_classes, batch_n
 
 
     if random_init_seg_score_fr:
-        seg_logits = score_layer(fc7_seg, "score_fr_seg",
+        logits_seg = score_layer(fc7_seg, "score_fr_seg",
                                           num_seg_classes)
     else:
         logits_seg = fc_layer(fc7_seg, "score_fr_seg", "score_fr",
