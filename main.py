@@ -134,6 +134,8 @@ elif selectedmodel=='vgg_seg2':
     myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 elif selectedmodel=='vgg_bn_seg2':
     myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+elif selectedmodel=='vgg_seg1':
+    myModel = vgg_seg1(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 else:
     raise ValueError('no such model, end of the program')
 
@@ -206,7 +208,7 @@ with tf.Session(config=config) as sess:
             return 0,0
         acc1_total, acc5_total = use_evaluation(loader_test,'test')
         return acc1_total,acc5_total
-        
+
     step = 0
 
     if train:
