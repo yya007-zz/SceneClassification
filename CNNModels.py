@@ -256,7 +256,7 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, n
 
         logits_seg = _fc_layer(fc9, "score_fr",num_classes=num_classes_seg,relu=False,use="vgg")
 
-        return logits_class，logits_seg
+        return logits_class,logits_seg
     else:
         return logits_class
 
