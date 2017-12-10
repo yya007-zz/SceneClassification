@@ -204,8 +204,13 @@ with tf.Session() as sess:
         val_accs=[]
         while step < training_iters:
             # Load a batch of training data
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train.next_batch(batch_size)
+            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
+            obj_class_batch = np.zeros([batch_size, 176])
+            flip = np.random.random_integers(0, 1)
+            if flip>0.5:
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
+            else:
+                images_batch, labels_batch = loader_train.next_batch(batch_size)
             
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
