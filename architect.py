@@ -90,13 +90,13 @@ def alexnet(x, keep_dropout, train_phase):
     return out
 
 def FCN(x, keep_dropout, train_phase,num_classes=100):
-    return CNNModels.FCN(x, keep_dropout, train_phase,num_classes=num_classes)
+    return CNNModels.FCN(x, keep_dropout, train_phase, num_classes=num_classes)
 
 def VGG(x, keep_dropout, train_phase,num_classes=100):
-    return CNNModels.VGG(x, keep_dropout, train_phase,num_classes=num_classes)
+    return CNNModels.VGG(x, keep_dropout, train_phase, num_classes=num_classes)
 
 def VGG_BN(x, keep_dropout, train_phase,num_classes=100):
-    return CNNModels.VGG_BN(x, keep_dropout, train_phase,num_classes=num_classes)
+    return CNNModels.VGG(x, keep_dropout, train_phase, num_classes=num_classes, batch_norm=True)
 
 def VGG16_Simple(x, keep_dropout, train_phase,num_classes=100):
-    return CNNModels.VGG16_Simple(x, keep_dropout, train_phase,num_classes=num_classes)
+    return CNNModels.VGG16_Simple(x, keep_dropout, train_phase, num_classes=num_classes)
