@@ -6,7 +6,7 @@ wd = 5e-4
 data_dict = np.load("./data/pretrained/vgg16.npy", encoding='latin1').item()
 
 def batch_norm_layer(x, train_phase, scope_bn):
-    return tensorflow.contrib.layers.python.layers.batch_norm(x, decay=0.9, center=True, scale=True,
+    return tf.contrib.layers.python.layers.batch_norm(x, decay=0.9, center=True, scale=True,
     updates_collections=None,
     is_training=train_phase,
     reuse=None,
