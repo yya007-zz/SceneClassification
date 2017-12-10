@@ -98,7 +98,7 @@ exp={
 		'pretrainedStep' : 10000,
 		'batch_size':40,
 		'lam': 0.5,
-		'joint_ratio':0.5,
+		'joint_ratio':1,
 		'plot':True,
 
 		'train' : True,
