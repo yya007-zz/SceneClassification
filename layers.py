@@ -12,7 +12,7 @@ def batch_norm_layer(x, train_phase, scope_bn):
     trainable=True,
     scope=scope_bn)
 
-def _max_pool( bottom, name, debug):
+def max_pool( bottom, name, debug):
     pool = tf.nn.max_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1],
                           padding='SAME', name=name)
 
@@ -22,7 +22,7 @@ def _max_pool( bottom, name, debug):
                         summarize=4, first_n=1)
     return pool
 
-def _conv_layer( bottom, train_phase, name, batch_norm=False):
+def conv_layer( bottom, train_phase, name, batch_norm=False):
     with tf.variable_scope(name) as scope:
         filt = get_conv_filter(name)
         conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
@@ -37,7 +37,7 @@ def _conv_layer( bottom, train_phase, name, batch_norm=False):
         _activation_summary(relu)
         return relu
 
-def _fc_layer( bottom, name, weight_use, num_classes=None, relu=True, debug=False, use=""):
+def fc_layer( bottom, name, weight_use, num_classes=None, relu=True, debug=False, use=""):
     with tf.variable_scope(name) as scope:
         
         if use=="vgg":
@@ -82,7 +82,7 @@ def _fc_layer( bottom, name, weight_use, num_classes=None, relu=True, debug=Fals
                             summarize=4, first_n=1)
         return bias
 
-def _score_layer( bottom, name, num_classes):
+def score_layer( bottom, name, num_classes):
     with tf.variable_scope(name) as scope:
         # get number of input channels
         in_features = bottom.get_shape()[3].value
@@ -112,7 +112,7 @@ def _score_layer( bottom, name, num_classes):
 
         return bias
 
-def _upscore_layer( bottom, shape,
+def upscore_layer( bottom, shape,
                    num_classes, name, debug,
                    ksize=4, stride=2):
     strides = [1, stride, stride, 1]
