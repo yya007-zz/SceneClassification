@@ -8,7 +8,7 @@ import tensorflow as tf
 
 from layers import *
 
-def VGG_Seg1(x, keep_prob, train_phase, num_classes, num_seg_classes, batch_norm=True, seg=False, random_init_seg_score_fr=False,
+def VGG_Seg1(x, keep_dropout, train_phase, num_classes, num_seg_classes, batch_norm=True, seg=False, random_init_seg_score_fr=False,
           debug=False):
     with tf.name_scope('Processing'):
         if debug:
