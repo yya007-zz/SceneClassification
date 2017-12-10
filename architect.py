@@ -50,4 +50,4 @@ def loss_class(y,logits):
 
 def loss_seg(y,logits):
     y=tf.nn.softmax(y)
-    return tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=logits)
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=logits))
