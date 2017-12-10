@@ -245,17 +245,17 @@ with tf.Session(config=config) as sess:
                 print val_accs
                 print train_accs
 
-            if plot:
-                fig = plt.figure()
-                a=np.arange(1,len(val_accs)+1,1)
-                plt.plot(a,train_accs,'-',label='Training')
-                plt.plot(a,val_accs,'-',label='Validation')
-                plt.xlabel('Iteration')
-                plt.ylabel('Accuracy')
-                plt.legend()
-                fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
-                plt.close(fig)
-                print 'finish saving figure to view'
+                if plot:
+                    fig = plt.figure()
+                    a=np.arange(1,len(val_accs)+1,1)
+                    plt.plot(a,train_accs,'-',label='Training')
+                    plt.plot(a,val_accs,'-',label='Validation')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Accuracy')
+                    plt.legend()
+                    fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+                    print 'finish saving figure to view'
             
             # Run optimization op (backprop)
             sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
