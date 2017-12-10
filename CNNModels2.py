@@ -56,11 +56,11 @@ def VGG_Seg1(x, keep_prob, train_phase, num_classes, num_seg_classes, batch_norm
     # segmentation final 3 layers
     fc6_seg = fc_layer(pool5, "fc6_seg", "fc6", use="seg")
     if train_phase:
-        fc6_seg = tf.nn.dropout(fc6_seg, keep_prob)
+        fc6_seg = tf.nn.dropout(fc6_seg, keep_dropout)
 
     fc7_seg = fc_layer(fc6, "fc7_seg", "fc7", use="seg")
     if train_phase:
-        fc7_seg = tf.nn.dropout(fc7_seg, keep_prob)
+        fc7_seg = tf.nn.dropout(fc7_seg, keep_dropout)
 
     if random_init_seg_score_fr:
         seg_logits = score_layer(fc7_seg, "score_fr_seg",
