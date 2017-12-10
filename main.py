@@ -173,6 +173,29 @@ with tf.Session() as sess:
         print('used'+str(t)+'s to validate')
         print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
         return acc1_total,acc5_total
+
+    def use_test():
+        if not validation:
+            return 0,0
+        t=time.time()
+        # Evaluate on the whole validation set
+        print('Evaluation on the whole validation set...')
+        num_batch = loader_test.size()//batch_size+1
+        acc1_total = 0.
+        acc5_total = 0.
+        loader_val.reset()
+        for i in range(num_batch):
+            images_batch, labels_batch = loader_test.next_batch(batch_size)    
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
+            acc1_total += acc1
+            acc5_total += acc5
+            print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+        acc1_total /= num_batch
+        acc5_total /= num_batch
+        t=int(time.time()-t)
+        print('used'+str(t)+'s to test')
+        print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
+        return acc1_total,acc5_total
     
     step = 0
 
