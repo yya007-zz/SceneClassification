@@ -30,7 +30,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"VGG"
+		'selectedmodel':"vgg"
 	},
 
 	'exp4':{
@@ -47,7 +47,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"VGG"
+		'selectedmodel':"vggv"
 	},
 
 	'exp2':{
@@ -64,7 +64,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"VGG_BN"
+		'selectedmodel':"vgg_bn"
 	},
 
 	'exp3':{
@@ -81,7 +81,24 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"VGG_BN"
+		'selectedmodel':"vgg_bn"
+	},
+
+	'exp4-1':{
+		'learning_rate' : 1e-5,
+		'training_iters' : 10000,
+		'step_display' : 100,
+		'step_save' : 500,
+		'exp_name' : 'exp4-1',
+		'pretrainedStep' : 10000,
+		'batch_size':40,
+		'lam': 0.5,
+		'plot':True,
+
+		'train' : True,
+		'validation' : True,
+		'test': True,
+		'selectedmodel':"vgg_bn_seg"
 	},
 
 
@@ -99,6 +116,6 @@ exp={
 		'train' : False,
 		'validation' : True,
 		'test': True,
-		'selectedmodel':"VGG"
+		'selectedmodel':"vgg"
 	}
 }

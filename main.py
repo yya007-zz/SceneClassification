@@ -11,6 +11,7 @@ from exp import *
 from exp2 import *
 import sys
 from save import *
+
 # Dataset Parameters
 print 'Running command: ',sys.argv
 ParametersDict=sys.argv[1]
@@ -43,6 +44,8 @@ batch_size = settings['batch_size']
 
 path_save = './save/'+exp_name+'/'
 start_from=''
+
+num_seg_class=176
 
 if pretrainedStep > 0:
     start_from = path_save+'-'+str(pretrainedStep)
@@ -108,8 +111,8 @@ loader_test = DataLoaderDiskOld(**opt_data_test)
 print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
-seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, 176])
-obj_class = tf.placeholder(tf.float32, [None, 176])
+seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, num_seg_class])
+obj_class = tf.placeholder(tf.float32, [None, num_seg_class])
 y = tf.placeholder(tf.int64, None)
 
 
@@ -118,13 +121,13 @@ lam = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
-if selectedmodel=='VGG':
+if selectedmodel=='vgg':
     myModel = vgg_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
-elif selectedmodel=='VGG_BN':
+elif selectedmodel=='vgg_bn':
     myModel = vgg_bn_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 elif selectedmodel=='alexnet':
     myModel = alexnet_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
-elif selectedmodel=='VGG_simple':
+elif selectedmodel=='vgg_simple':
     myModel = vgg_simple_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 elif selectedmodel=='vgg_seg2':
     myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
@@ -174,7 +177,7 @@ with tf.Session() as sess:
             elif mode == 'test':
                 images_batch, labels_batch = loader.next_batch(batch_size)
                 seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
-                obj_class_batch = np.zeros([batch_size, 176])
+                obj_class_batch = np.zeros([batch_size, num_seg_class])
 
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
@@ -197,7 +200,6 @@ with tf.Session() as sess:
             return 0,0
         acc1_total, acc5_total = use_evaluation(loader_test,'test')
         
-    
     step = 0
 
     if train:
@@ -206,7 +208,7 @@ with tf.Session() as sess:
         while step < training_iters:
             # Load a batch of training data
             seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
-            obj_class_batch = np.zeros([batch_size, 176])
+            obj_class_batch = np.zeros([batch_size, num_seg_class])
             flip = np.random.random_integers(0, 1)
             mylam=set_lam
             if flip>0.5:
