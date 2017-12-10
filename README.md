@@ -1,5 +1,9 @@
 # 
 ```
+conda install -c menpo opencv
+```
+
+```
 python data_processsor.py
 ```
 
