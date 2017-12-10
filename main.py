@@ -127,9 +127,9 @@ elif selectedmodel=='alexnet':
 elif selectedmodel=='VGG_simple':
     myModel = vgg_simple_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 elif selectedmodel=='vgg_seg2':
-    myModel = vgg_seg2(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 elif selectedmodel=='vgg_bn_seg2':
-    myModel = vgg_seg2(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 else:
     raise ValueError('no such model, end of the program')
 
