@@ -95,7 +95,7 @@ exp={
 		'step_display' : 100,
 		'step_save' : 500,
 		'exp_name' : 'exp401',
-		'pretrainedStep' : 10000,
+		'pretrainedStep' : 0,
 		'batch_size':32,
 		'lam': 0.5,
 		'joint_ratio':1,
@@ -106,7 +106,6 @@ exp={
 		'test': True,
 		'selectedmodel':"vgg_bn_seg2"
 	},
-
 
 	'expVal':{
 		'learning_rate' : 0.001,
