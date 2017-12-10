@@ -108,7 +108,7 @@ print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, c])
-obj_class = tf.placeholder(tf.float32, [None, seg_size, seg_size, c])
+obj_class = tf.placeholder(tf.float32, 176)
 y = tf.placeholder(tf.int64, None)
 
 
