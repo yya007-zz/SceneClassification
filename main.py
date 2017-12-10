@@ -157,19 +157,23 @@ with tf.Session() as sess:
     else:
         sess.run(init)
 
-    def use_validation():
-        if not validation:
-            return 0,0
+    def use_evaluation(loader, mode):
         t=time.time()
         # Evaluate on the whole validation set
         print('Evaluation on the whole validation set...')
-        num_batch = loader_val.size()//batch_size+1
+        num_batch = loader.size()//batch_size+1
         acc1_total = 0.
         acc5_total = 0.
         loader_val.reset()
         for i in range(num_batch):
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_val.next_batch(batch_size)    
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
+            if mode='val':
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
+            elif mode = 'test':
+                images_batch, labels_batch = loader.next_batch(batch_size)
+                seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
+                obj_class_batch = np.zeros([batch_size, 176])
+
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
             print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
@@ -179,29 +183,17 @@ with tf.Session() as sess:
         print('used'+str(t)+'s to validate')
         print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
         return acc1_total,acc5_total
-
-    def use_test():
+    
+    def use_validation():
         if not validation:
             return 0,0
-        t=time.time()
-        # Evaluate on the whole validation set
-        print('Evaluation on the whole validation set...')
-        num_batch = loader_test.size()//batch_size+1
-        acc1_total = 0.
-        acc5_total = 0.
-        loader_val.reset()
-        for i in range(num_batch):
-            images_batch, labels_batch = loader_test.next_batch(batch_size)    
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
-            acc1_total += acc1
-            acc5_total += acc5
-            print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-        acc1_total /= num_batch
-        acc5_total /= num_batch
-        t=int(time.time()-t)
-        print('used'+str(t)+'s to test')
-        print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
-        return acc1_total,acc5_total
+        acc1_total, acc5_total = use_evaluation(loader_val)
+
+    def use_test():
+        if not test:
+            return 0,0
+        acc1_total, acc5_total = use_evaluation(loader_test)
+        
     
     step = 0
 
@@ -217,7 +209,7 @@ with tf.Session() as sess:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on training set
-                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False}) 
+                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + \
                       '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
                       '{:.4f}'.format(acc1) + ', Top5 = ' + \
@@ -247,11 +239,9 @@ with tf.Session() as sess:
                 fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
                 plt.close(fig)
                 print 'finish saving figure to view'
-
-                
             
             # Run optimization op (backprop)
-            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, keep_dropout: dropout, train_phase: True})
+            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
             
             step += 1
             
@@ -263,23 +253,5 @@ with tf.Session() as sess:
 
     
     use_validation()
-    
-    if test:
-        # Predict on the test set
-        print('Evaluation on the test set...')
-        num_batch = loader_test.size()//batch_size+1
-        loader_test.reset()
-        result=[]
-        for i in range(num_batch):
-            images_batch, labels_batch = loader_test.next_batch(batch_size) 
-            l = sess.run([logits], feed_dict={x: images_batch, y: labels_batch, keep_dropout: 1., train_phase: False})
-            l = np.array(l)
-            l = l.reshape(l.shape[1:])
-            print l.shape
-            for ind in range(l.shape[0]):
-                top5 = np.argsort(l[ind])[-5:][::-1]
-                result.append(top5)
-        result=np.array(result)
-        result=result[:10000,:]
-        save(result, './fig/'+exp_name+str(num))
+    use_test()
 
