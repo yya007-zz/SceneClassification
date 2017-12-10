@@ -233,28 +233,28 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, n
     conv5_3 = _conv_layer(conv5_2, train_phase, "conv5_3",batch_norm)
     pool5 = _max_pool(conv5_3, 'pool5', debug)
 
-    fc6 = _fc_layer(pool5, "fc6", use="vgg")
+    fc6 = _fc_layer(pool5, "fc6", "fc6", use="vgg")
     if batch_norm:
         fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
     fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
    
-    fc7 = _fc_layer(fc6, "fc7", use="vgg")
+    fc7 = _fc_layer(fc6, "fc7", "fc7", use="vgg")
     if batch_norm:
         fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
     fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
 
-    class_logits = _fc_layer(fc7, "score_fr",num_classes=num_classes,relu=False,use="vgg")
+    class_logits = _fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
 
     if seg:
-        fc8 = _fc_layer(pool5, "fc8", use="vgg")
+        fc8 = _fc_layer(pool5, "fc8", "fc6", use="vgg")
         fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
         fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
        
-        fc9 = _fc_layer(fc9, "fc9", use="vgg")
+        fc9 = _fc_layer(fc9, "fc9", "fc7", use="vgg")
         fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
         fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
 
-        logits_seg = _fc_layer(fc9, "score_fr",num_classes=num_classes_seg,relu=False,use="vgg")
+        logits_seg = _fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
 
         return logits_class,logits_seg
     else:
@@ -292,12 +292,12 @@ def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
     conv5_3 = _conv_layer(conv5_2, "conv5_3")
     pool5 = _max_pool(conv5_3, 'pool5', debug)
 
-    fc6 = _fc_layer(pool5, "fc6")
+    fc6 = _fc_layer(pool5, "fc6", "fc6")
 
     if train_phase:
         fc6 = tf.nn.dropout(fc6, keep_prob)
 
-    fc7 = _fc_layer(fc6, "fc7")
+    fc7 = _fc_layer(fc6, "fc7", "fc7")
     if train_phase:
         fc7 = tf.nn.dropout(fc7, keep_prob)
 
@@ -305,7 +305,7 @@ def FCN(x, keep_prob, train_phase, num_classes, random_init_fc8=False,
         score_fr = _score_layer(fc7, "score_fr",
                                           num_classes)
     else:
-        score_fr = _fc_layer(fc7, "score_fr",
+        score_fr = _fc_layer(fc7, "score_fr","score_fr",
                                        num_classes=num_classes,
                                        relu=False)
 

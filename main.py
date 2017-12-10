@@ -69,8 +69,8 @@ opt_data_train_seg = {
     }
 
 opt_data_train = {
-    'data_root': '../../data/images/',   # MODIFY PATH ACCORDINGLY
-    'data_list': '../../data/train.txt', # MODIFY PATH ACCORDINGLY
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
     'data_mean': data_mean,

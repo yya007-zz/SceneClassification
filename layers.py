@@ -37,8 +37,7 @@ def _conv_layer( bottom, train_phase, name, batch_norm=False):
         _activation_summary(relu)
         return relu
 
-def _fc_layer( bottom, name, num_classes=None,
-              relu=True, debug=False,use=""):
+def _fc_layer( bottom, name, weight_use, num_classes=None, relu=True, debug=False, use=""):
     with tf.variable_scope(name) as scope:
         
         if use=="vgg":
@@ -47,30 +46,30 @@ def _fc_layer( bottom, name, num_classes=None,
             for d in shape[1:]:
                  dim *= d
             bottom = tf.reshape(bottom, [-1, dim])
-            if name == 'fc6':
-                filt = get_fc_weight(name)
-            elif name == 'score_fr':
-                name = 'fc8'  # Name of score_fr layer in VGG Model
-                filt = get_fc_weight_reshape(name, [4096, 1000],num_classes=num_classes)
+            if weight_use == 'fc6':
+                filt = get_fc_weight(weight_use)
+            elif weight_use == 'score_fr':
+                weight_use = 'fc8'  # Name of score_fr layer in VGG Model
+                filt = get_fc_weight_reshape(weight_use, [4096, 1000],num_classes=num_classes)
             else:
-                filt = get_fc_weight(name)
+                filt = get_fc_weight(weight_use)
             conv = tf.matmul(bottom, filt)
         else:
             shape = bottom.get_shape().as_list()
 
             if name == 'fc6':
-                filt = get_fc_weight_reshape(name, [7, 7, 512, 4096])
+                filt = get_fc_weight_reshape(weight_use, [7, 7, 512, 4096])
             elif name == 'score_fr':
                 name = 'fc8'  # Name of score_fr layer in VGG Model
-                filt = get_fc_weight_reshape(name, [1, 1, 4096, 1000],
+                filt = get_fc_weight_reshape(weight_use, [1, 1, 4096, 1000],
                                                   num_classes=num_classes)
             else:
-                filt = get_fc_weight_reshape(name, [1, 1, 4096, 4096])
+                filt = get_fc_weight_reshape(weight_use, [1, 1, 4096, 4096])
 
             _add_wd_and_summary(filt, wd, "fc_wlosses")
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
 
-        conv_biases = get_bias(name, num_classes=num_classes)
+        conv_biases = get_bias(weight_use, num_classes=num_classes)
         bias = tf.nn.bias_add(conv, conv_biases)
 
         if relu:
@@ -200,7 +199,7 @@ def get_bias( name, num_classes=None):
     _variable_summaries(var)
     return var
 
-def get_fc_weight( name):
+def get_fc_weight(name):
     init = tf.constant_initializer(value=data_dict[name][0],
                                    dtype=tf.float32)
     shape = data_dict[name][0].shape
