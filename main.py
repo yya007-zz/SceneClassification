@@ -233,12 +233,12 @@ with tf.Session(config=config) as sess:
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, lam:set_lam, keep_dropout: 1., train_phase: False}) 
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, lam:0, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_accs.append(acc5)
 
                  # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, lam:0, keep_dropout: 1., train_phase: False}) 
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, lam:set_lam, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_seg_accs.append(acc5)
 
