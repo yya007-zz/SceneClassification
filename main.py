@@ -115,6 +115,7 @@ y = tf.placeholder(tf.int64, None)
 
 
 keep_dropout = tf.placeholder(tf.float32)
+lam = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
@@ -175,7 +176,7 @@ with tf.Session() as sess:
                 seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
                 obj_class_batch = np.zeros([batch_size, 176])
 
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False})
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, lam:lam, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
             print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
@@ -207,16 +208,18 @@ with tf.Session() as sess:
             seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, c])
             obj_class_batch = np.zeros([batch_size, 176])
             flip = np.random.random_integers(0, 1)
+            mylam=lam
             if flip>0.5:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
             else:
+                mylam=0;
                 images_batch, labels_batch = loader_train.next_batch(batch_size)
             
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on training set
-                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False}) 
+                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, lam:mylam, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + \
                       '{:.6f}'.format(l) + ', Accuracy Top1 = ' + \
                       '{:.4f}'.format(acc1) + ', Top5 = ' + \
@@ -248,7 +251,7 @@ with tf.Session() as sess:
                 print 'finish saving figure to view'
             
             # Run optimization op (backprop)
-            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: obj_class_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
             
             step += 1
             
