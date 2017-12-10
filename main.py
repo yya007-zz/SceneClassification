@@ -177,13 +177,22 @@ with tf.Session(config=config) as sess:
         acc1_total = 0.
         acc5_total = 0.
         loader_val.reset()
+        
+        seg_labels_batch_empty = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+        obj_class_batch_empty = np.zeros([batch_size, num_seg_class])
+
         for i in range(num_batch):
-            seg_labels_batch = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
-            obj_class_batch = np.zeros([batch_size, num_seg_class])
             if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
+                acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, lam:set_lam, keep_dropout: 1., train_phase: False})
+                acc1_total += acc1
+                acc5_total += acc5
+                print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+        
             elif mode == 'test':
                 images_batch, labels_batch = loader.next_batch(batch_size)
+                seg_labels_batch = seg_labels_batch_empty
+                obj_class_batch = obj_class_batch_empty
                 
             acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
