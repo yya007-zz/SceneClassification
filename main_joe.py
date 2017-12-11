@@ -134,7 +134,7 @@ with tf.Session(config=config) as sess:
             # Load a batch of training data
             
             images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
-            seg_labels_batch = (seg_labels_batch - 0.5)*2
+            #seg_labels_batch = (seg_labels_batch - 0.5)*2
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 
@@ -152,7 +152,7 @@ with tf.Session(config=config) as sess:
                 
                 for i in range(num_batch):
                     val_images_batch, val_seg_labels_batch, val_obj_class_batch, val_labels_batch = loader_val.next_batch(batch_size)    
-                    val_seg_labels_batch = (val_seg_labels_batch - 0.5)*2
+                    #val_seg_labels_batch = (val_seg_labels_batch - 0.5)*2
                         
                     l, = sess.run([loss], 
                             feed_dict={x: val_images_batch, seg_labels: val_seg_labels_batch, keep_dropout: 1., train_phase: False})
