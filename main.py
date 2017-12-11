@@ -28,8 +28,9 @@ else:
 
 debug = False
 # Training Parameters
+learning_rate_class=settings['learning_rate_class']
+learning_rate_seg=settings['learning_rate_seg']
 learning_rate = settings['learning_rate']
-set_lam = settings['lam']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
@@ -120,36 +121,35 @@ y = tf.placeholder(tf.int64, None)
 
 
 keep_dropout = tf.placeholder(tf.float32)
-lam = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
 if selectedmodel=='vgg':
-    myModel = vgg_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    myModel = vgg_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 elif selectedmodel=='vgg_bn':
-    myModel = vgg_bn_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    myModel = vgg_bn_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 elif selectedmodel=='alexnet':
-    myModel = alexnet_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    myModel = alexnet_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 elif selectedmodel=='vgg_simple':
-    myModel = vgg_simple_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    myModel = vgg_simple_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 elif selectedmodel=='vgg_seg2':
-    myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    myModel = vgg_seg2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)   
 elif selectedmodel=='vgg_bn_seg2':
-    myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 elif selectedmodel=='vgg_bn_seg2_1':
-    myModel = vgg_bn_seg2_1_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    myModel = vgg_bn_seg2_1_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)   
 elif selectedmodel=='vgg_bn_seg2_2':
-    myModel = vgg_bn_seg2_2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)    
+    myModel = vgg_bn_seg2_2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)    
 elif selectedmodel=='vgg_seg1':
-    myModel = vgg_seg1(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    myModel = vgg_seg1(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 
 # Define loss and optimizer
 logits= myModel.logits_class
-loss = myModel.loss
 loss_seg = myModel.loss_seg
 loss_class = myModel.loss_class
+loss = loss_seg+loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_seg)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_class)
@@ -193,7 +193,7 @@ with tf.Session(config=config) as sess:
             if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
                 if debug:
-                    acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, lam:set_lam, keep_dropout: 1., train_phase: False})
+                    acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, keep_dropout: 1., train_phase: False})
                     print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
         
             elif mode == 'test':
@@ -201,7 +201,7 @@ with tf.Session(config=config) as sess:
                 seg_labels_batch = seg_labels_batch_empty
                 obj_class_batch = obj_class_batch_empty
                 
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, lam:set_lam, keep_dropout: 1., train_phase: False})
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False})
             acc1_total += acc1
             acc5_total += acc5
             if debug:
@@ -247,12 +247,12 @@ with tf.Session(config=config) as sess:
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, lam:0, keep_dropout: 1., train_phase: False}) 
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_accs.append(acc5)
 
                  # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, lam:set_lam, keep_dropout: 1., train_phase: False}) 
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_seg_accs.append(acc5)
                 
@@ -298,14 +298,12 @@ with tf.Session(config=config) as sess:
 
             flip = np.random.random_integers(0, 1)
             if flip<=joint_ratio:
-                mylam=set_lam
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
-                sess.run(class_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
-                sess.run(seg_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
+                sess.run(class_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+                sess.run(seg_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
             else:
-                mylam=0  
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
-                sess.run(class_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
+                sess.run(class_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
             step += 1
             
             # Save model
