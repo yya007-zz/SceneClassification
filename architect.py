@@ -58,7 +58,7 @@ def loss_class(y,logits):
     return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
 def loss_seg(y,logits):
-    newy=tf.nn.softmax(y)
-    newl=tf.nn.softmax(logits)
-    return tf.abs(newy-newl)
+    newy= y/ tf.reduce_sum(tf.exp(logits), -1)
+    newl= logits/ tf.reduce_sum(tf.exp(logits), -1)
+    return tf.reduce_mean(tf.abs(newy-newl))
     # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
