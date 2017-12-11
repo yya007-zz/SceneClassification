@@ -145,12 +145,12 @@ with tf.Session(config=config) as sess:
 
                 # Evaluate on the whole validation set
                 print('Evaluation on the whole validation set...')
-                num_batch = loader.size()//batch_size+1
+                num_batch = loader_val.size()//batch_size+1
                 val_loss = 0.
                 loader_val.reset()
                 
                 for i in range(num_batch):
-                    images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
+                    images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_val.next_batch(batch_size)    
                         
                     l = sess.run([loss], 
                             feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False})
