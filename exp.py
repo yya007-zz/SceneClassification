@@ -17,7 +17,7 @@ exp={
 		# 'selectedmodel':"vgg"
 
 		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-5,
+		'learning_rate_seg' : 1e-3,
 		'training_iters' : 100,
 		'step_display' : 10,
 		'step_save' : 500,
