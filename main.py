@@ -191,7 +191,7 @@ with tf.Session(config=config) as sess:
         for i in range(num_batch):
             if mode=='val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
-                obj_class_batch = (obj_class_batch - 0.5)
+                obj_class_batch = (obj_class_batch - 0.5)*2
                 if debug:
                     acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, keep_dropout: 1., train_phase: False})
                     print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
@@ -243,6 +243,8 @@ with tf.Session(config=config) as sess:
             # Load a batch of training data
             
             images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
+            obj_class_batch_2 = (obj_class_batch_2 - 0.5)*2
+            print np.unique(obj_class_batch_2)
             images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
