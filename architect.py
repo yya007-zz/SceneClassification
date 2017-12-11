@@ -39,6 +39,9 @@ class vgg_bn_seg2_model:
         self.loss_class =loss_class(y,self.logits_class)
         self.loss_seg = loss_seg(obj_class,logits_seg)
 
+        # self.obj_class = tf.nn.softmax(obj_class)
+        # self.obj_class_ = tf.nn.softmax(logits_seg)
+
 class vgg_bn_seg2_1_model:
     def __init__(self, x, y, seg_labels, obj_class, keep_dropout, train_phase):
         self.logits_class,logits_seg=CNNModels.VGG(x, keep_dropout, train_phase,num_classes=100, batch_norm=True, seg=True, seg_mode=1, num_classes_seg=176)
@@ -56,4 +59,6 @@ def loss_class(y,logits):
 
 def loss_seg(y,logits):
     newy=tf.nn.softmax(y)
-    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
+    newl=tf.nn.softmax(logits)
+    return tf.abs(newy-newl)
+    # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
