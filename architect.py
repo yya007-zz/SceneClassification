@@ -58,8 +58,19 @@ def loss_class(y,logits):
     return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
 def loss_seg(y,logits):
+    return loss_seg_l1(y,logits)
     # newy= y/ tf.reduce_sum(logits, -1)
     # newl= logits/ tf.reduce_sum(logits, -1)
-    newl= tf.nn.tanh(logits)
-    return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
+    # newl= tf.nn.tanh(logits)
+    # return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
     # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
+
+def loss_seg_en(y, logits):
+    newy= tf.nn.softmax(label_seg)
+    newl= tf.nn.softmax(logits_seg)
+    return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
+
+def loss_seg_l1(y, logits):
+    newy= tf.nn.softmax(y)
+    newl= tf.nn.softmax(logits_seg)
+    return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
