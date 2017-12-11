@@ -183,7 +183,7 @@ with tf.Session(config=config) as sess:
         num_batch = loader.size()//batch_size+1
         acc1_total = 0.
         acc5_total = 0.
-        loader_val.reset()
+        loader.reset()
         
         seg_labels_batch_empty = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         obj_class_batch_empty = np.zeros([batch_size, num_seg_class])
