@@ -244,7 +244,7 @@ with tf.Session(config=config) as sess:
             
             images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
             obj_class_batch_2 = (obj_class_batch_2 - 0.5)*2
-            print np.unique(obj_class_batch_2)
+
             images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
