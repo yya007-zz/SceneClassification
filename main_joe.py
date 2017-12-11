@@ -151,10 +151,11 @@ with tf.Session(config=config) as sess:
                 loader_val.reset()
                 
                 for i in range(num_batch):
-                    images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_val.next_batch(batch_size)    
+                    val_images_batch, val_seg_labels_batch, val_obj_class_batch, val_labels_batch = loader_val.next_batch(batch_size)    
+                    val_seg_labels_batch = (val_seg_labels_batch - 0.5)*2
                         
                     l, = sess.run([loss], 
-                            feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False})
+                            feed_dict={x: val_images_batch, seg_labels: val_seg_labels_batch, keep_dropout: 1., train_phase: False})
                     val_loss += l
                 print('Evaluation Finished! Validation Loss = ' + '{:.10f}'.format(val_loss))
                 val_losses.append(val_loss)
