@@ -1,6 +1,6 @@
 exp_joe={
 	'debug1':{
-		'learning_rate' : 1e-5,
+		'learning_rate' : 1e-4,
 		'training_iters' : 10000,
 		'step_display' : 20,
 		'step_save' : 500,

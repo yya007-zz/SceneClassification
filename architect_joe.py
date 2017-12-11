@@ -9,6 +9,9 @@ class vgg_seg1:
         self.loss = loss_seg(seg_labels, self.logits_seg)
 
 def loss_seg(label_seg, logits_seg):
-    label_seg = tf.nn.softmax(label_seg)
-    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=label_seg, logits=logits_seg))
+    newy= tf.nn.softmax(newy)
+    newl= tf.nn.softmax(newl)
+    return tf.reduce_mean(tf.abs(newy-newl))
+    #label_seg = tf.nn.softmax(label_seg)
+    #return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=label_seg, logits=logits_seg))
 

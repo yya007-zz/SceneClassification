@@ -53,7 +53,7 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_seg_classes, batch_norm=True, seg
                                           num_seg_classes)
     else:
         logits_seg = fc_layer(fc7_seg, "score_fr_seg", "score_fr",
-                                       num_seg_classes=num_seg_classes,
+                                       num_classes=num_seg_classes,
                                        relu=False)
 
     return logits_seg
