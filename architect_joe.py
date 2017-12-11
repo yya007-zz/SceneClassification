@@ -4,7 +4,7 @@ import tensorflow as tf
 import CNNModels_joe
 
 class vgg_seg1:
-    def __init__(self, x, seg_labels, obj_class, lam, keep_dropout, train_phase):
+    def __init__(self, x, seg_labels, keep_dropout, train_phase):
         self.logits_seg = CNNModels2.VGG_Seg1(x, keep_dropout, train_phase, num_seg_classes=176, batch_norm=True, seg=True, random_init_seg_score_fr=True, debug=True)
         self.loss = loss_seg(seg_labels, self.logits_seg)
 

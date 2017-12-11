@@ -91,7 +91,7 @@ train_phase = tf.placeholder(tf.bool)
 
 # Construct model
 if selectedmodel=='vgg_seg1':
-    myModel = vgg_seg1(x, seg_labels, obj_class, keep_dropout, train_phase)
+    myModel = vgg_seg1(x, seg_labels, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 
