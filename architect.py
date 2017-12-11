@@ -56,11 +56,6 @@ def loss_class(y,logits):
 
 def loss_seg(y,logits):
     return loss_seg_tanh(y,logits)
-    # newy= y/ tf.reduce_sum(logits, -1)
-    # newl= logits/ tf.reduce_sum(logits, -1)
-    # newl= tf.nn.tanh(logits)
-    # return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
-    # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
 
 def loss_seg_tanh(y, logits):
     newl= tf.nn.tanh(logits)
