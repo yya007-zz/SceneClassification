@@ -29,7 +29,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': False,
+		'test': True,
 		'selectedmodel':"vgg_bn_seg2"
 	},
 
@@ -60,7 +60,7 @@ exp={
 		'exp_name' : 'exp2',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'joint_ratio':1,
+		'joint_ratio':0.5,
 		'plot':True,
 
 		'train' : True,
@@ -78,17 +78,18 @@ exp={
 		'exp_name' : 'exp2',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'joint_ratio':1,
+		'joint_ratio':0.1,
 		'plot':True,
 
 		'train' : True,
 		'validation' : True,
 		'test': False,
-		'selectedmodel':"vgg_bn_seg2_2"
+		'selectedmodel':"vgg_bn_seg2_1"
 	},
 
 	'exp4':{
-		'learning_rate' : 1e-5,
+		'learning_rate_class' : 1e-5,
+		'learning_rate_seg' : 1e-5,
 		'training_iters' : 5000,
 		'step_display' : 50,
 		'step_save' : 500,
@@ -96,24 +97,6 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'lam': 2,
-		'joint_ratio':0.1,
-		'plot':True,
-
-		'train' : True,
-		'validation' : True,
-		'test': False,
-		'selectedmodel':"vgg_bn_seg2_2"
-	},
-
-	'exp5':{
-		'learning_rate' : 1e-5,
-		'training_iters' : 5000,
-		'step_display' : 50,
-		'step_save' : 500,
-		'exp_name' : 'exp4',
-		'pretrainedStep' : 0,
-		'batch_size':32,
-		'lam': 5,
 		'joint_ratio':0.5,
 		'plot':True,
 
@@ -123,15 +106,16 @@ exp={
 		'selectedmodel':"vgg_bn_seg2_2"
 	},
 
-	'exp401':{
-		'learning_rate' : 1e-4,
-		'training_iters' : 1500,
+	'exp5':{
+		'learning_rate_class' : 1e-5,
+		'learning_rate_seg' : 1e-5,
+		'training_iters' : 5000,
 		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'exp401',
+		'exp_name' : 'exp4',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'lam': 0.5,
+		'lam': 5,
 		'joint_ratio':0.1,
 		'plot':True,
 

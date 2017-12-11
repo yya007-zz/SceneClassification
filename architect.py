@@ -70,6 +70,10 @@ def loss_seg_en(y, logits):
     newy= tf.nn.softmax(y)
     return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
 
+def loss_seg_norm(y, logits):
+    newy= y/(tf.reduce_sum(y,-1))
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
+
 def loss_seg_l1(y, logits):
     newy= tf.nn.softmax(y)
     newl= tf.nn.softmax(logits)
