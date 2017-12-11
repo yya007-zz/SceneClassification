@@ -16,14 +16,14 @@ exp={
 		# 'test': True,
 		# 'selectedmodel':"vgg"
 
-		'learning_rate' : 1e-4,
+		'learning_rate_class' : 1e-5,
+		'learning_rate_seg' : 1e-5,
 		'training_iters' : 100,
 		'step_display' : 10,
 		'step_save' : 500,
 		'exp_name' : 'test',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'lam': 0.5,
 		'joint_ratio':1,
 		'plot':True,
 
