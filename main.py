@@ -135,7 +135,11 @@ elif selectedmodel=='vgg_simple':
 elif selectedmodel=='vgg_seg2':
     myModel = vgg_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
 elif selectedmodel=='vgg_bn_seg2':
-    myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
+    elif selectedmodel=='vgg_bn_seg2_1':
+    myModel = vgg_bn_seg2_1_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)   
+    elif selectedmodel=='vgg_bn_seg2_2':
+    myModel = vgg_bn_seg2_2_model(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)    
 elif selectedmodel=='vgg_seg1':
     myModel = vgg_seg1(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 else:
