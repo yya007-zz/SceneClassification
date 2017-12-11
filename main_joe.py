@@ -134,6 +134,7 @@ with tf.Session(config=config) as sess:
             # Load a batch of training data
             
             images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
+            seg_labels_batch = (seg_labels_batch - 0.5)*2
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 
