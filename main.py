@@ -228,6 +228,8 @@ with tf.Session(config=config) as sess:
         train_seg_accs=[]
         val_accs=[]
         test_accs=[]
+        seg_losses=[]
+        class_losses=[]
 
         seg_labels_batch_1 = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
@@ -255,6 +257,10 @@ with tf.Session(config=config) as sess:
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, lam:set_lam, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_seg_accs.append(acc5)
+                
+                seg_losses.append(ls)
+                class_losses.append(lc)
+
 
                 acc1, acc5=use_validation()
                 val_accs.append(acc5)
@@ -277,6 +283,16 @@ with tf.Session(config=config) as sess:
                     plt.ylabel('Accuracy')
                     plt.legend()
                     fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+
+                    fig = plt.figure()
+                    a=np.arange(1,len(val_accs)+1,1)
+                    plt.plot(a,seg_losses,'-',label='Seg')
+                    plt.plot(a,class_losses,'-',label='Class')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Loss')
+                    plt.legend()
+                    fig.savefig('./fig/pic_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
                     print 'finish saving figure to view'
             
