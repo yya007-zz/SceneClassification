@@ -51,7 +51,7 @@ exp={
 		'selectedmodel':"vgg_bn_seg2"
 	},
 
-	'exp3':{
+	'exp2':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 5000,
 		'step_display' : 50,
@@ -69,7 +69,7 @@ exp={
 		'selectedmodel':"vgg_bn_seg2_1"
 	},
 
-	'exp4':{
+	'exp3':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 5000,
 		'step_display' : 50,
@@ -87,7 +87,7 @@ exp={
 		'selectedmodel':"vgg_bn_seg2_1"
 	},
 
-	'exp5':{
+	'exp4':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 5000,
 		'step_display' : 50,
@@ -105,7 +105,7 @@ exp={
 		'selectedmodel':"vgg_bn_seg2_2"
 	},
 
-	'exp4':{
+	'exp5':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 5000,
 		'step_display' : 50,

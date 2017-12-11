@@ -249,7 +249,7 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, s
         if seg_mode==1:
             logits_seg = fc_layer(fc7, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
         
-        if seg_mode==2:
+        elif seg_mode==2:
             fc8 = fc_layer(pool5, "fc8", "fc6", use="vgg")
             fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
             fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)

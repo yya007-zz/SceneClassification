@@ -24,7 +24,7 @@ if Parameters in experiment:
     settings = experiment[Parameters]
     print 'Parameters: ',experiment[Parameters]
 else:
-    raise ValueError('no dict of parameters found')
+    raise ValueError(Parameters,' no dict of parameters found')
 
 debug = False
 # Training Parameters
@@ -143,7 +143,7 @@ elif selectedmodel=='vgg_bn_seg2_2':
 elif selectedmodel=='vgg_seg1':
     myModel = vgg_seg1(x, y, seg_labels, obj_class, lam, keep_dropout, train_phase)
 else:
-    raise ValueError('no such model, end of the program')
+    raise ValueError(selectedmodel,' no such model, end of the program')
 
 # Define loss and optimizer
 logits= myModel.logits_class
