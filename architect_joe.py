@@ -11,5 +11,5 @@ class vgg_seg1:
         self.loss = loss_seg_norm(seg_labels, self.logits_seg)
 
 def loss_seg_norm(y, logits):
-    newy = y/tf.tile(tf.expand_dims(y, axis=-1), (1,1,1,176))
+    newy = y/tf.tile(tf.expand_dims(tf.reduce_sum(y,axis=-1), axis=-1), (1,1,1,176))
     return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
