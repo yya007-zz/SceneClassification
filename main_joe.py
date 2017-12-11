@@ -101,9 +101,6 @@ loss = myModel.loss
 
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
 
-# Evaluate model
-accuracy1 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(logits_seg, seg_labels, 1), tf.float32))
-accuracy5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(logits_seg, seg_labels, 5), tf.float32))
 
 # define initialization
 init = tf.global_variables_initializer()
@@ -130,8 +127,7 @@ with tf.Session(config=config) as sess:
     step = 0
 
     if train:
-        train_seg_accs=[]
-        val_accs=[]
+        val_losses = []
         losses=[]
 
         while step < training_iters:
@@ -142,61 +138,48 @@ with tf.Session(config=config) as sess:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 
                 # Calculate batch loss and accuracy on training set
-                l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
+                l = sess.run([loss], 
                         feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False}) 
-                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-                train_seg_accs.append(acc5)
-                
-                losses.append(ls)
+                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l))
+                losses.append(l)
 
                 # Evaluate on the whole validation set
                 print('Evaluation on the whole validation set...')
                 num_batch = loader.size()//batch_size+1
-                acc1_total = 0.
-                acc5_total = 0.
+                val_loss = 0.
                 loader_val.reset()
                 
                 for i in range(num_batch):
                     images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)    
                         
-                    acc1, acc5 = sess.run([accuracy1, accuracy5], 
+                    l = sess.run([loss], 
                             feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False})
-                    acc1_total += acc1
-                    acc5_total += acc5
-                    if debug:
-                        print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-                print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
-                val_accs.append(acc5)
+                    val_loss += l
+                print('Evaluation Finished! Validation Loss = ' + '{:.4f}'.format(val_loss))
+                val_losses.append(val_loss)
 
-
-                print val_accs
-                print train_seg_accs
 
                 if plot:
                     fig = plt.figure()
-                    a=np.arange(1,len(val_accs)+1,1)
-                    plt.plot(a,train_accs,'-',label='Training')
-                    plt.plot(a,train_seg_accs,'-',label='Training with segm')
-                    if validation:
-                        plt.plot(a,val_accs,'-',label='Validation')
-                    if test:
-                        plt.plot(a,test_accs,'-',label='Test')
-                    plt.xlabel('Iteration')
-                    plt.ylabel('Accuracy')
-                    plt.legend()
-                    fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
-                    plt.close(fig)
-
-                    fig = plt.figure()
-                    a=np.arange(1,len(val_accs)+1,1)
-                    plt.plot(a,seg_losses,'-',label='Seg')
-                    plt.plot(a,class_losses,'-',label='Class')
+                    a=np.arange(1,len(losses)+1,1)
+                    plt.plot(a,losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Loss')
                     plt.legend()
-                    fig.savefig('./fig/pic_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    fig.savefig('./fig/pic_train_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+
+
+                    fig = plt.figure()
+                    a=np.arange(1,len(val_losses)+1,1)
+                    plt.plot(a,val_losses,'-',label='Class')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Loss')
+                    plt.legend()
+                    fig.savefig('./fig/pic_val_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
                     print 'finish saving figure to view'
+
             
             # Run optimization op (backprop)
 
