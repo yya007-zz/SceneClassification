@@ -140,7 +140,7 @@ with tf.Session(config=config) as sess:
                 # Calculate batch loss and accuracy on training set
                 l, = sess.run([loss], 
                         feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False}) 
-                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l))
+                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.10f}'.format(l))
                 losses.append(l)
 
                 # Evaluate on the whole validation set
@@ -155,7 +155,7 @@ with tf.Session(config=config) as sess:
                     l, = sess.run([loss], 
                             feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False})
                     val_loss += l
-                print('Evaluation Finished! Validation Loss = ' + '{:.4f}'.format(val_loss))
+                print('Evaluation Finished! Validation Loss = ' + '{:.10f}'.format(val_loss))
                 val_losses.append(val_loss)
 
 
