@@ -64,7 +64,7 @@ def loss_seg(y,logits):
 
 def loss_seg_tanh(y, logits):
     newl= tf.nn.tanh(logits)
-    return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
+    return tf.reduce_mean(tf.reduce_sum(tf.abs(y-newl),-1))
 
 def loss_seg_en(y, logits):
     newy= tf.nn.softmax(y)
