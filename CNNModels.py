@@ -209,7 +209,7 @@ def VGG16_Simple(x,keep_dropout,train_phase,num_classes):
 
     return fc3l
 
-def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, num_classes_seg=176, debug=False):
+def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, seg_mode=0, num_classes_seg=176, debug=False):
     conv1_1 = conv_layer(x, train_phase, "conv1_1",batch_norm)
     conv1_2 = conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
     pool1 = max_pool(conv1_2, 'pool1', debug)
@@ -246,16 +246,33 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, n
     logits_class = fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
 
     if seg:
-        fc8 = fc_layer(pool5, "fc8", "fc6", use="vgg")
-        fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
-        fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
-       
-        fc9 = fc_layer(fc8, "fc9", "fc7", use="vgg")
-        fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
-        fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
+        if seg_mode==1:
+            logits_seg = fc_layer(fc7, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
+        
+        if seg_mode==2:
+            fc8 = fc_layer(pool5, "fc8", "fc6", use="vgg")
+            fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
+            fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
+            
+            fc8 = tf.add(fc7+fc8)
 
-        logits_seg = fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
+            fc9 = fc_layer(fc8, "fc9", "fc7", use="vgg")
+            fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
+            fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
 
+            logits_seg = fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
+        
+        else:      
+            fc8 = fc_layer(pool5, "fc8", "fc6", use="vgg")
+            fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
+            fc8 = tf.cond(train_phase,lambda: tf.nn.dropout(fc8, keep_dropout),lambda: fc8)
+           
+            fc9 = fc_layer(fc8, "fc9", "fc7", use="vgg")
+            fc9 = batch_norm_layer(fc9, train_phase, 'bn9')
+            fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
+
+            logits_seg = fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
+        
         return logits_class,logits_seg
     else:
         return logits_class

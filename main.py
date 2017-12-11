@@ -26,7 +26,7 @@ if Parameters in experiment:
 else:
     raise ValueError('no dict of parameters found')
 
-debug = True
+debug = False
 # Training Parameters
 learning_rate = settings['learning_rate']
 set_lam = settings['lam']
@@ -269,7 +269,10 @@ with tf.Session(config=config) as sess:
                     a=np.arange(1,len(val_accs)+1,1)
                     plt.plot(a,train_accs,'-',label='Training')
                     plt.plot(a,train_seg_accs,'-',label='Training with segm')
-                    plt.plot(a,val_accs,'-',label='Validation')
+                    if validation:
+                        plt.plot(a,val_accs,'-',label='Validation')
+                    if test:
+                        plt.plot(a,test_accs,'-',label='Test')
                     plt.xlabel('Iteration')
                     plt.ylabel('Accuracy')
                     plt.legend()
