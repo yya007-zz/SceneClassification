@@ -42,12 +42,12 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'lam': 10,
-		'joint_ratio':0.5,
+		'joint_ratio':1,
 		'plot':True,
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2"
 	},
 
@@ -65,7 +65,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2_1"
 	},
 
@@ -83,7 +83,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2_1"
 	},
 
@@ -101,7 +101,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2_2"
 	},
 
@@ -119,7 +119,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2_2"
 	},
 

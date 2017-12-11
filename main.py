@@ -150,7 +150,9 @@ logits= myModel.logits_class
 loss = myModel.loss
 loss_seg = myModel.loss_seg
 loss_class = myModel.loss_class
-train_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
+
+class_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_seg)
+seg_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_class)
 
 # Evaluate model
 accuracy1 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(logits, y, 1), tf.float32))
@@ -240,16 +242,8 @@ with tf.Session(config=config) as sess:
         while step < training_iters:
             # Load a batch of training data
             
-            flip = np.random.random_integers(0, 1)
             images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
             images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
-            mylam=set_lam
-            if flip<=joint_ratio:
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
-            else:
-                mylam=0  
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
-            
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 # Calculate batch loss and accuracy on training set
@@ -301,8 +295,17 @@ with tf.Session(config=config) as sess:
                     print 'finish saving figure to view'
             
             # Run optimization op (backprop)
-            sess.run(train_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
-            
+
+            flip = np.random.random_integers(0, 1)
+            if flip<=joint_ratio:
+                mylam=set_lam
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
+                sess.run(class_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
+                sess.run(seg_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
+            else:
+                mylam=0  
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
+                sess.run(class_optimizer, feed_dict={x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch,lam:mylam, keep_dropout: dropout, train_phase: True})
             step += 1
             
             # Save model
