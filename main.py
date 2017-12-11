@@ -30,7 +30,6 @@ debug = False
 # Training Parameters
 learning_rate_class=settings['learning_rate_class']
 learning_rate_seg=settings['learning_rate_seg']
-learning_rate = settings['learning_rate']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
