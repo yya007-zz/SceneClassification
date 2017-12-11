@@ -138,7 +138,7 @@ with tf.Session(config=config) as sess:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 
                 # Calculate batch loss and accuracy on training set
-                l = sess.run([loss], 
+                l, = sess.run([loss], 
                         feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l))
                 losses.append(l)
