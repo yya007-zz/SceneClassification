@@ -29,7 +29,7 @@ exp={
 
 		'train' : True,
 		'validation' : True,
-		'test': True,
+		'test': False,
 		'selectedmodel':"vgg_bn_seg2"
 	},
 
