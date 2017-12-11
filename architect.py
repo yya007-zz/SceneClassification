@@ -68,7 +68,7 @@ def loss_seg_en(y, logits):
 
 def loss_seg_norm(y, logits):
     sumy=tf.reduce_mean(y)
-    return tf.cond(tf.equal(sumy, 0),lambda: sumy,loss_seg_norm_help(y, logits))
+    return tf.cond(tf.equal(sumy, 0),lambda: sumy,lambda: loss_seg_norm_help(y, logits))
 
 def loss_seg_norm_help(y, logits):     
     if len(y.get_shape().as_list())==4:
