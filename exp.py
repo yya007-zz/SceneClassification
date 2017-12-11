@@ -16,9 +16,9 @@ exp={
 		# 'test': True,
 		# 'selectedmodel':"vgg"
 
-		'learning_rate_class' : 1e-5,
+		'learning_rate_class' : 1e-4,
 		'learning_rate_seg' : 1e-5,
-		'training_iters' : 100,
+		'training_iters' : 200,
 		'step_display' : 10,
 		'step_save' : 500,
 		'exp_name' : 'test',
@@ -28,21 +28,21 @@ exp={
 		'plot':True,
 
 		'train' : True,
-		'validation' : True,
+		'validation' : False,
 		'test': False,
 		'selectedmodel':"vgg_bn_seg2"
 	},
 
 	'exp1':{
-		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-5,
-		'training_iters' : 5000,
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-4,
+		'training_iters' : 10000,
 		'step_display' : 50,
 		'step_save' : 500,
 		'exp_name' : 'exp1',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'joint_ratio':1,
+		'joint_ratio':0.5,
 		'plot':True,
 
 		'train' : True,
@@ -52,9 +52,9 @@ exp={
 	},
 
 	'exp2':{
-		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-5,
-		'training_iters' : 5000,
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-4,
+		'training_iters' : 10000,
 		'step_display' : 50,
 		'step_save' : 500,
 		'exp_name' : 'exp2',
@@ -70,12 +70,12 @@ exp={
 	},
 
 	'exp3':{
-		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-5,
-		'training_iters' : 5000,
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-4,
+		'training_iters' : 10000,
 		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'exp2',
+		'exp_name' : 'exp3',
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.1,
@@ -88,15 +88,14 @@ exp={
 	},
 
 	'exp4':{
-		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-5,
-		'training_iters' : 5000,
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-4,
+		'training_iters' : 10000,
 		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'exp3',
+		'exp_name' : 'exp4',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'lam': 2,
 		'joint_ratio':0.5,
 		'plot':True,
 
@@ -107,15 +106,14 @@ exp={
 	},
 
 	'exp5':{
-		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-5,
-		'training_iters' : 5000,
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-4,
+		'training_iters' : 10000,
 		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'exp4',
+		'exp_name' : 'exp5',
 		'pretrainedStep' : 0,
 		'batch_size':32,
-		'lam': 5,
 		'joint_ratio':0.1,
 		'plot':True,
 

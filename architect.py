@@ -67,6 +67,10 @@ def loss_seg_en(y, logits):
     return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
 
 def loss_seg_norm(y, logits):
+    sumy=tf.reduce_mean(y)
+    return tf.cond(tf.equal(total, 0),lambda: sumy,loss_seg_norm_help(y, logits))
+
+def loss_seg_norm_help(y, logits):     
     if len(y.get_shape().as_list())==4:
         size=(1,1,1,176)
     if len(y.get_shape().as_list())==2:
