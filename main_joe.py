@@ -11,7 +11,7 @@ from save import *
 
 # Dataset Parameters
 print 'Running command: ',sys.argv
-Parameters=sys.argv[2]
+Parameters=sys.argv[1]
 experiment=exp_joe
 if Parameters in experiment:
     settings = experiment[Parameters]
