@@ -5,15 +5,18 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
 from DataLoaderOld import *
-from architect_seg import *
-from exp_seg import *
+from architect_fix import *
+from exp_fix import *
 import sys
 from save import *
+
+joint_ratio_decay = 0.9995
+show_mask = True
 
 # Dataset Parameters
 print 'Running command: ',sys.argv
 Parameters=sys.argv[1]
-experiment=exp_seg
+experiment=exp_fix
 if Parameters in experiment:
     settings = experiment[Parameters]
     print 'Parameters: ',experiment[Parameters]
@@ -22,7 +25,7 @@ else:
 
 # Training Parameters
 learning_rate_class=settings['learning_rate_class']
-learning_rate_seg=settings['learning_rate_seg']
+learning_rate_seg_ratio=settings['learning_rate_seg_ratio']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
@@ -123,17 +126,25 @@ train_phase = tf.placeholder(tf.bool)
 # Construct model
 if selectedmodel=='vgg_seg1':
     myModel = vgg_seg1(x, y, seg_labels, keep_dropout, train_phase)
+elif selectedmodel=='vgg_seg1_mask':
+    myModel = vgg_seg1_mask(x, y, seg_labels, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 
-#TODO: Define loss and optimizer
+# Define loss and optimizer
 prob = myModel.prob_class
 loss_class = myModel.loss_class
 loss_seg = myModel.loss_seg
-loss = loss_seg
+loss_seg_class = myModel.loss_seg_class
+loss_pure_class = myModel.loss_pure_class
+loss = loss_seg + loss_class
 
+weight_mask = tf.get_default_graph().get_tensor_by_name("weight_mask:0")
+mask_optimizer = tf.train.AdamOptimizer(learning_rate=lrc*100.).minimize(loss_class, var_list = [weight_mask])
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
+seg_class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_seg_class)
+pure_class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_pure_class)
 
 # Evaluate model
 accuracy1 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(prob, y, 1), tf.float32))
@@ -171,13 +182,16 @@ with tf.Session(config=config) as sess:
         seg_labels_batch_class = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         while step < training_iters:
 
-            #TODO: decrease learning rate
             # Load a batch of training data
             
             images_batch_seg, seg_labels_batch_seg, _, labels_batch_seg = loader_train_seg.next_batch(batch_size)
 
             images_batch_class, labels_batch_class = loader_train_class.next_batch(batch_size)
             if step % step_display == 0:
+                #TODO: show mask
+                if show_mask:
+                    mask = sess.run(weight_mask, feed_dict={})
+                    print "MASK: ", mask
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on class training set
@@ -198,7 +212,7 @@ with tf.Session(config=config) as sess:
                         ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + 
                         ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_class_accs.append(acc5)
-                train_class_losses.append(l)
+                train_class_losses.append(lc)
 
                  # Calculate batch loss and accuracy on seg training set
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
@@ -235,7 +249,7 @@ with tf.Session(config=config) as sess:
                     images_batch_val, labels_batch_val = loader_val_class.next_batch(batch_size)   
                     seg_labels_batch_val = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
                         
-                    l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
+                    l, acc1, acc5 = sess.run([loss_class, accuracy1, accuracy5], 
                             feed_dict={lrs:learning_rate_seg,
                                 lrc:learning_rate_class,
                                 x: images_batch_val, 
@@ -296,7 +310,6 @@ with tf.Session(config=config) as sess:
                 if plot:
                     a=np.arange(1,len(val_class_accs)+1,1)*step_display
                     
-                    """
                     fig = plt.figure()
                     plt.plot(a,train_class_accs,'-',label='Training Dataset with only class')
                     plt.plot(a,train_seg_accs,'-',label='Training Dataset with seg')
@@ -323,11 +336,10 @@ with tf.Session(config=config) as sess:
                     plt.legend()
                     fig.savefig('./fig/pic_train_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
-                    """
 
                     fig = plt.figure()
                     plt.plot(a,val_seg_losses,'-',label='Seg')
-                    #plt.plot(a,val_class_losses,'-',label='Class')
+                    plt.plot(a,val_class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Validation Loss')
                     plt.legend()
@@ -336,13 +348,12 @@ with tf.Session(config=config) as sess:
                     print 'finish saving figure to view'
             
             # Run optimization op (backprop)
-
-            flip = np.random.uniform(0, 1)
-            if flip<=joint_ratio:
+            #if step < 1000:
+            if step < 100:
+                # purely training seg part
                 images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
-                """
-                sess.run(class_optimizer, 
-                        feed_dict={lrs:learning_rate_seg,
+                sess.run(seg_class_optimizer, 
+                        feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
                             lrc:learning_rate_class,
                             x: images_batch, 
                             y: labels_batch, 
@@ -350,28 +361,89 @@ with tf.Session(config=config) as sess:
                             keep_dropout: dropout, 
                             train_phase: True}
                         )
-                """
-
                 sess.run(seg_optimizer, 
-                        feed_dict={lrs:learning_rate_seg,
+                        feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
                             lrc:learning_rate_class,
                             x: images_batch, 
                             y: labels_batch, 
                             seg_labels: seg_labels_batch, 
                             keep_dropout: dropout, 
                             train_phase: True}
-                        )
-            else:
+                        )#elif step < 4000:
+            elif step < 400:
+                # purely training class part
                 images_batch, seg_labels_batch, labels_batch = images_batch_class, seg_labels_batch_class, labels_batch_class
-                sess.run(class_optimizer, 
-                        feed_dict={lrs:learning_rate_seg,
+                sess.run(pure_class_optimizer, 
+                        feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
                             lrc:learning_rate_class,
                             x: images_batch, 
                             y: labels_batch, 
                             seg_labels: seg_labels_batch, 
                             keep_dropout: dropout, 
                             train_phase: True}
-                        )
+                        ) # elif step<4500
+            elif step < 1000:
+                flip = np.random.uniform(0, 1)
+                if flip<=joint_ratio:
+                    images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
+                    sess.run(mask_optimizer, 
+                            feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
+                                lrc:learning_rate_class,
+                                x: images_batch, 
+                                y: labels_batch, 
+                                seg_labels: seg_labels_batch, 
+                                keep_dropout: dropout, 
+                                train_phase: True}
+                            )
+                else:
+                    images_batch, seg_labels_batch, labels_batch = images_batch_class, seg_labels_batch_class, labels_batch_class
+                    sess.run(mask_optimizer, 
+                            feed_dict={lrs:learning_rate_seg,
+                                lrc:learning_rate_class,
+                                x: images_batch, 
+                                y: labels_batch, 
+                                seg_labels: seg_labels_batch, 
+                                keep_dropout: dropout, 
+                                train_phase: True}
+                            )
+            else:
+                #TODO: decrease learning rate
+                if step > 5500:
+                    joint_ratio = joint_ratio * joint_ratio_decay
+
+                flip = np.random.uniform(0, 1)
+                if flip<=joint_ratio:
+                    images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
+                    sess.run(class_optimizer, 
+                            feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
+                                lrc:learning_rate_class,
+                                x: images_batch, 
+                                y: labels_batch, 
+                                seg_labels: seg_labels_batch, 
+                                keep_dropout: dropout, 
+                                train_phase: True}
+                            )
+
+                    sess.run(seg_optimizer, 
+                            feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
+                                lrc:learning_rate_class,
+                                x: images_batch, 
+                                y: labels_batch, 
+                                seg_labels: seg_labels_batch, 
+                                keep_dropout: dropout, 
+                                train_phase: True}
+                            )
+                else:
+                    images_batch, seg_labels_batch, labels_batch = images_batch_class, seg_labels_batch_class, labels_batch_class
+                    sess.run(class_optimizer, 
+                            feed_dict={lrs:learning_rate_seg,
+                                lrc:learning_rate_class,
+                                x: images_batch, 
+                                y: labels_batch, 
+                                seg_labels: seg_labels_batch, 
+                                keep_dropout: dropout, 
+                                train_phase: True}
+                            )
             step += 1
             
             # Save model
