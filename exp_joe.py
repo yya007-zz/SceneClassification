@@ -8,7 +8,7 @@ exp_joe={
 		'exp_name' : 'exp1',
 		'pretrainedStep' : 0,
 		'batch_size':14,
-		'joint_ratio':0.1,
+		'joint_ratio':0.05,
 		'plot':True,
 
 		'train' : True,
@@ -25,7 +25,7 @@ exp_joe={
 		'exp_name' : 'exp2',
 		'pretrainedStep' : 0,
 		'batch_size':14,
-		'joint_ratio':0.1,
+		'joint_ratio':0.05,
 		'plot':True,
 
 		'train' : True,
@@ -42,7 +42,7 @@ exp_joe={
 		'exp_name' : 'exp3',
 		'pretrainedStep' : 0,
 		'batch_size':14,
-		'joint_ratio':0.5,
+		'joint_ratio':0.05,
 		'plot':True,
 
 		'train' : True,
