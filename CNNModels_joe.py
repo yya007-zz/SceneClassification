@@ -57,7 +57,7 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, n
 
 
     logits_seg = score_layer(fc7_seg, "score_fr_seg",
-                                      num_seg_classes)
+                                      num_classes_seg)
 
     #forking part from seg to classification
     logits_seg_class = rand_init_conv_layer(fc7_seg, "score_seg_class", [7,7,4096,num_classes])
