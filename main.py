@@ -86,7 +86,7 @@ opt_data_train = {
     'perm' : True,
     }
 
-opt_data_val = {
+opt_data_val_seg = {
     'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
     'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
     'data_list': './data/new_val.txt', # MODIFY PATH ACCORDINGLY
@@ -111,7 +111,7 @@ opt_data_test = {
 
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
 loader_train = DataLoaderDiskOld(**opt_data_train)
-loader_val = DataLoaderDisk(**opt_data_val)
+loader_val = DataLoaderDisk(**opt_data_val_seg)
 loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
