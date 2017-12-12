@@ -133,8 +133,8 @@ loss_class = myModel.loss_class
 #loss = loss_seg + loss_class
 loss = loss_class
 
-class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_seg)
-seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_class)
+class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
+seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
 
 # Evaluate model
 accuracy1 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(prob, y, 1), tf.float32))
