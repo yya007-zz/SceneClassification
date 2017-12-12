@@ -42,7 +42,7 @@ batch_size = settings['batch_size']
 
 
 base_learning_rate_class=learning_rate_class
-base_learning_rate_seg=learning_rate_seg
+base_learning_rate_seg=learning_rate_seg_ratio * learning_rate_class
 path_save = './save/'+exp_name+'/'
 start_from=''
 
