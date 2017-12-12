@@ -127,11 +127,11 @@ def VGG_Seg1_Mask(x, keep_dropout, train_phase, num_classes = 100, batch_norm=Tr
     shifted_dist = (seg_dist - min(seg_dist)) / (max(seg_dist) - min(seg_dist)) * 3.5 - 3.5
     mask_init = tf.constant_initializer(value=shifted_dist, dtype=tf.float32)
 
-    weight_mask = tf.get_variable(name="weight_mask_var", initializer=mask_init, shape=[100])
-    weight_mask = tf.minimum(tf.maximum(tf.sigmoid(weight_mask), 0.01), 0.99, name="weight_mask")
+    weight_mask_var = tf.get_variable(name="weight_mask_var", initializer=mask_init, shape=[100])
+    weight_mask = tf.minimum(tf.maximum(tf.sigmoid(weight_mask_var), 0.01), 0.99, name="weight_mask")
     prob_class = prob_pure_class * (1. - weight_mask) + prob_seg_class * weight_mask
 
-    return prob_seg_class, prob_pure_class, prob_class, logits_seg
+    return prob_seg_class, prob_pure_class, prob_class, logits_seg, weight_mask_var
 
 
 def dist(filename):

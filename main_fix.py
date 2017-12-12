@@ -133,14 +133,14 @@ else:
 
 # Define loss and optimizer
 prob = myModel.prob_class
+weight_mask_var = myModel.weight_maks_var
 loss_class = myModel.loss_class
 loss_seg = myModel.loss_seg
 loss_seg_class = myModel.loss_seg_class
 loss_pure_class = myModel.loss_pure_class
 loss = loss_seg + loss_class
 
-weight_mask = tf.get_variable("weight_mask_var")
-mask_optimizer = tf.train.AdamOptimizer(learning_rate=lrc*100.).minimize(loss_class, var_list = [weight_mask])
+mask_optimizer = tf.train.AdamOptimizer(learning_rate=lrc*100.).minimize(loss_class, var_list = [weight_mask_var])
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
 seg_class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_seg_class)
@@ -190,7 +190,7 @@ with tf.Session(config=config) as sess:
             if step % step_display == 0:
                 #TODO: show mask
                 if show_mask:
-                    mask = sess.run(weight_mask, feed_dict={})
+                    mask = sess.run(weight_mask_var, feed_dict={})
                     print "MASK: ", mask
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
