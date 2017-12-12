@@ -8,7 +8,7 @@ exp_joe={
 		'exp_name' : 'exp1',
 		'pretrainedStep' : 0,
 		'batch_size':14,
-		'joint_ratio':0.05,
+		'joint_ratio':0.1,
 		'plot':True,
 
 		'train' : True,
