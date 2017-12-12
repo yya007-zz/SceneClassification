@@ -323,10 +323,9 @@ with tf.Session(config=config) as sess:
             if flip<=joint_ratio:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
                 sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
-                sess.run(seg_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
-            else:
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
-                sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+                                
+            images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
+            sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
             step += 1
             
             # Save model
