@@ -26,6 +26,7 @@ exp={
 		'batch_size':32,
 		'joint_ratio':1,
 		'plot':True,
+		'lr_decay':True,
 
 		'train' : True,
 		'validation' : False,
@@ -44,6 +45,7 @@ exp={
 		'batch_size':32,
 		'joint_ratio':0.5,
 		'plot':True,
+		'lr_decay':True,
 
 		'train' : True,
 		'validation' : True,
@@ -62,6 +64,7 @@ exp={
 		'batch_size':32,
 		'joint_ratio':0.5,
 		'plot':True,
+		'lr_decay':True,
 
 		'train' : True,
 		'validation' : True,
@@ -80,6 +83,7 @@ exp={
 		'batch_size':32,
 		'joint_ratio':0.1,
 		'plot':True,
+		'lr_decay':True,
 
 		'train' : True,
 		'validation' : True,
@@ -98,6 +102,7 @@ exp={
 		'batch_size':32,
 		'joint_ratio':0.5,
 		'plot':True,
+		'lr_decay':True,
 
 		'train' : True,
 		'validation' : True,
@@ -133,6 +138,7 @@ exp={
 		'batch_size':64,
 		'lam': 0.5,
 		'plot':True,
+		'lr_decay':True,
 
 		'train' : False,
 		'validation' : True,
@@ -151,6 +157,7 @@ exp={
 		'batch_size':256,
 		'joint_ratio':0,
 		'plot':True,
+		'lr_decay':False,
 
 		'train' : True,
 		'validation' : False,
