@@ -60,12 +60,7 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, n
                                       num_classes_seg)
 
     #forking part from seg to classification
-    fc7_seg_shape = fc7_seg.get_shape().as_list()
-    dim = 1
-    for d in fc7_seg_shape[1:]:
-        dim *= d
-    flat_fc7_seg = tf.reshape(fc7_seg, [-1, dim])
-    logits_seg_class = score_layer(flat_fc7_seg, "score_seg_class", 100)
+    logits_seg_class = rand_init_fc_layer(fc7_seg, "score_seg_class", 100)
     print "seg class output: ", logits_seg_class.get_shape().as_list()
     prob_seg_class = tf.nn.softmax(logits_seg_class)
     prob_class = tf.add(prob_pure_class, prob_seg_class) / 2.

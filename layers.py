@@ -38,6 +38,35 @@ def conv_layer( bottom, train_phase, name, batch_norm=False):
         _activation_summary(relu)
         return relu
 
+def rand_init_fc_layer(bottom, name, out_size):
+    with tf.variable_scope(name) as scope:
+        bottom_shape = bottom.get_shape().as_list()
+        dim = 1
+        for d in bottom_shape[1:]:
+             dim *= d
+        bottom = tf.reshape(bottom, [-1, dim])
+
+        # get weight
+        stddev = (2. / dim)**0.5
+        weight_init = tf.truncated_normal_initializer(stddev=stddev)
+        filt = tf.get_variable(name="weights", initializer=weight_init, shape=[dim, out_size])
+        if not tf.get_variable_scope().reuse:
+            weight_decay = tf.multiply(tf.nn.l2_loss(filt), wd,
+                                       name='weight_loss')
+            tf.add_to_collection(tf.GraphKeys.REGULARIZATION_LOSSES,
+                                 weight_decay)
+        _variable_summaries(filt)
+        conv = tf.matmul(bottom, filt)
+
+        # get bias
+        bias_init = tf.constant_initializer(value=np.zeros(out_size),
+                                       dtype=tf.float32)
+        conv_bias = tf.get_variable(name="biases", initializer=bias_init, shape=bias_shape)
+        _variable_summaries(conv_bias)
+        bias = tf.nn.bias_add(conv, conv_bias)
+        return bias
+
+
 def fc_layer( bottom, name, weight_use, num_classes=None, relu=True, debug=False, use=""):
     with tf.variable_scope(name) as scope:
         
@@ -107,36 +136,6 @@ def score_layer( bottom, name, num_classes):
         conv = tf.nn.conv2d(bottom, weights, [1, 1, 1, 1], padding='SAME')
         # Apply bias
         conv_biases = _bias_variable([num_classes], constant=0.0)
-        bias = tf.nn.bias_add(conv, conv_biases)
-
-        _activation_summary(bias)
-
-        return bias
-
-def rand_init_conv_layer( bottom, name, shape):
-    # shape = [7,7,in_features,100]
-    with tf.variable_scope(name) as scope:
-        # get number of input channels
-        in_features = bottom.get_shape()[3].value
-        #print name,bottom.get_shape().as_list()
-        # He initialization Sheme
-        if name == "score_fr":
-            num_input = in_features
-            stddev = (2 / num_input)**0.5
-        #elif name == "score_pool4":
-        #    stddev = 0.001
-        #elif name == "score_pool3":
-        #    stddev = 0.0001
-        else:
-            stddev = 0.001
-        # Apply convolution
-        w_decay = wd
-
-        weights = _variable_with_weight_decay(shape, stddev, w_decay,
-                                                   decoder=True)
-        conv = tf.nn.conv2d(bottom, weights, [1, 1, 1, 1], padding='SAME')
-        # Apply bias
-        conv_biases = _bias_variable([shape[-1]], constant=0.0)
         bias = tf.nn.bias_add(conv, conv_biases)
 
         _activation_summary(bias)
