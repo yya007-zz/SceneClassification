@@ -69,7 +69,7 @@ opt_data_train_seg = {
     'test': False
     }
 
-opt_data_train = {
+opt_data_train_class = {
     'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
     'data_list': './data/train.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
@@ -79,7 +79,20 @@ opt_data_train = {
     'perm' : True,
     }
 
-opt_data_val = {
+opt_data_val_seg = {
+    'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/new_val.txt', # MODIFY PATH ACCORDINGLY
+    'load_size': load_size,
+    'fine_size': fine_size,
+    'seg_size': seg_size,
+    'data_mean': data_mean,
+    'randomize': True,
+    'perm' : True,
+    'test': False
+    }
+
+opt_data_val_class = {
     'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
     'data_list': './data/small_val.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
@@ -89,19 +102,11 @@ opt_data_val = {
     'perm' : False,
     }
 
-opt_data_test = {
-    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
-    'data_list': './data/val.txt',   # MODIFY PATH ACCORDINGLY
-    'load_size': load_size,
-    'fine_size': fine_size,
-    'data_mean': data_mean,
-    'randomize': False,
-    'perm' : False
-    }
 
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
-loader_train_class = DataLoaderDiskOld(**opt_data_train)
-loader_val = DataLoaderDiskOld(**opt_data_val)
+loader_train_class = DataLoaderDiskOld(**opt_data_train_class)
+loader_val_seg = DataLoaderDisk(**opt_data_val_seg)
+loader_val_class = DataLoaderDiskOld(**opt_data_val_class)
 #loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
@@ -123,11 +128,9 @@ else:
 
 # Define loss and optimizer
 prob = myModel.prob_class
-loss_seg = myModel.loss_seg
 loss_class = myModel.loss_class
-#TODO: change the losses
+loss_seg = myModel.loss_seg
 loss = loss_seg + loss_class
-#loss = loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
@@ -156,12 +159,14 @@ with tf.Session(config=config) as sess:
 
     if train:
         train_class_accs=[]
+        train_class_losses = []
         train_seg_accs=[]
-        val_accs=[]
-        test_accs=[]
-        seg_losses=[]
-        class_losses=[]
-        val_losses = []
+        train_seg_losses = []
+
+        val_class_accs=[]
+        val_class_losses = []
+        val_seg_accs = []
+        val_seg_losses = []
 
         seg_labels_batch_class = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         while step < training_iters:
@@ -193,6 +198,7 @@ with tf.Session(config=config) as sess:
                         ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + 
                         ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_class_accs.append(acc5)
+                train_class_losses.append(l)
 
                  # Calculate batch loss and accuracy on seg training set
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
@@ -212,15 +218,13 @@ with tf.Session(config=config) as sess:
                         ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + 
                         ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_seg_accs.append(acc5)
+                train_seg_losses.append(l)
                 
-                seg_losses.append(ls)
-                class_losses.append(lc)
 
 
 
-                # Evaluate on the whole validation set
-                print('Evaluation on the whole validation set...')
-                num_batch = loader_val.size()//batch_size+1
+                # Evaluate on the class validation set
+                num_batch = loader_val_class.size()//batch_size+1
                 acc1_total = 0.
                 acc5_total = 0.
                 loss_total = 0.
@@ -228,7 +232,7 @@ with tf.Session(config=config) as sess:
                 loader_val.reset()
 
                 for i in range(num_batch):
-                    images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)   
+                    images_batch_val, labels_batch_val = loader_val_class.next_batch(batch_size)   
                     seg_labels_batch_val = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
                         
                     l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
@@ -248,11 +252,45 @@ with tf.Session(config=config) as sess:
                 acc1 = acc1_total/num_total
                 acc5 = acc5_total/num_total
                 l = loss_total/num_total
-                print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5) + ',Loss = ' + '{:.4f}'.format(l))
-                val_accs.append(acc5)
-                val_losses.append(l)
+                print('Validation Class: Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5) + ',Loss = ' + '{:.4f}'.format(l))
+                val_class_accs.append(acc5)
+                val_class_losses.append(l)
 
-                print "VALIDATION ACCURACIES: ", val_accs
+
+                # Evaluate on the seg validation set
+                num_batch = loader_val_seg.size()//batch_size+1
+                acc1_total = 0.
+                acc5_total = 0.
+                loss_total = 0.
+                num_total = 0.
+                loader_val.reset()
+
+                for i in range(num_batch):
+                    images_batch_val, seg_labels_batch_val, _, labels_batch_val = loader_val_seg.next_batch(batch_size)   
+                        
+                    l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
+                            feed_dict={lrs:learning_rate_seg,
+                                lrc:learning_rate_class,
+                                x: images_batch_val, 
+                                y: labels_batch_val, 
+                                seg_labels: seg_labels_batch_val, 
+                                keep_dropout: 1., 
+                                train_phase: False}
+                            )
+                    acc1_total += acc1 * len(labels_batch_val)
+                    acc5_total += acc5 * len(labels_batch_val)
+                    loss_total += l * len(labels_batch_val)
+                    num_total += len(labels_batch_val)
+                
+                acc1 = acc1_total/num_total
+                acc5 = acc5_total/num_total
+                l = loss_total/num_total
+                print('Validation Seg: Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5) + ',Loss = ' + '{:.4f}'.format(l))
+                val_seg_accs.append(acc5)
+                val_seg_losses.append(l)
+
+
+                print "VALIDATION ACCURACIES: ", val_class_accs
                 print "DATASET WITH ONLY TRAINING ACCURACIES: ", train_class_accs
 
                 if plot:
@@ -261,21 +299,37 @@ with tf.Session(config=config) as sess:
                     fig = plt.figure()
                     plt.plot(a,train_class_accs,'-',label='Training Dataset with only class')
                     plt.plot(a,train_seg_accs,'-',label='Training Dataset with seg')
-                    if validation:
-                        plt.plot(a,val_accs,'-',label='Validation')
                     plt.xlabel('Iteration')
                     plt.ylabel('Accuracy')
                     plt.legend()
-                    fig.savefig('./fig/pic_accuracy_'+str(exp_name)+'.png')   # save the figure to file
+                    fig.savefig('./fig/pic_train_accuracy_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
 
                     fig = plt.figure()
-                    plt.plot(a,val_losses,'-',label='Seg')
-                    #plt.plot(a,class_losses,'-',label='Class')
+                    plt.plot(a,val_class_accs,'-',label='Validation Dataset with only class')
+                    plt.plot(a,val_seg_accs,'-',label='Validation Dataset with seg')
                     plt.xlabel('Iteration')
-                    plt.ylabel('Loss')
+                    plt.ylabel('Accuracy')
                     plt.legend()
-                    fig.savefig('./fig/pic_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    fig.savefig('./fig/pic_val_accuracy_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+
+                    fig = plt.figure()
+                    plt.plot(a,train_seg_losses,'-',label='Seg')
+                    plt.plot(a,train_class_losses,'-',label='Class')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Train Loss')
+                    plt.legend()
+                    fig.savefig('./fig/pic_train_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+
+                    fig = plt.figure()
+                    plt.plot(a,val_seg_losses,'-',label='Seg')
+                    plt.plot(a,val_class_losses,'-',label='Class')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Validation Loss')
+                    plt.legend()
+                    fig.savefig('./fig/pic_val_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
                     print 'finish saving figure to view'
             
@@ -284,7 +338,6 @@ with tf.Session(config=config) as sess:
             flip = np.random.uniform(0, 1)
             if flip<=joint_ratio:
                 images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
-                """
                 sess.run(class_optimizer, 
                         feed_dict={lrs:learning_rate_seg,
                             lrc:learning_rate_class,
@@ -294,7 +347,7 @@ with tf.Session(config=config) as sess:
                             keep_dropout: dropout, 
                             train_phase: True}
                         )
-                """
+
                 sess.run(seg_optimizer, 
                         feed_dict={lrs:learning_rate_seg,
                             lrc:learning_rate_class,

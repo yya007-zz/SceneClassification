@@ -6,7 +6,6 @@ import CNNModels_joe
 class vgg_seg1:
     def __init__(self, x, y, seg_labels, keep_dropout, train_phase):
         self.prob_class, self.logits_seg = CNNModels_joe.VGG_Seg1(x, keep_dropout, train_phase, debug=True)
-        #self.loss = loss_seg(seg_labels, self.logits_seg)
         self.loss_seg = loss_seg_norm(seg_labels, self.logits_seg)
         self.loss_class = loss_class(y, self.prob_class)
 
