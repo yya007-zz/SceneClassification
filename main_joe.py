@@ -190,7 +190,7 @@ with tf.Session(config=config) as sess:
                 #TODO: show mask
                 if show_mask:
                     weight_mask = tf.get_default_graph().get_tensor_by_name("weight_mask:0")
-                    mask = tf.sess.run(weight_mask, feed_dict={})
+                    mask = sess.run(weight_mask, feed_dict={})
                     print "MASK: ", mask
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
