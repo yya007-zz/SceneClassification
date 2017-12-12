@@ -260,7 +260,7 @@ with tf.Session(config=config) as sess:
         while step < training_iters:
 
             if lr_decay:
-                if step < 2500:
+                if step < 3000:
                     learning_rate_class = base_learning_rate_class
                     learning_rate_seg = base_learning_rate_seg
                 else:
