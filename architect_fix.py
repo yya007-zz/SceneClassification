@@ -5,7 +5,7 @@ import CNNModels_fix
 
 class vgg_seg1:
     def __init__(self, x, y, seg_labels, keep_dropout, train_phase):
-        self.prob_seg_class, self.prob_pure_class, self.prob_class, self.logits_seg = CNNModels_joe.VGG_Seg1(x, keep_dropout, train_phase, debug=True)
+        self.prob_seg_class, self.prob_pure_class, self.prob_class, self.logits_seg = CNNModels_fix.VGG_Seg1(x, keep_dropout, train_phase, debug=True)
         self.loss_seg = loss_seg_norm(seg_labels, self.logits_seg)
         self.loss_class = loss_class(y, self.prob_class)
         self.loss_seg_class = loss_class(y, self.prob_seg_class)
@@ -13,7 +13,7 @@ class vgg_seg1:
 
 class vgg_seg1_mask:
     def __init__(self, x, y, seg_labels, keep_dropout, train_phase):
-        self.prob_seg_class, self.prob_pure_class, self.prob_class, self.logits_seg = CNNModels_joe.VGG_Seg1_Mask(x, keep_dropout, train_phase, debug=True)
+        self.prob_seg_class, self.prob_pure_class, self.prob_class, self.logits_seg = CNNModels_fix.VGG_Seg1_Mask(x, keep_dropout, train_phase, debug=True)
         self.loss_seg = loss_seg_norm(seg_labels, self.logits_seg)
         self.loss_class = loss_class(y, self.prob_class)
         self.loss_seg_class = loss_class(y, self.prob_seg_class)
