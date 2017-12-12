@@ -61,7 +61,7 @@ def rand_init_fc_layer(bottom, name, out_size):
         # get bias
         bias_init = tf.constant_initializer(value=np.zeros(out_size),
                                        dtype=tf.float32)
-        conv_bias = tf.get_variable(name="biases", initializer=bias_init, shape=bias_shape)
+        conv_bias = tf.get_variable(name="biases", initializer=bias_init, shape=[out_size])
         _variable_summaries(conv_bias)
         bias = tf.nn.bias_add(conv, conv_bias)
         return bias
