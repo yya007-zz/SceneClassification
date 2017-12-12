@@ -121,7 +121,7 @@ opt_data_val = {
 
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
 loader_train = DataLoaderDiskOld(**opt_data_train)
-loader_val = DataLoaderDisk(**loader_val)
+loader_val = DataLoaderDisk(**opt_data_val)
 loader_val_seg = DataLoaderDisk(**opt_data_val_seg)
 loader_test = DataLoaderDiskOld(**opt_data_test)
 
@@ -301,7 +301,7 @@ with tf.Session(config=config) as sess:
                     fig = plt.figure()
                     plt.plot(a,train_accs,'-',label='Training')
                     if validation:
-                        plt.plot(a,train_seg_accs,'-',label='Training with segm')
+                        # plt.plot(a,train_seg_accs,'-',label='Training with segm')
                         plt.plot(a,val_accs,'-',label='Validation')
                     if test:
                         plt.plot(a,test_accs,'-',label='Test')
