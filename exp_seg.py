@@ -7,7 +7,7 @@ exp_seg={
 		'step_save' : 500,
 		'exp_name' : 'exp1',
 		'pretrainedStep' : 0,
-		'batch_size':15,
+		'batch_size':14,
 		'joint_ratio':1.0,
 		'plot':True,
 

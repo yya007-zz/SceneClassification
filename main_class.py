@@ -5,15 +5,15 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
 from DataLoaderOld import *
-from architect_joe import *
-from exp_joe import *
+from architect_class import *
+from exp_class import *
 import sys
 from save import *
 
 # Dataset Parameters
 print 'Running command: ',sys.argv
 Parameters=sys.argv[1]
-experiment=exp_joe
+experiment=exp_class
 if Parameters in experiment:
     settings = experiment[Parameters]
     print 'Parameters: ',experiment[Parameters]
@@ -130,7 +130,7 @@ else:
 prob = myModel.prob_class
 loss_class = myModel.loss_class
 loss_seg = myModel.loss_seg
-loss = loss_seg + loss_class
+loss = loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
