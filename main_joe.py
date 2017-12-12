@@ -274,7 +274,7 @@ with tf.Session(config=config) as sess:
             
             # Run optimization op (backprop)
 
-            flip = np.random.random_integers(0, 1)
+            flip = np.random.uniform(0, 1)
             if flip<=joint_ratio:
                 images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
                 sess.run(class_optimizer, 
