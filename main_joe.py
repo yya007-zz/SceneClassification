@@ -245,8 +245,8 @@ with tf.Session(config=config) as sess:
                 print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
                 val_accs.append(acc5)
 
-                print val_accs
-                print train_accs
+                print "VALIDATION ACCURACIES: ", val_accs
+                print "DATASET WITH ONLY TRAINING ACCURACIES: ", train_class_accs
 
                 if plot:
                     a=np.arange(1,len(val_accs)+1,1)*step_display
