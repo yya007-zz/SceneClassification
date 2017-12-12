@@ -1,4 +1,4 @@
-exp_joe={
+exp_class={
 	'exp1':{
 		'learning_rate_class' : 1e-5,
 		'learning_rate_seg' : 1e-5,
@@ -7,8 +7,8 @@ exp_joe={
 		'step_save' : 500,
 		'exp_name' : 'exp1',
 		'pretrainedStep' : 0,
-		'batch_size':16,
-		'joint_ratio':0.5,
+		'batch_size':14,
+		'joint_ratio':1.0,
 		'plot':True,
 
 		'train' : True,

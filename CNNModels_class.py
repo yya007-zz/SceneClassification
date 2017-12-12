@@ -65,5 +65,5 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, n
     prob_seg_class = tf.nn.softmax(logits_seg_class)
     prob_class = tf.add(prob_pure_class, prob_seg_class) / 2.
 
-    return prob_pure_class, logits_seg
+    return prob_seg_class, logits_seg
     #return logits_pure_class, logits_seg

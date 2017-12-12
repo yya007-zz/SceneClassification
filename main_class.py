@@ -296,6 +296,7 @@ with tf.Session(config=config) as sess:
                 if plot:
                     a=np.arange(1,len(val_class_accs)+1,1)*step_display
                     
+                    """
                     fig = plt.figure()
                     plt.plot(a,train_class_accs,'-',label='Training Dataset with only class')
                     plt.plot(a,train_seg_accs,'-',label='Training Dataset with seg')
@@ -304,16 +305,18 @@ with tf.Session(config=config) as sess:
                     plt.legend()
                     fig.savefig('./fig/pic_train_accuracy_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
+                    """
 
                     fig = plt.figure()
                     plt.plot(a,val_class_accs,'-',label='Validation Dataset with only class')
-                    plt.plot(a,val_seg_accs,'-',label='Validation Dataset with seg')
+                    #plt.plot(a,val_seg_accs,'-',label='Validation Dataset with seg')
                     plt.xlabel('Iteration')
                     plt.ylabel('Accuracy')
                     plt.legend()
                     fig.savefig('./fig/pic_val_accuracy_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
 
+                    """
                     fig = plt.figure()
                     plt.plot(a,train_seg_losses,'-',label='Seg')
                     plt.plot(a,train_class_losses,'-',label='Class')
@@ -322,9 +325,10 @@ with tf.Session(config=config) as sess:
                     plt.legend()
                     fig.savefig('./fig/pic_train_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
+                    """
 
                     fig = plt.figure()
-                    plt.plot(a,val_seg_losses,'-',label='Seg')
+                    #plt.plot(a,val_seg_losses,'-',label='Seg')
                     plt.plot(a,val_class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Validation Loss')
@@ -348,6 +352,7 @@ with tf.Session(config=config) as sess:
                             train_phase: True}
                         )
 
+                """
                 sess.run(seg_optimizer, 
                         feed_dict={lrs:learning_rate_seg,
                             lrc:learning_rate_class,
@@ -357,6 +362,7 @@ with tf.Session(config=config) as sess:
                             keep_dropout: dropout, 
                             train_phase: True}
                         )
+                """
             else:
                 images_batch, seg_labels_batch, labels_batch = images_batch_class, seg_labels_batch_class, labels_batch_class
                 sess.run(class_optimizer, 
