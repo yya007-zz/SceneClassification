@@ -81,16 +81,13 @@ opt_data_train = {
     }
 
 opt_data_val = {
-    'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
-    'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
-    'data_list': './data/new_val.txt', # MODIFY PATH ACCORDINGLY
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/small_val.txt', # MODIFY PATH ACCORDINGLY
     'load_size': load_size,
     'fine_size': fine_size,
-    'seg_size': seg_size,
     'data_mean': data_mean,
     'randomize': False,
     'perm' : False,
-    'test': False
     }
 
 opt_data_test = {
@@ -105,7 +102,7 @@ opt_data_test = {
 
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
 loader_train = DataLoaderDiskOld(**opt_data_train)
-loader_val = DataLoaderDisk(**opt_data_val)
+loader_val = DataLoaderDiskOld(**opt_data_val)
 loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
@@ -173,7 +170,9 @@ with tf.Session(config=config) as sess:
 
         for i in range(num_batch):
             if mode=='val':
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)   
+                images_batch, labels_batch = loader.next_batch(batch_size)   
+                seg_labels_batch = seg_labels_batch_empty
+                obj_class_batch = obj_class_batch_empty
                 if debug:
                     acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, keep_dropout: 1., train_phase: False})
                     print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
