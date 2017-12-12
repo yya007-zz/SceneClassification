@@ -133,7 +133,7 @@ else:
 
 # Define loss and optimizer
 prob = myModel.prob_class
-weight_mask_var = myModel.weight_maks_var
+weight_mask_var = myModel.weight_mask_var
 loss_class = myModel.loss_class
 loss_seg = myModel.loss_seg
 loss_seg_class = myModel.loss_seg_class
