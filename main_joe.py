@@ -161,6 +161,7 @@ with tf.Session(config=config) as sess:
         test_accs=[]
         seg_losses=[]
         class_losses=[]
+        val_losses = []
 
         seg_labels_batch_class = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         while step < training_iters:
@@ -222,13 +223,15 @@ with tf.Session(config=config) as sess:
                 num_batch = loader_val.size()//batch_size+1
                 acc1_total = 0.
                 acc5_total = 0.
+                loss_total = 0.
+                num_total = 0.
                 loader_val.reset()
 
                 for i in range(num_batch):
                     images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)   
                     seg_labels_batch_val = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
                         
-                    acc1, acc5 = sess.run([accuracy1, accuracy5], 
+                    l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
                             feed_dict={lrs:learning_rate_seg,
                                 lrc:learning_rate_class,
                                 x: images_batch_val, 
@@ -237,13 +240,17 @@ with tf.Session(config=config) as sess:
                                 keep_dropout: 1., 
                                 train_phase: False}
                             )
-                    acc1_total += acc1
-                    acc5_total += acc5
+                    acc1_total += acc1 * len(labels_batch_val)
+                    acc5_total += acc5 * len(labels_batch_val)
+                    loss_total += l * len(labels_batch_val)
+                    num_total += len(labels_batch_val)
                 
-                acc1 = acc1_total/num_batch
-                acc5 = acc5_total/num_batch
-                print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                acc1 = acc1_total/num_total
+                acc5 = acc5_total/num_total
+                l = loss_total/num_total
+                print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5) + ',Loss = ' + '{:.4f}'.format(l))
                 val_accs.append(acc5)
+                val_losses.append(l)
 
                 print "VALIDATION ACCURACIES: ", val_accs
                 print "DATASET WITH ONLY TRAINING ACCURACIES: ", train_class_accs
@@ -263,7 +270,7 @@ with tf.Session(config=config) as sess:
                     plt.close(fig)
 
                     fig = plt.figure()
-                    plt.plot(a,seg_losses,'-',label='Seg')
+                    plt.plot(a,val_losses,'-',label='Seg')
                     #plt.plot(a,class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Loss')
