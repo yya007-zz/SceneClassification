@@ -20,7 +20,6 @@ if Parameters in experiment:
 else:
     raise ValueError(Parameters,' no dict of parameters found')
 
-debug = False
 # Training Parameters
 learning_rate_class=settings['learning_rate_class']
 learning_rate_seg=settings['learning_rate_seg']
@@ -101,15 +100,14 @@ opt_data_test = {
     }
 
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
-loader_train = DataLoaderDiskOld(**opt_data_train)
+loader_train_class = DataLoaderDiskOld(**opt_data_train)
 loader_val = DataLoaderDiskOld(**opt_data_val)
-loader_test = DataLoaderDiskOld(**opt_data_test)
+#loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, num_seg_class])
-obj_class = tf.placeholder(tf.float32, [None, num_seg_class])
 y = tf.placeholder(tf.int64, None)
 lrc = tf.placeholder(tf.float32, None)
 lrs = tf.placeholder(tf.float32, None)
@@ -127,6 +125,7 @@ else:
 prob = myModel.prob_class
 loss_seg = myModel.loss_seg
 loss_class = myModel.loss_class
+#TODO: change the losses
 #loss = loss_seg + loss_class
 loss = loss_class
 
@@ -143,9 +142,6 @@ init = tf.global_variables_initializer()
 # define saver
 saver = tf.train.Saver()
 
-# define summary writer
-#writer = tf.train.SummaryWriter('.', graph=tf.get_default_graph())
-
 # Launch the graph
 config = tf.ConfigProto()
 config.gpu_options.allow_growth=True
@@ -156,101 +152,98 @@ with tf.Session(config=config) as sess:
     else:
         sess.run(init)
 
-    def use_evaluation(loader, mode):
-        t=time.time()
-        # Evaluate on the whole validation set
-        print('Evaluation on the whole validation set...')
-        num_batch = loader.size()//batch_size+1
-        acc1_total = 0.
-        acc5_total = 0.
-        loader.reset()
-        
-        seg_labels_batch_empty = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
-        obj_class_batch_empty = np.zeros([batch_size, num_seg_class])
-
-        for i in range(num_batch):
-            if mode=='val':
-                images_batch, labels_batch = loader.next_batch(batch_size)   
-                seg_labels_batch = seg_labels_batch_empty
-                obj_class_batch = obj_class_batch_empty
-                if debug:
-                    acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, keep_dropout: 1., train_phase: False})
-                    print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-        
-            elif mode == 'test':
-                images_batch, labels_batch = loader.next_batch(batch_size)
-                seg_labels_batch = seg_labels_batch_empty
-                obj_class_batch = obj_class_batch_empty
-                
-            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False})
-            acc1_total += acc1
-            acc5_total += acc5
-            if debug:
-                print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-        
-        acc1_total /= num_batch
-        acc5_total /= num_batch
-        t=int(time.time()-t)
-        if debug:
-            print('used'+str(t)+'s to validate')
-        print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
-        return acc1_total,acc5_total
-    
-    def use_validation():
-        if not validation:
-            return 0,0
-        acc1_total, acc5_total = use_evaluation(loader_val,'val')
-        return acc1_total,acc5_total
-
-    def use_test():
-        if not test:
-            return 0,0
-        acc1_total, acc5_total = use_evaluation(loader_test,'test')
-        return acc1_total,acc5_total
-
     step = 0
 
     if train:
-        train_accs=[]
+        train_class_accs=[]
         train_seg_accs=[]
         val_accs=[]
         test_accs=[]
         seg_losses=[]
         class_losses=[]
-        lr_s=[]
 
-        seg_labels_batch_1 = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
-        obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
+        seg_labels_batch_class = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         while step < training_iters:
 
             #TODO: decrease learning rate
             # Load a batch of training data
             
-            images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
+            images_batch_seg, seg_labels_batch_seg, _, labels_batch_seg = loader_train_seg.next_batch(batch_size)
 
-            images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
+            images_batch_class, labels_batch_class = loader_train_class.next_batch(batch_size)
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-                # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, keep_dropout: 1., train_phase: False}) 
-                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-                train_accs.append(acc5)
 
-                 # Calculate batch loss and accuracy on training set
-                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, keep_dropout: 1., train_phase: False}) 
-                print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                # Calculate batch loss and accuracy on class training set
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
+                        feed_dict={lrs:learning_rate_seg, 
+                            lrc:learning_rate_class, 
+                            x: images_batch_class, 
+                            y: labels_batch_class, 
+                            seg_labels: seg_labels_batch_class, 
+                            keep_dropout: 1., 
+                            train_phase: False}
+                        ) 
+                print('-Iter ' + str(step) + 
+                        ', Class Train Dataset' + 
+                        ', Training Loss= ' + '{:.6f}'.format(l) +
+                        ', Class Loss= ' + '{:.6f}'.format(lc) + 
+                        ', Seg Loss= ' + '{:.6f}'.format(ls) + 
+                        ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + 
+                        ', Top5 = ' + '{:.4f}'.format(acc5))
+                train_class_accs.append(acc5)
+
+                 # Calculate batch loss and accuracy on seg training set
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
+                        feed_dict={lrs:learning_rate_seg,
+                            lrc:learning_rate_class,
+                            x: images_batch_seg, 
+                            y: labels_batch_seg, 
+                            seg_labels: seg_labels_batch_seg, 
+                            keep_dropout: 1., 
+                            train_phase: False}
+                        ) 
+                print('-Iter ' + str(step) + 
+                        ', Seg Train Dataset' + 
+                        ', Training Loss= ' + '{:.6f}'.format(l) +
+                        ', Class Loss= ' + '{:.6f}'.format(lc) + 
+                        ', Seg Loss= ' + '{:.6f}'.format(ls) + 
+                        ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + 
+                        ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_seg_accs.append(acc5)
                 
                 seg_losses.append(ls)
                 class_losses.append(lc)
 
 
-                acc1, acc5=use_validation()
-                val_accs.append(acc5)
-                acc1, acc5=use_test()
-                test_accs.append(acc5)
 
-                lr_s.append(learning_rate_class)
+                # Evaluate on the whole validation set
+                print('Evaluation on the whole validation set...')
+                num_batch = loader_val.size()//batch_size+1
+                acc1_total = 0.
+                acc5_total = 0.
+                loader_val.reset()
+
+                for i in range(num_batch):
+                    images_batch_val, labels_batch_val = loader_val.next_batch(batch_size)   
+                    seg_labels_batch_val = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+                        
+                    acc1, acc5 = sess.run([accuracy1, accuracy5], 
+                            feed_dict={lrs:learning_rate_seg,
+                                lrc:learning_rate_class,
+                                x: images_batch_val, 
+                                y: labels_batch_val, 
+                                seg_labels: seg_labels_batch_val, 
+                                keep_dropout: 1., 
+                                train_phase: False}
+                            )
+                    acc1_total += acc1
+                    acc5_total += acc5
+                
+                acc1 = acc1_total/num_batch
+                acc5 = acc5_total/num_batch
+                print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                val_accs.append(acc5)
 
                 print val_accs
                 print train_accs
@@ -259,16 +252,14 @@ with tf.Session(config=config) as sess:
                     a=np.arange(1,len(val_accs)+1,1)*step_display
                     
                     fig = plt.figure()
-                    plt.plot(a,train_accs,'-',label='Training')
-                    plt.plot(a,train_seg_accs,'-',label='Training with segm')
+                    plt.plot(a,train_class_accs,'-',label='Training Dataset with only class')
+                    plt.plot(a,train_seg_accs,'-',label='Training Dataset with seg')
                     if validation:
                         plt.plot(a,val_accs,'-',label='Validation')
-                    if test:
-                        plt.plot(a,test_accs,'-',label='Test')
                     plt.xlabel('Iteration')
                     plt.ylabel('Accuracy')
                     plt.legend()
-                    fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
+                    fig.savefig('./fig/pic_accuracy_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
 
                     fig = plt.figure()
@@ -280,26 +271,41 @@ with tf.Session(config=config) as sess:
                     fig.savefig('./fig/pic_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
                     print 'finish saving figure to view'
-
-                    fig = plt.figure()
-                    plt.plot(a,lr_s,'-',label='Seg')
-                    plt.xlabel('Iteration')
-                    plt.ylabel('Learning Rate')
-                    plt.legend()
-                    fig.savefig('./fig/pic_lr_'+str(exp_name)+'.png')   # save the figure to file
-                    plt.close(fig)
-                    print 'finish saving figure to view'
             
             # Run optimization op (backprop)
 
             flip = np.random.random_integers(0, 1)
             if flip<=joint_ratio:
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
-                sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
-                sess.run(seg_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+                images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
+                sess.run(class_optimizer, 
+                        feed_dict={lrs:learning_rate_seg,
+                            lrc:learning_rate_class,
+                            x: images_batch, 
+                            y: labels_batch, 
+                            seg_labels: seg_labels_batch, 
+                            keep_dropout: dropout, 
+                            train_phase: True}
+                        )
+                sess.run(seg_optimizer, 
+                        feed_dict={lrs:learning_rate_seg,
+                            lrc:learning_rate_class,
+                            x: images_batch, 
+                            y: labels_batch, 
+                            seg_labels: seg_labels_batch, 
+                            keep_dropout: dropout, 
+                            train_phase: True}
+                        )
             else:
-                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
-                sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+                images_batch, seg_labels_batch, labels_batch = images_batch_class, seg_labels_batch_class, labels_batch_class
+                sess.run(class_optimizer, 
+                        feed_dict={lrs:learning_rate_seg,
+                            lrc:learning_rate_class,
+                            x: images_batch, 
+                            y: labels_batch, 
+                            seg_labels: seg_labels_batch, 
+                            keep_dropout: dropout, 
+                            train_phase: True}
+                        )
             step += 1
             
             # Save model
@@ -307,8 +313,3 @@ with tf.Session(config=config) as sess:
                 saver.save(sess, path_save, global_step=step+pretrainedStep)
                 print('Model saved at Iter %d !' %(step))
         print('Optimization Finished!')
-
-    
-    use_validation()
-    use_test()
-
