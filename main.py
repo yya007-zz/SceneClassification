@@ -243,6 +243,8 @@ with tf.Session(config=config) as sess:
         return acc1_total,acc5_total
 
     step = 0
+    train_class=0
+    train_seg=0
 
     if train:
         train_accs=[]
@@ -271,6 +273,7 @@ with tf.Session(config=config) as sess:
             images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+                print('Train Class',train_class,'Train Seg',train_seg)
                 # Calculate batch loss and accuracy on training set
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, keep_dropout: 1., train_phase: False}) 
                 print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
@@ -338,11 +341,13 @@ with tf.Session(config=config) as sess:
             if flip<joint_ratio:
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
                 sess.run(seg_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})                
+                train_seg+=1
             
             images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
             sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
             step += 1
-            
+            train_class+=1
+
             # Save model
             if step % step_save == 0 or step==1:
                 saver.save(sess, path_save, global_step=step+pretrainedStep)
