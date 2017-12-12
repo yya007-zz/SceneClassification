@@ -62,7 +62,7 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, n
     #forking part from seg to classification
     fc7_seg_shape = fc7_seg.get_shape().as_list()
     dim = 1
-    for d in shape[1:]:
+    for d in fc7_seg_shape[1:]:
         dim *= d
     flat_fc7_seg = tf.reshape(fc7_seg, [-1, dim])
     logits_seg_class = score_layer(flat_fc7_seg, "score_seg_class", 100)
