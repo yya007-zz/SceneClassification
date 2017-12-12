@@ -152,7 +152,7 @@ exp={
 		'training_iters' : 40000,
 		'step_display' : 50,
 		'step_save' : 5000,
-		'exp_name' : 'exp1',
+		'exp_name' : 'baseline',
 		'pretrainedStep' : 0,
 		'batch_size':256,
 		'joint_ratio':0,
