@@ -294,7 +294,7 @@ with tf.Session(config=config) as sess:
                 print "DATASET WITH ONLY TRAINING ACCURACIES: ", train_class_accs
 
                 if plot:
-                    a=np.arange(1,len(val_accs)+1,1)*step_display
+                    a=np.arange(1,len(val_class_accs)+1,1)*step_display
                     
                     fig = plt.figure()
                     plt.plot(a,train_class_accs,'-',label='Training Dataset with only class')
