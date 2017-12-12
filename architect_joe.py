@@ -14,8 +14,10 @@ def loss_seg_norm(y, logits):
     newy = y/tf.tile(tf.expand_dims(tf.reduce_sum(y,axis=-1), axis=-1), (1,1,1,176))
     return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=newy, logits=logits))
 
-def loss_class(y, prob):
-    newy = tf.one_hot(y, 100)
-    return -tf.reduce_mean(tf.reduce_sum(newy * tf.log(prob + 1e-8), axis=-1))
+#def loss_class(y, prob):
+#    newy = tf.one_hot(y, 100)
+#    return -tf.reduce_mean(tf.reduce_sum(newy * tf.log(prob + 1e-8), axis=-1))
 
+def loss_class(y, prob):
+    return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=prob))
 
