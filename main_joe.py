@@ -229,7 +229,7 @@ with tf.Session(config=config) as sess:
                 acc5_total = 0.
                 loss_total = 0.
                 num_total = 0.
-                loader_val.reset()
+                loader_val_class.reset()
 
                 for i in range(num_batch):
                     images_batch_val, labels_batch_val = loader_val_class.next_batch(batch_size)   
@@ -263,7 +263,7 @@ with tf.Session(config=config) as sess:
                 acc5_total = 0.
                 loss_total = 0.
                 num_total = 0.
-                loader_val.reset()
+                loader_val_seg.reset()
 
                 for i in range(num_batch):
                     images_batch_val, seg_labels_batch_val, _, labels_batch_val = loader_val_seg.next_batch(batch_size)   
