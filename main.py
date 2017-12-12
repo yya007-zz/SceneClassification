@@ -167,6 +167,7 @@ loss_class = myModel.loss_class
 loss = loss_seg+loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
+print(loss_seg.get_shape().as_list())
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
 
 # Evaluate model
@@ -258,12 +259,12 @@ with tf.Session(config=config) as sess:
         while step < training_iters:
 
             if lr_decay:
-                if step < 1000:
+                if step < 2500:
                     learning_rate_class = base_learning_rate_class
                     learning_rate_seg = base_learning_rate_seg
                 else:
-                    learning_rate_class = 0.999 * learning_rate_class
-                    learning_rate_seg = 0.999 * learning_rate_seg
+                    learning_rate_class = 0.9995 * learning_rate_class
+                    learning_rate_seg = 0.9995 * learning_rate_seg
             # Load a batch of training data
             
             images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
