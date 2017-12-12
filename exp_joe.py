@@ -1,7 +1,7 @@
 exp_joe={
 	'exp1':{
 		'learning_rate_class' : 1e-5,
-		'learning_rate_seg' : 1e-6,
+		'learning_rate_seg' : 1e-10,
 		'training_iters' : 10000,
 		'step_display' : 50,
 		'step_save' : 500,
