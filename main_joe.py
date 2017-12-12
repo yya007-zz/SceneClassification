@@ -198,7 +198,7 @@ with tf.Session(config=config) as sess:
                         ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + 
                         ', Top5 = ' + '{:.4f}'.format(acc5))
                 train_class_accs.append(acc5)
-                train_class_losses.append(l)
+                train_class_losses.append(lc)
 
                  # Calculate batch loss and accuracy on seg training set
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
@@ -235,7 +235,7 @@ with tf.Session(config=config) as sess:
                     images_batch_val, labels_batch_val = loader_val_class.next_batch(batch_size)   
                     seg_labels_batch_val = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
                         
-                    l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
+                    l, acc1, acc5 = sess.run([loss_class, accuracy1, accuracy5], 
                             feed_dict={lrs:learning_rate_seg,
                                 lrc:learning_rate_class,
                                 x: images_batch_val, 
