@@ -273,7 +273,7 @@ with tf.Session(config=config) as sess:
                     plt.close(fig)
 
                     fig = plt.figure()
-                    plt.plot(a,seg_losses,'-',label='Seg')
+                    #plt.plot(a,seg_losses,'-',label='Seg')
                     plt.plot(a,class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Loss')
