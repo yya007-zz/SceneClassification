@@ -193,7 +193,7 @@ def VGG_Seg1_Fix_Mask(x, keep_dropout, train_phase, num_classes = 100, batch_nor
     #introduce mask
     seg_dist = dist('./data/new_train.txt')
     shifted_dist = (seg_dist - min(seg_dist)) / (max(seg_dist) - min(seg_dist)) * 0.5
-    weight_mask = tf.constant(shifted_dist, name="weight_mask")
+    weight_mask = tf.constant(shifted_dist, dtype=tf.float32,name="weight_mask")
     prob_class = prob_pure_class * (1. - weight_mask) + prob_seg_class * weight_mask
 
     return prob_class, logits_seg
