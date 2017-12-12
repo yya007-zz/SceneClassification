@@ -133,7 +133,7 @@ prob = myModel.prob_class
 loss_seg = myModel.loss_seg
 loss_class = myModel.loss_class
 #loss = loss_seg + loss_class
-loss = loss_seg
+loss = loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_seg)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_class)
