@@ -10,6 +10,9 @@ from exp_joe import *
 import sys
 from save import *
 
+joint_ratio_decay = 0.9995
+show_mask = True
+
 # Dataset Parameters
 print 'Running command: ',sys.argv
 Parameters=sys.argv[1]
@@ -176,12 +179,19 @@ with tf.Session(config=config) as sess:
         while step < training_iters:
 
             #TODO: decrease learning rate
+            if step > 1000:
+                joint_ratio = joint_ratio * joint_ratio_decay
             # Load a batch of training data
             
             images_batch_seg, seg_labels_batch_seg, _, labels_batch_seg = loader_train_seg.next_batch(batch_size)
 
             images_batch_class, labels_batch_class = loader_train_class.next_batch(batch_size)
             if step % step_display == 0:
+                #TODO: show mask
+                if show_mask:
+                    weight_mask = tf.get_default_graph().get_tensor_by_name("weight_mask")
+                    mask = tf.sess.run(weight_mask, feed_dict={})
+                    print "MASK: ", mask
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
                 # Calculate batch loss and accuracy on class training set
