@@ -8,8 +8,14 @@ import tensorflow as tf
 
 from layers import *
 
+def VGG_Seg1(x, keep_dropout, train_phase, num_seg_classes, batch_norm=True, seg=False, random_init_seg_score_fr=False,
+          debug=False):
+    with tf.name_scope('Processing'):
+        if debug:
+            x = tf.Print(x, [tf.shape(x)],
+                           message='Shape of input image: ',
+                           summarize=4, first_n=1)
 
-def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, num_classes_seg=176, debug=False):
     conv1_1 = conv_layer(x, train_phase, "conv1_1",batch_norm)
     conv1_2 = conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
     pool1 = max_pool(conv1_2, 'pool1', debug)
@@ -33,21 +39,7 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, n
     conv5_3 = conv_layer(conv5_2, train_phase, "conv5_3",batch_norm)
     pool5 = max_pool(conv5_3, 'pool5', debug)
 
-    # pure classification part
-    fc6 = fc_layer(pool5, "fc6", "fc6", use="vgg")
-    if batch_norm:
-        fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
-    fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
-   
-    fc7 = fc_layer(fc6, "fc7", "fc7", use="vgg")
-    if batch_norm:
-        fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
-    fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
-
-    logits_pure_class = fc_layer(fc7, "score_pure_class", "score_fr", num_classes=num_classes,relu=False,use="vgg")
-    prob_pure_class = tf.nn.softmax(logits_pure_class)
-
-    # segmentation part of network
+    # segmentation final 3 layers
     fc6_seg = fc_layer(pool5, "fc6_seg", "fc6", use="seg")
     fc6_seg = tf.cond(train_phase, lambda: tf.nn.dropout(fc6_seg, keep_dropout), lambda:fc6_seg)
 
@@ -56,14 +48,12 @@ def VGG_Seg1(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, n
     fc7_seg = tf.cond(train_phase, lambda: tf.nn.dropout(fc7_seg, keep_dropout), lambda:fc7_seg)
 
 
-    logits_seg = score_layer(fc7_seg, "score_fr_seg",
-                                      num_seg_classes)
+    if random_init_seg_score_fr:
+        logits_seg = score_layer(fc7_seg, "score_fr_seg",
+                                          num_seg_classes)
+    else:
+        logits_seg = fc_layer(fc7_seg, "score_fr_seg", "score_fr",
+                                       num_classes=num_seg_classes,
+                                       relu=False)
 
-    #forking part from seg to classification
-    logits_seg_class = rand_init_conv_layer(fc7_seg, "score_seg_class", [7,7,4096,num_classes])
-    print "seg class output: ", logits_seg_class.get_shape().as_list()
-    prob_seg_class = tf.nn.softmax(logits_seg_class)
-    prob_class = tf.add(prob_pure_class, prob_seg_class) / 2.
-
-    #return prob_class, logits_seg
-    return prob_pure_class, logits_seg
+    return logits_seg

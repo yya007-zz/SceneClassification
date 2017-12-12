@@ -4,7 +4,10 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
+from DataLoaderOld import *
 from architect_joe import *
+from exp import *
+from exp2 import *
 from exp_joe import *
 import sys
 from save import *
@@ -21,7 +24,8 @@ else:
 
 debug = False
 # Training Parameters
-learning_rate = settings['learning_rate']
+learning_rate_class=settings['learning_rate_class']
+learning_rate_seg=settings['learning_rate_seg']
 training_iters = settings['training_iters']
 step_display = settings['step_display']
 step_save = settings['step_save']
@@ -30,11 +34,15 @@ pretrainedStep = settings['pretrainedStep']
 selectedmodel= settings['selectedmodel']
 plot=settings['plot']
 
+joint_ratio= settings['joint_ratio']
 train = settings['train']
 validation = settings['validation']
 test = settings['test']
 batch_size = settings['batch_size']
 
+
+base_learning_rate_class=learning_rate_class
+base_learning_rate_seg=learning_rate_seg
 path_save = './save/'+exp_name+'/'
 start_from=''
 
@@ -64,6 +72,16 @@ opt_data_train_seg = {
     'test': False
     }
 
+opt_data_train = {
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/train.txt', # MODIFY PATH ACCORDINGLY
+    'load_size': load_size,
+    'fine_size': fine_size,
+    'data_mean': data_mean,
+    'randomize': True,
+    'perm' : True,
+    }
+
 opt_data_val = {
     'images_root': './data/images/',   # MODIFY PATH ACCORDINGLY
     'seg_labels_root': './data/seg_labels/',   # MODIFY PATH ACCORDINGLY
@@ -77,30 +95,52 @@ opt_data_val = {
     'test': False
     }
 
+opt_data_test = {
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/val.txt',   # MODIFY PATH ACCORDINGLY
+    'load_size': load_size,
+    'fine_size': fine_size,
+    'data_mean': data_mean,
+    'randomize': False,
+    'perm' : False
+    }
+
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
+loader_train = DataLoaderDiskOld(**opt_data_train)
 loader_val = DataLoaderDisk(**opt_data_val)
+loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
 # tf Graph input
 x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, num_seg_class])
-
+obj_class = tf.placeholder(tf.float32, [None, num_seg_class])
+y = tf.placeholder(tf.int64, None)
+lrc = tf.placeholder(tf.float32, None)
+lrs = tf.placeholder(tf.float32, None)
 
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
 if selectedmodel=='vgg_seg1':
-    myModel = vgg_seg1(x, seg_labels, keep_dropout, train_phase)
+    myModel = vgg_seg1(x, y, seg_labels, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 
 # Define loss and optimizer
-logits_seg= myModel.logits_seg
-loss = myModel.loss
+prob = myModel.prob_class
+loss_seg = myModel.loss_seg
+loss_class = myModel.loss_class
+#loss = loss_seg + loss_class
+loss = loss_seg
 
-seg_optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
+class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_seg)
+seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_class)
 
+# Evaluate model
+accuracy1 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(prob, y, 1), tf.float32))
+accuracy5 = tf.reduce_mean(tf.cast(tf.nn.in_top_k(prob, y, 5), tf.float32))
 
 # define initialization
 init = tf.global_variables_initializer()
@@ -121,71 +161,148 @@ with tf.Session(config=config) as sess:
     else:
         sess.run(init)
 
+    def use_evaluation(loader, mode):
+        t=time.time()
+        # Evaluate on the whole validation set
+        print('Evaluation on the whole validation set...')
+        num_batch = loader.size()//batch_size+1
+        acc1_total = 0.
+        acc5_total = 0.
+        loader.reset()
+        
+        seg_labels_batch_empty = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+        obj_class_batch_empty = np.zeros([batch_size, num_seg_class])
+
+        for i in range(num_batch):
+            if mode=='val':
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)   
+                if debug:
+                    acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, keep_dropout: 1., train_phase: False})
+                    print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+        
+            elif mode == 'test':
+                images_batch, labels_batch = loader.next_batch(batch_size)
+                seg_labels_batch = seg_labels_batch_empty
+                obj_class_batch = obj_class_batch_empty
+                
+            acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: 1., train_phase: False})
+            acc1_total += acc1
+            acc5_total += acc5
+            if debug:
+                print('Validation Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+        
+        acc1_total /= num_batch
+        acc5_total /= num_batch
+        t=int(time.time()-t)
+        if debug:
+            print('used'+str(t)+'s to validate')
+        print('Evaluation Finished! Accuracy Top1 = ' + '{:.4f}'.format(acc1_total) + ', Top5 = ' + '{:.4f}'.format(acc5_total))
+        return acc1_total,acc5_total
+    
     def use_validation():
+        if not validation:
+            return 0,0
+        acc1_total, acc5_total = use_evaluation(loader_val,'val')
+        return acc1_total,acc5_total
+
+    def use_test():
+        if not test:
+            return 0,0
+        acc1_total, acc5_total = use_evaluation(loader_test,'test')
         return acc1_total,acc5_total
 
     step = 0
 
     if train:
-        val_losses = []
-        losses=[]
+        train_accs=[]
+        train_seg_accs=[]
+        val_accs=[]
+        test_accs=[]
+        seg_losses=[]
+        class_losses=[]
+        lr_s=[]
 
+        seg_labels_batch_1 = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
+        obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
         while step < training_iters:
+
+            #TODO: decrease learning rate
             # Load a batch of training data
             
-            images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader_train_seg.next_batch(batch_size)
-            #seg_labels_batch = (seg_labels_batch - 0.5)*2
+            images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2 = loader_train_seg.next_batch(batch_size)
+
+            images_batch_1, labels_batch_1 = loader_train.next_batch(batch_size)
             if step % step_display == 0:
                 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-                
                 # Calculate batch loss and accuracy on training set
-                l, = sess.run([loss], 
-                        feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: 1., train_phase: False}) 
-                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.10f}'.format(l))
-                losses.append(l)
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch_1, y: labels_batch_1, seg_labels: seg_labels_batch_1, obj_class: obj_class_batch_1, keep_dropout: 1., train_phase: False}) 
+                print('-Iter ' + str(step) + ', Training Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                train_accs.append(acc5)
 
-                # Evaluate on the whole validation set
-                print('Evaluation on the whole validation set...')
-                num_batch = loader_val.size()//batch_size+1
-                val_loss = 0.
-                loader_val.reset()
+                 # Calculate batch loss and accuracy on training set
+                l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch_2, y: labels_batch_2, seg_labels: seg_labels_batch_2, obj_class: obj_class_batch_2, keep_dropout: 1., train_phase: False}) 
+                print('-Iter ' + str(step) + ', Training with seg Loss= ' + '{:.6f}'.format(l) +', Class Loss= ' + '{:.6f}'.format(lc) + ', Seg Loss= ' + '{:.6f}'.format(ls) + ', Accuracy Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
+                train_seg_accs.append(acc5)
                 
-                for i in range(num_batch):
-                    val_images_batch, val_seg_labels_batch, val_obj_class_batch, val_labels_batch = loader_val.next_batch(batch_size)    
-                    #val_seg_labels_batch = (val_seg_labels_batch - 0.5)*2
-                        
-                    l, = sess.run([loss], 
-                            feed_dict={x: val_images_batch, seg_labels: val_seg_labels_batch, keep_dropout: 1., train_phase: False})
-                    val_loss += l
-                print('Evaluation Finished! Validation Loss = ' + '{:.10f}'.format(val_loss))
-                val_losses.append(val_loss)
+                seg_losses.append(ls)
+                class_losses.append(lc)
 
+
+                acc1, acc5=use_validation()
+                val_accs.append(acc5)
+                acc1, acc5=use_test()
+                test_accs.append(acc5)
+
+                lr_s.append(learning_rate_class)
+
+                print val_accs
+                print train_accs
 
                 if plot:
+                    a=np.arange(1,len(val_accs)+1,1)*step_display
+                    
                     fig = plt.figure()
-                    a=np.arange(1,len(losses)+1,1)
-                    plt.plot(a,losses,'-',label='Class')
+                    plt.plot(a,train_accs,'-',label='Training')
+                    plt.plot(a,train_seg_accs,'-',label='Training with segm')
+                    if validation:
+                        plt.plot(a,val_accs,'-',label='Validation')
+                    if test:
+                        plt.plot(a,test_accs,'-',label='Test')
                     plt.xlabel('Iteration')
-                    plt.ylabel('Loss')
+                    plt.ylabel('Accuracy')
                     plt.legend()
-                    fig.savefig('./fig/pic_train_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    fig.savefig('./fig/pic_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
 
-
                     fig = plt.figure()
-                    a=np.arange(1,len(val_losses)+1,1)
-                    plt.plot(a,val_losses,'-',label='Class')
+                    plt.plot(a,seg_losses,'-',label='Seg')
+                    plt.plot(a,class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Loss')
                     plt.legend()
-                    fig.savefig('./fig/pic_val_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    fig.savefig('./fig/pic_loss_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
                     print 'finish saving figure to view'
 
+                    fig = plt.figure()
+                    plt.plot(a,lr_s,'-',label='Seg')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Learning Rate')
+                    plt.legend()
+                    fig.savefig('./fig/pic_lr_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+                    print 'finish saving figure to view'
             
             # Run optimization op (backprop)
 
-            sess.run(seg_optimizer, feed_dict={x: images_batch, seg_labels: seg_labels_batch, keep_dropout: dropout, train_phase: True})
+            flip = np.random.random_integers(0, 1)
+            if flip<=joint_ratio:
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_2, seg_labels_batch_2, obj_class_batch_2, labels_batch_2
+                sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+                sess.run(seg_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
+            else:
+                images_batch, seg_labels_batch, obj_class_batch, labels_batch = images_batch_1, seg_labels_batch_1, obj_class_batch_1, labels_batch_1 
+                sess.run(class_optimizer, feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch, obj_class: obj_class_batch, keep_dropout: dropout, train_phase: True})
             step += 1
             
             # Save model
@@ -193,4 +310,8 @@ with tf.Session(config=config) as sess:
                 saver.save(sess, path_save, global_step=step+pretrainedStep)
                 print('Model saved at Iter %d !' %(step))
         print('Optimization Finished!')
+
+    
+    use_validation()
+    use_test()
 

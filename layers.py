@@ -113,6 +113,36 @@ def score_layer( bottom, name, num_classes):
 
         return bias
 
+def rand_init_conv_layer( bottom, name, shape):
+    # shape = [7,7,in_features,100]
+    with tf.variable_scope(name) as scope:
+        # get number of input channels
+        in_features = bottom.get_shape()[3].value
+        #print name,bottom.get_shape().as_list()
+        # He initialization Sheme
+        if name == "score_fr":
+            num_input = in_features
+            stddev = (2 / num_input)**0.5
+        #elif name == "score_pool4":
+        #    stddev = 0.001
+        #elif name == "score_pool3":
+        #    stddev = 0.0001
+        else:
+            stddev = 0.001
+        # Apply convolution
+        w_decay = wd
+
+        weights = _variable_with_weight_decay(shape, stddev, w_decay,
+                                                   decoder=True)
+        conv = tf.nn.conv2d(bottom, weights, [1, 1, 1, 1], padding='SAME')
+        # Apply bias
+        conv_biases = _bias_variable([shape[-1]], constant=0.0)
+        bias = tf.nn.bias_add(conv, conv_biases)
+
+        _activation_summary(bias)
+
+        return bias
+
 def upscore_layer( bottom, shape,
                    num_classes, name, debug,
                    ksize=4, stride=2):
