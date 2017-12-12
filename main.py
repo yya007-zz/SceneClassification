@@ -12,6 +12,7 @@ from exp2 import *
 import sys
 from save import *
 
+print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 # Dataset Parameters
 print 'Running command: ',sys.argv
 ParametersDict=sys.argv[1]
@@ -167,7 +168,6 @@ loss_class = myModel.loss_class
 loss = loss_seg+loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
-print(loss_seg.get_shape().as_list())
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
 
 # Evaluate model
@@ -206,13 +206,12 @@ with tf.Session(config=config) as sess:
         obj_class_batch_empty = np.zeros([batch_size, num_seg_class])
 
         for i in range(num_batch):
-            if mode=='val':
+            if mode=='Seg Val':
                 images_batch, seg_labels_batch, obj_class_batch, labels_batch = loader.next_batch(batch_size)   
                 if debug:
                     acc1, acc5 = sess.run([accuracy1, accuracy5], feed_dict={lrs:learning_rate_seg,lrc:learning_rate_class,x: images_batch, y: labels_batch, seg_labels: seg_labels_batch_empty, obj_class: obj_class_batch_empty, keep_dropout: 1., train_phase: False})
                     print('Validation Accuracy with empty Top1 = ' + '{:.4f}'.format(acc1) + ', Top5 = ' + '{:.4f}'.format(acc5))
-        
-            elif mode == 'test':
+            else:
                 images_batch, labels_batch = loader.next_batch(batch_size)
                 seg_labels_batch = seg_labels_batch_empty
                 obj_class_batch = obj_class_batch_empty
@@ -353,4 +352,5 @@ with tf.Session(config=config) as sess:
     
     use_validation()
     use_test()
+print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
