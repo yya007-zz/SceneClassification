@@ -277,7 +277,7 @@ with tf.Session(config=config) as sess:
                 acc1, acc5=use_test()
                 test_accs.append(acc5)
 
-                lrs.append(learning_rate_class)
+                lr_s.append(learning_rate_class)
 
                 print val_accs
                 print train_accs
