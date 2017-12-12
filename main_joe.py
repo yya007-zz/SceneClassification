@@ -179,7 +179,14 @@ with tf.Session(config=config) as sess:
         while step < training_iters:
 
             #TODO: decrease learning rate
-            if step > 1000:
+            if step < 1000:
+                learning_rate_class = base_learning_rate_class
+                learning_rate_seg = base_learning_rate_seg
+            else:
+                learning_rate_class = 0.9995 * learning_rate_class
+                learning_rate_seg = 0.9995 * learning_rate_seg
+
+            if step > 2000:
                 joint_ratio = joint_ratio * joint_ratio_decay
             # Load a batch of training data
             
