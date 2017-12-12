@@ -196,7 +196,7 @@ with tf.Session(config=config) as sess:
 
                 # Calculate batch loss and accuracy on class training set
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
-                        feed_dict={lrs:learning_rate_seg, 
+                        feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class, 
                             lrc:learning_rate_class, 
                             x: images_batch_class, 
                             y: labels_batch_class, 
@@ -216,7 +216,7 @@ with tf.Session(config=config) as sess:
 
                  # Calculate batch loss and accuracy on seg training set
                 l, lc, ls, acc1, acc5 = sess.run([loss,loss_class,loss_seg, accuracy1, accuracy5], 
-                        feed_dict={lrs:learning_rate_seg,
+                        feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
                             lrc:learning_rate_class,
                             x: images_batch_seg, 
                             y: labels_batch_seg, 
@@ -250,7 +250,7 @@ with tf.Session(config=config) as sess:
                     seg_labels_batch_val = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
                         
                     l, acc1, acc5 = sess.run([loss_class, accuracy1, accuracy5], 
-                            feed_dict={lrs:learning_rate_seg,
+                            feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
                                 lrc:learning_rate_class,
                                 x: images_batch_val, 
                                 y: labels_batch_val, 
@@ -283,7 +283,7 @@ with tf.Session(config=config) as sess:
                     images_batch_val, seg_labels_batch_val, _, labels_batch_val = loader_val_seg.next_batch(batch_size)   
                         
                     l, acc1, acc5 = sess.run([loss, accuracy1, accuracy5], 
-                            feed_dict={lrs:learning_rate_seg,
+                            feed_dict={lrs:learning_rate_seg_ratio * learning_rate_class,
                                 lrc:learning_rate_class,
                                 x: images_batch_val, 
                                 y: labels_batch_val, 
