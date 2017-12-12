@@ -139,4 +139,22 @@ exp={
 		'test': False,
 		'selectedmodel':"vgg"
 	}
+
+	'baseline':{
+		'learning_rate_class' : 1e-3,
+		'learning_rate_seg' : 1e-3,
+		'training_iters' : 40000,
+		'step_display' : 50,
+		'step_save' : 5000,
+		'exp_name' : 'exp1',
+		'pretrainedStep' : 0,
+		'batch_size':256,
+		'joint_ratio':0,
+		'plot':True,
+
+		'train' : True,
+		'validation' : False,
+		'test': True,
+		'selectedmodel':"alexnet"
+	},
 }

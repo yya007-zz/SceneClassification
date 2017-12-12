@@ -289,8 +289,8 @@ with tf.Session(config=config) as sess:
                     
                     fig = plt.figure()
                     plt.plot(a,train_accs,'-',label='Training')
-                    plt.plot(a,train_seg_accs,'-',label='Training with segm')
                     if validation:
+                        plt.plot(a,train_seg_accs,'-',label='Training with segm')
                         plt.plot(a,val_accs,'-',label='Validation')
                     if test:
                         plt.plot(a,test_accs,'-',label='Test')
