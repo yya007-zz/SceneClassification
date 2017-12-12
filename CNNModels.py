@@ -290,21 +290,6 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, s
             logits_class = fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
 
         else:
-            fc6 = fc_layer(pool5, "fc6", "fc6", use="vgg")
-            if batch_norm:
-                fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
-            fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
-            
-            fc6 = tf.add(fc6,fc8)
-            
-            fc7 = fc_layer(fc6, "fc7", "fc7", use="vgg")
-            if batch_norm:
-                fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
-            fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
-
-            logits_class = fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
-
-      
             fc8 = fc_layer(pool5, "fc8", "fc6", use="vgg")
             if batch_norm:
                 fc8 = batch_norm_layer(fc8, train_phase, 'bn8')
@@ -316,7 +301,22 @@ def VGG(x, keep_dropout, train_phase, num_classes, batch_norm=True, seg=False, s
             fc9 = tf.cond(train_phase,lambda: tf.nn.dropout(fc9, keep_dropout),lambda: fc9)
 
             logits_seg = fc_layer(fc9, "score_fr_2", "score_fr", num_classes=num_classes_seg,relu=False,use="vgg")
-        
+
+
+            fc6 = fc_layer(pool5, "fc6", "fc6", use="vgg")
+            if batch_norm:
+                fc6 = batch_norm_layer(fc6, train_phase, 'bn6')
+            fc6 = tf.cond(train_phase,lambda: tf.nn.dropout(fc6, keep_dropout),lambda: fc6)
+            
+            fc7 = fc_layer(fc6, "fc7", "fc7", use="vgg")
+            if batch_norm:
+                fc7 = batch_norm_layer(fc7, train_phase, 'bn7')
+            fc7 = tf.cond(train_phase,lambda: tf.nn.dropout(fc7, keep_dropout),lambda: fc7)
+
+            logits_class = fc_layer(fc7, "score_fr", "score_fr", num_classes=num_classes,relu=False,use="vgg")
+
+      
+                   
         return logits_class,logits_seg
 
 
