@@ -156,5 +156,5 @@ exp={
 		'validation' : False,
 		'test': True,
 		'selectedmodel':"alexnet"
-	},
+	}
 }
