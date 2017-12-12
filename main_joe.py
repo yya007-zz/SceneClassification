@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 from DataLoader import *
 from DataLoaderOld import *
 from architect_joe import *
-from exp import *
-from exp2 import *
 from exp_joe import *
 import sys
 from save import *
