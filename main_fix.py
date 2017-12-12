@@ -139,7 +139,7 @@ loss_seg_class = myModel.loss_seg_class
 loss_pure_class = myModel.loss_pure_class
 loss = loss_seg + loss_class
 
-weight_mask = tf.get_default_graph().get_tensor_by_name("weight_mask:0")
+weight_mask = tf.get_default_graph().get_tensor_by_name("weight_mask_var:0")
 mask_optimizer = tf.train.AdamOptimizer(learning_rate=lrc*100.).minimize(loss_class, var_list = [weight_mask])
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
