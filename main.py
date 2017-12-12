@@ -109,9 +109,20 @@ opt_data_test = {
     'perm' : False
     }
 
+opt_data_val = {
+    'data_root': './data/images/',   # MODIFY PATH ACCORDINGLY
+    'data_list': './data/small_val.txt', # MODIFY PATH ACCORDINGLY
+    'load_size': load_size,
+    'fine_size': fine_size,
+    'data_mean': data_mean,
+    'randomize': False,
+    'perm' : False,
+    }
+
 loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
 loader_train = DataLoaderDiskOld(**opt_data_train)
-loader_val = DataLoaderDisk(**opt_data_val_seg)
+loader_val = DataLoaderDisk(**loader_val)
+loader_val_seg = DataLoaderDisk(**opt_data_val_seg)
 loader_test = DataLoaderDiskOld(**opt_data_test)
 
 print ('finish loading data')
