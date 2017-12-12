@@ -120,8 +120,8 @@ x = tf.placeholder(tf.float32, [None, fine_size, fine_size, c])
 seg_labels = tf.placeholder(tf.float32, [None, seg_size, seg_size, num_seg_class])
 obj_class = tf.placeholder(tf.float32, [None, num_seg_class])
 y = tf.placeholder(tf.int64, None)
-lrc = tf.placeholder(tf.int64, None)
-lrs = tf.placeholder(tf.int64, None)
+lrc = tf.placeholder(tf.float32, None)
+lrs = tf.placeholder(tf.float32, None)
 
 keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
@@ -239,12 +239,11 @@ with tf.Session(config=config) as sess:
         test_accs=[]
         seg_losses=[]
         class_losses=[]
+        lr_s=[]
 
         seg_labels_batch_1 = np.zeros([batch_size, seg_size, seg_size, num_seg_class])
         obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
         while step < training_iters:
-            base_learning_rate_class=learning_rate_class
-            base_learning_rate_class=learning_rate_seg
 
             if step < 1000:
                 learning_rate_class = base_learning_rate_class
@@ -278,12 +277,15 @@ with tf.Session(config=config) as sess:
                 acc1, acc5=use_test()
                 test_accs.append(acc5)
 
+                lrs.append(learning_rate_class)
+
                 print val_accs
                 print train_accs
 
                 if plot:
+                    a=np.arange(1,len(val_accs)+1,1)*step_display
+                    
                     fig = plt.figure()
-                    a=np.arange(1,len(val_accs)+1,1)
                     plt.plot(a,train_accs,'-',label='Training')
                     plt.plot(a,train_seg_accs,'-',label='Training with segm')
                     if validation:
@@ -297,13 +299,21 @@ with tf.Session(config=config) as sess:
                     plt.close(fig)
 
                     fig = plt.figure()
-                    a=np.arange(1,len(val_accs)+1,1)
                     plt.plot(a,seg_losses,'-',label='Seg')
                     plt.plot(a,class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Loss')
                     plt.legend()
                     fig.savefig('./fig/pic_loss_'+str(exp_name)+'.png')   # save the figure to file
+                    plt.close(fig)
+                    print 'finish saving figure to view'
+
+                    fig = plt.figure()
+                    plt.plot(a,lr_s,'-',label='Seg')
+                    plt.xlabel('Iteration')
+                    plt.ylabel('Learning Rate')
+                    plt.legend()
+                    fig.savefig('./fig/pic_lr_'+str(exp_name)+'.png')   # save the figure to file
                     plt.close(fig)
                     print 'finish saving figure to view'
             
