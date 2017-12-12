@@ -138,7 +138,7 @@ exp={
 		'validation' : True,
 		'test': False,
 		'selectedmodel':"vgg"
-	}
+	},
 
 	'baseline':{
 		'learning_rate_class' : 1e-3,
