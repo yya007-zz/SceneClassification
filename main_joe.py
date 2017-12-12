@@ -126,8 +126,8 @@ prob = myModel.prob_class
 loss_seg = myModel.loss_seg
 loss_class = myModel.loss_class
 #TODO: change the losses
-#loss = loss_seg + loss_class
-loss = loss_class
+loss = loss_seg + loss_class
+#loss = loss_class
 
 class_optimizer = tf.train.AdamOptimizer(learning_rate=lrc).minimize(loss_class)
 seg_optimizer = tf.train.AdamOptimizer(learning_rate=lrs).minimize(loss_seg)
@@ -263,8 +263,8 @@ with tf.Session(config=config) as sess:
                     plt.close(fig)
 
                     fig = plt.figure()
-                    #plt.plot(a,seg_losses,'-',label='Seg')
-                    plt.plot(a,class_losses,'-',label='Class')
+                    plt.plot(a,seg_losses,'-',label='Seg')
+                    #plt.plot(a,class_losses,'-',label='Class')
                     plt.xlabel('Iteration')
                     plt.ylabel('Loss')
                     plt.legend()
@@ -277,6 +277,7 @@ with tf.Session(config=config) as sess:
             flip = np.random.uniform(0, 1)
             if flip<=joint_ratio:
                 images_batch, seg_labels_batch, labels_batch = images_batch_seg, seg_labels_batch_seg, labels_batch_seg
+                """
                 sess.run(class_optimizer, 
                         feed_dict={lrs:learning_rate_seg,
                             lrc:learning_rate_class,
@@ -286,6 +287,7 @@ with tf.Session(config=config) as sess:
                             keep_dropout: dropout, 
                             train_phase: True}
                         )
+                """
                 sess.run(seg_optimizer, 
                         feed_dict={lrs:learning_rate_seg,
                             lrc:learning_rate_class,
