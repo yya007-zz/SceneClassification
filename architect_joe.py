@@ -16,6 +16,6 @@ def loss_seg_norm(y, logits):
 
 def loss_class(y, prob):
     newy = tf.one_hot(y, 100)
-    return tf.reduce_mean(tf.reduce_sum(newy * tf.log(prob + 1e-8), axis=-1))
+    return -tf.reduce_mean(tf.reduce_sum(newy * tf.log(prob + 1e-8), axis=-1))
 
 
