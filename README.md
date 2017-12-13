@@ -1,8 +1,7 @@
 # Scene Classification using Object Detection
 
 ## Introduction
-
-
+Scene classification is a challenging but important image classification task. Variation in direction, weather, time and subject recognition directly complicate the process. Historically, deep learning is rapidly overtaking classical approaches for scene classification. However, the deep learning approach needs a large number of images. Zhou et al. shows that the Alexnet and successful deep learning approach in general image classification actually achieve similar performance in large scene dataest. In this paper, we does scene classification by only using a small amount of images.
 
 ```
 conda install -c menpo opencv
@@ -16,11 +15,14 @@ python data_processsor.py
 
 ## 4. Reference 
 Link: [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces)
+
 Link: [Places1 Database](http://places.csail.mit.edu)
+
 Link: [Places2 Database](http://places2.csail.mit.edu)
 
 ## 5. Contact
 Yuang Yao yuangyao at mit.edu
+
 Hung-Jui Huang joehuang at mit.edu
 
 If you an MIT student taking 6.867 or 6.819/6.869: Advances in Computer Vision, please contact the teaching staff for any course-related problems.
