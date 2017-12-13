@@ -11,6 +11,7 @@ exp={
 		'joint_ratio':0.1,
                 'joint_ratio_decay': False,
 		'plot':True,
+                'lr_decay': True,
 
 		'train' : True,
 		'validation' : True,
