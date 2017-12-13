@@ -9,7 +9,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':1,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 		'lr_decay':True,
 
@@ -29,7 +29,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.5,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 		'lr_decay':True,
 
@@ -49,7 +49,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.5,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 		'lr_decay':True,
 
@@ -69,7 +69,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.1,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 		'lr_decay':True,
 
@@ -89,7 +89,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.5,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 		'lr_decay':True,
 
@@ -109,7 +109,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.1,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 
 		'train' : True,
@@ -127,9 +127,9 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':14,
 		'joint_ratio':0.1,
-                'joint_ratio_decay': True
+                'joint_ratio_decay': True,
 		'plot':True,
-                'lr_decay': True
+                'lr_decay': True,
 
 		'train' : True,
 		'validation' : True,
@@ -147,7 +147,7 @@ exp_merge={
 		'pretrainedStep' : 0,
 		'batch_size':256,
 		'joint_ratio':0,
-                'joint_ratio_decay': False
+                'joint_ratio_decay': False,
 		'plot':True,
 		'lr_decay':False,
 
