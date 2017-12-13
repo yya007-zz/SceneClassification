@@ -3,8 +3,7 @@
 ## Introduction
 Scene classification is a challenging but important image classification task. Variation in direction, weather, time and subject recognition directly complicate the process. Historically, deep learning is rapidly overtaking classical approaches for scene classification. However, the deep learning approach needs a large number of images. [Zhou et al.](http://places2.csail.mit.edu/PAMI_places.pdf) shows that the Alexnet and successful deep learning approach in general image classification actually achieve similar performance with large scene image dataest. In this project, we does scene classification by only using a small amount of images.
 
-##Dependencies
-
+## Dependencies
 * Python 2.6 or newer 
 * numpy
 ```
