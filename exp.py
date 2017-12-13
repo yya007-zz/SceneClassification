@@ -71,7 +71,6 @@ exp={
 		'test': False,
 		'selectedmodel':"vgg_segnet"
 	},
-
 	'baseline':{
 		'learning_rate_class' : 1e-3,
 		'learning_rate_seg' : 1e-3,
