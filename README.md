@@ -65,9 +65,23 @@ python main.py exp1
 ## Parameters
 The real meaning of each parameters are shown following:
 ```
-  Training:   100,000 images, with 1000 images per category
-  Validation: 10,000 images, with 100 images per category
-  Test:   10,000 images, with 100 images per category
+  'learning_rate_class' : the learning rate of classification task
+  'learning_rate_seg' : the learning rate of classification task
+  'training_iters' : the maximum iterations
+  'step_display' : the iterations before displaying the new accuracy 
+  'step_save' : the iterations before saving the new model
+  'exp_name' : the name of experiment
+  'pretrainedStep' : the iterations of the pretrained model
+  'batch_size': batch size
+  'joint_ratio': the percentage of segmentation training
+  'joint_ratio_decay': whether use the join ratio deacy
+  'plot': whether plot the graph
+  'lr_decay': whether use the learning rate decay
+
+  'train' : whether train the model
+  'validation' :  whether train the model
+  'test': False,
+  'selectedmodel':"alexnet"
 ```
 
 ## Reference 
