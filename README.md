@@ -1,4 +1,9 @@
-# 
+# Scene Classification using Object Detection
+
+## Introduction
+
+
+
 ```
 conda install -c menpo opencv
 ```
@@ -7,19 +12,20 @@ conda install -c menpo opencv
 python data_processsor.py
 ```
 
-Table of contents:
-  1. Overview of challenge dataset
-  2. Challenge details
-    2.1 Images and annotations
-    2.2 Submission format
-    2.3 Evaluation routines
-  3. Baselines
 
 
+## 4. Reference 
+Link: [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces)
+Link: [Places1 Database](http://places.csail.mit.edu)
+Link: [Places2 Database](http://places2.csail.mit.edu)
+
+## 5. Contact
+Yuang Yao yuangyao at mit.edu
+Hung-Jui Huang joehuang at mit.edu
+
+If you an MIT student taking 6.867 or 6.819/6.869: Advances in Computer Vision, please contact the teaching staff for any course-related problems.
 
 
-# MiniPlaces Challenge: Image Classification Benchmark for the Education of Deep Learning in Computer Vision
-![teaser](teaser.jpg)
 
 ## Introduction
 
