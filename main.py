@@ -5,21 +5,15 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
 from architect import *
-from architect2 import *
 from exp import *
-from exp2 import *
 import sys
 from save import *
 
 print('[%s]:' %(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 # Dataset Parameters
 print 'Running command: ',sys.argv
-ParametersDict=sys.argv[1]
-Parameters=sys.argv[2]
-if ParametersDict == 'exp2':
-    experiment=exp2
-else:
-    experiment=exp
+Parameters=sys.argv[1]
+experiment=exp
 if Parameters in experiment:
     settings = experiment[Parameters]
     print 'Parameters: ',experiment[Parameters]
@@ -40,6 +34,7 @@ plot=settings['plot']
 lr_decay=settings['lr_decay']
 
 joint_ratio= settings['joint_ratio']
+joint_ratio_decay = settings['joint_ratio_decay']
 train = settings['train']
 validation = settings['validation']
 test = settings['test']
@@ -157,6 +152,8 @@ elif selectedmodel=='vgg_bn_seg2_2':
     myModel = vgg_bn_seg2_2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)    
 elif selectedmodel=='vgg_seg1':
     myModel = vgg_seg1(x, y, seg_labels, obj_class, keep_dropout, train_phase)
+elif selectedmodel=='vgg_seg1_mask':
+    myModel = vgg_seg1_mask(x, y, seg_labels, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 
@@ -258,6 +255,9 @@ with tf.Session(config=config) as sess:
         obj_class_batch_1 = np.zeros([batch_size, num_seg_class])
         while step < training_iters:
 
+            if joint_ratio_decay:
+                if step > 2000:
+                    joint_ratio = joint_ratio * 0.9995
             if lr_decay:
                 if step < 3000:
                     learning_rate_class = base_learning_rate_class

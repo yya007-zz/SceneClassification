@@ -2,7 +2,6 @@ import os, datetime
 import numpy as np
 import tensorflow as tf
 import CNNModels
-import CNNModels2
 
 class alexnet_model:
     def __init__(self, x, y, seg_labels, obj_class, keep_dropout, train_phase):
@@ -52,6 +51,14 @@ class vgg_bn_seg2_2_model:
         self.loss_class =loss_class(y,self.logits_class)
         self.loss_seg = loss_seg(obj_class,self.logits_seg)
 
+class vgg_seg1_mask:
+    def __init__(self, x, y, seg_labels, keep_dropout, train_phase):
+        self.prob_class, self.logits_seg = CNNModels.VGG_Seg1_Mask(x, keep_dropout, train_phase, debug=True)
+        self.loss_seg = loss_seg_norm(seg_labels, self.logits_seg)
+        one_hot_y = tf.one_hot(y, 100)
+        self.loss_class = -tf.reduce_mean(tf.reduce_sum(one_hot_y * tf.log(self.prob_class + 1e-8), axis=-1))
+        self.logits_class = self.prob_class
+
 def loss_class(y,logits):
     return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
@@ -81,3 +88,4 @@ def loss_seg_l1(y, logits):
     newl= tf.nn.softmax(logits)
 
     return tf.reduce_mean(tf.reduce_sum(tf.abs(newy-newl),-1))
+
