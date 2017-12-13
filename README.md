@@ -57,6 +57,18 @@ In order to run the network, we need to preprocess the data in order to standard
 ```
 python data_processsor.py
 ```
+## Run
+We store common parameters combination inside exp.py. In order to run a the model with parameters combination exp1 inside exp.py. Simply run following command.
+```
+python main.py exp exp1
+```
+## Parameters
+The real meaning of each parameters are shown following:
+```
+  Training:   100,000 images, with 1000 images per category
+  Validation: 10,000 images, with 100 images per category
+  Test:   10,000 images, with 100 images per category
+```
 
 ## Reference 
 * [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces)
