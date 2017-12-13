@@ -134,7 +134,7 @@ exp={
 		'train' : True,
 		'validation' : True,
 		'test': False,
-		'selectedmodel':"vgg_seg1_mask"
+		'selectedmodel':"vgg_segnet"
 	},
 
 	'baseline':{

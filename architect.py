@@ -51,9 +51,9 @@ class vgg_bn_seg2_2_model:
         self.loss_class =loss_class(y,self.logits_class)
         self.loss_seg = loss_seg(obj_class,self.logits_seg)
 
-class vgg_seg1_mask:
+class vgg_segnet:
     def __init__(self, x, y, seg_labels, keep_dropout, train_phase):
-        self.prob_class, self.logits_seg = CNNModels.VGG_Seg1_Mask(x, keep_dropout, train_phase, debug=True)
+        self.prob_class, self.logits_seg = CNNModels.VGG_SegNet(x, keep_dropout, train_phase, debug=True)
         self.loss_seg = loss_seg_norm(seg_labels, self.logits_seg)
         one_hot_y = tf.one_hot(y, 100)
         self.loss_class = -tf.reduce_mean(tf.reduce_sum(one_hot_y * tf.log(self.prob_class + 1e-8), axis=-1))

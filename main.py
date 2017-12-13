@@ -152,8 +152,8 @@ elif selectedmodel=='vgg_bn_seg2_2':
     myModel = vgg_bn_seg2_2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)    
 elif selectedmodel=='vgg_seg1':
     myModel = vgg_seg1(x, y, seg_labels, obj_class, keep_dropout, train_phase)
-elif selectedmodel=='vgg_seg1_mask':
-    myModel = vgg_seg1_mask(x, y, seg_labels, keep_dropout, train_phase)
+elif selectedmodel=='vgg_segnet':
+    myModel = vgg_segnet(x, y, seg_labels, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 

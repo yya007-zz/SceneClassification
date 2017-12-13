@@ -382,7 +382,7 @@ def alexnet(x, keep_dropout, train_phase):
     
     return out
 
-def VGG_Seg1_Mask(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, num_classes_seg=176, debug=False):
+def VGG_SegNet(x, keep_dropout, train_phase, num_classes = 100, batch_norm=True, num_classes_seg=176, debug=False):
     conv1_1 = conv_layer(x, train_phase, "conv1_1",batch_norm)
     conv1_2 = conv_layer(conv1_1, train_phase, "conv1_2",batch_norm)
     pool1 = max_pool(conv1_2, 'pool1', debug)
