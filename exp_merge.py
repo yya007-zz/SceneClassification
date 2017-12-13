@@ -1,21 +1,5 @@
-exp={
+exp_merge={
 	'test':{
-		# 'learning_rate' : 1e-6,
-		# 'training_iters' : 10000,
-		# 'step_display' : 50,
-		# 'step_save' : 500,
-		# 'exp_name' : 'test',
-		# 'pretrainedStep' : 0,
-		# 'batch_size':40,
-		# 'lam': 0.5,
-		# 'joint_ratio':0.5,
-		# 'plot':False,
-
-		# 'train' : True,
-		# 'validation' : True,
-		# 'test': True,
-		# 'selectedmodel':"vgg"
-
 		'learning_rate_class' : 1e-4,
 		'learning_rate_seg' : 1e-5,
 		'training_iters' : 200,
@@ -25,6 +9,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':1,
+                'joint_ratio_decay': False
 		'plot':True,
 		'lr_decay':True,
 
@@ -44,6 +29,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.5,
+                'joint_ratio_decay': False
 		'plot':True,
 		'lr_decay':True,
 
@@ -63,6 +49,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.5,
+                'joint_ratio_decay': False
 		'plot':True,
 		'lr_decay':True,
 
@@ -82,6 +69,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.1,
+                'joint_ratio_decay': False
 		'plot':True,
 		'lr_decay':True,
 
@@ -101,6 +89,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.5,
+                'joint_ratio_decay': False
 		'plot':True,
 		'lr_decay':True,
 
@@ -120,6 +109,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':32,
 		'joint_ratio':0.1,
+                'joint_ratio_decay': False
 		'plot':True,
 
 		'train' : True,
@@ -127,23 +117,24 @@ exp={
 		'test': False,
 		'selectedmodel':"vgg_bn_seg2_2"
 	},
-
-	'expVal':{
-		'learning_rate' : 0.001,
+	'exp6':{
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-5,
 		'training_iters' : 20000,
-		'step_display' : 100,
+		'step_display' : 50,
 		'step_save' : 500,
-		'exp_name' : 'expVal',
-		'num' : '10000',
-		'batch_size':64,
-		'lam': 0.5,
+		'exp_name' : 'exp2',
+		'pretrainedStep' : 0,
+		'batch_size':14,
+		'joint_ratio':0.1,
+                'joint_ratio_decay': True
 		'plot':True,
-		'lr_decay':True,
+                'lr_decay': True
 
-		'train' : False,
+		'train' : True,
 		'validation' : True,
 		'test': False,
-		'selectedmodel':"vgg"
+		'selectedmodel':"vgg_seg1_mask"
 	},
 
 	'baseline':{
@@ -156,6 +147,7 @@ exp={
 		'pretrainedStep' : 0,
 		'batch_size':256,
 		'joint_ratio':0,
+                'joint_ratio_decay': False
 		'plot':True,
 		'lr_decay':False,
 

@@ -57,6 +57,7 @@ class vgg_seg1_mask:
         self.loss_seg = loss_seg_norm(seg_labels, self.logits_seg)
         one_hot_y = tf.one_hot(y, 100)
         self.loss_class = -tf.reduce_mean(tf.reduce_sum(one_hot_y * tf.log(self.prob_class + 1e-8), axis=-1))
+        self.logits_class = self.prob_class
 
 def loss_class(y,logits):
     return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
