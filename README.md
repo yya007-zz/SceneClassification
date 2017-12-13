@@ -1,19 +1,47 @@
 # Scene Classification using Object Detection
 
 ## Introduction
-Scene classification is a challenging but important image classification task. Variation in direction, weather, time and subject recognition directly complicate the process. Historically, deep learning is rapidly overtaking classical approaches for scene classification. However, the deep learning approach needs a large number of images. Zhou et al. shows that the Alexnet and successful deep learning approach in general image classification actually achieve similar performance in large scene dataest. In this paper, we does scene classification by only using a small amount of images.
+Scene classification is a challenging but important image classification task. Variation in direction, weather, time and subject recognition directly complicate the process. Historically, deep learning is rapidly overtaking classical approaches for scene classification. However, the deep learning approach needs a large number of images. [Zhou et al.](http://places2.csail.mit.edu/PAMI_places.pdf) shows that the Alexnet and successful deep learning approach in general image classification actually achieve similar performance with large scene image dataest. In this project, we does scene classification by only using a small amount of images.
 
+##Dependencies
+
+* Python 2.6 or newer 
+* numpy
+```
+conda install numpy
+```
+* scipy
+```
+conda install scipy
+```
+* Tensorflow
+```
+conda install tensorflow
+```
+For GPU user:
+```
+conda install tensorflow-gpu
+```
+* matplotlib
+```
+conda install matplotlib
+```
+* opencv
 ```
 conda install -c menpo opencv
 ```
-
+##Get Data
+We already packaged all the data you need to download to a script. Simple run follwoing command to get all data.
+```
+bash get_data.sh
+```
+##Data Preprocessing
+In order to run the network, we need to preprocess the data in order to standardize them.
 ```
 python data_processsor.py
 ```
 
-
-
-## 4. Reference 
+## Reference 
 Link: [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces)
 
 Link: [Places1 Database](http://places.csail.mit.edu)
