@@ -1,4 +1,22 @@
 exp2={
+	'test':{
+		'learning_rate_class' : 1e-4,
+		'learning_rate_seg' : 1e-5,
+		'training_iters' : 200,
+		'step_display' : 50,
+		'step_save' : 500,
+		'exp_name' : 'test',
+		'pretrainedStep' : 0,
+		'batch_size':14,
+		'joint_ratio':0.,
+		'plot':True,
+		'lr_decay':False,
+
+		'train' : True,
+		'validation' : True,
+		'test': True,
+		'selectedmodel':"vgg_bn"
+	},
 	'exp1':{
 		'learning_rate' : 1e-5,
 		'training_iters' : 10000,
