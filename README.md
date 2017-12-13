@@ -47,8 +47,7 @@ python data_processsor.py
 * [Places2 Database](http://places2.csail.mit.edu)
 
 ## Contact
-* Yuang Yao yuangyao at mit.edu
-* Hung-Jui Huang joehuang at mit.edu
+* [Yuang Yao](yuangyao@mit.edu),[Hung-Jui Huang](joehuang@mit.edu)
 * If you an MIT student taking 6.867 or 6.819/6.869: Advances in Computer Vision, please contact the teaching staff for any course-related problems.
 
 
