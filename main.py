@@ -140,16 +140,8 @@ elif selectedmodel=='vgg_bn':
     myModel = vgg_bn_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
 elif selectedmodel=='alexnet':
     myModel = alexnet_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
-elif selectedmodel=='vgg_simple':
-    myModel = vgg_simple_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
-elif selectedmodel=='vgg_seg2':
-    myModel = vgg_seg2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)   
-elif selectedmodel=='vgg_bn_seg2':
-    myModel = vgg_bn_seg2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)
-elif selectedmodel=='vgg_bn_seg2_1':
-    myModel = vgg_bn_seg2_1_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)   
-elif selectedmodel=='vgg_bn_seg2_2':
-    myModel = vgg_bn_seg2_2_model(x, y, seg_labels, obj_class, keep_dropout, train_phase)    
+elif selectedmodel=='vgg_objnet':
+    myModel = vgg_objnet(x, y, seg_labels, obj_class, keep_dropout, train_phase)    
 elif selectedmodel=='vgg_segnet':
     myModel = vgg_segnet(x, y, seg_labels, keep_dropout, train_phase)
 else:
