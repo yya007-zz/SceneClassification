@@ -60,7 +60,7 @@ python data_processsor.py
 ## Run
 We store common parameters combination inside exp.py. In order to run a the model with parameters combination exp1 inside exp.py. Simply run following command.
 ```
-python main.py exp exp1
+python main.py exp1
 ```
 ## Parameters
 The real meaning of each parameters are shown following:
