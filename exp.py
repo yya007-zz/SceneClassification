@@ -7,7 +7,7 @@ exp={
 		'step_save' : 1000,
 		'exp_name' : 'vgg_objnet',
 		'pretrainedStep' : 0,
-		'batch_size':32,
+		'batch_size':14,
 		'joint_ratio':0.1,
                 'joint_ratio_decay': False,
 		'plot':True,
