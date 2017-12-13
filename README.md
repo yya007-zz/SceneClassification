@@ -77,11 +77,10 @@ The real meaning of each parameters are shown following:
   'joint_ratio_decay': whether use the join ratio deacy
   'plot': whether plot the graph
   'lr_decay': whether use the learning rate decay
-
   'train' : whether train the model
-  'validation' :  whether train the model
-  'test': False,
-  'selectedmodel':"alexnet"
+  'validation' :  whether do validation
+  'test': whether do test
+  'selectedmodel': the name of model selected
 ```
 
 ## Reference 
