@@ -4,7 +4,6 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
-from DataLoaderOld import *
 from architect_joe import *
 from exp_joe import *
 import sys
@@ -106,11 +105,10 @@ opt_data_val_class = {
     }
 
 
-loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
-loader_train_class = DataLoaderDiskOld(**opt_data_train_class)
-loader_val_seg = DataLoaderDisk(**opt_data_val_seg)
-loader_val_class = DataLoaderDiskOld(**opt_data_val_class)
-#loader_test = DataLoaderDiskOld(**opt_data_test)
+loader_train_seg = DataLoaderDiskSeg(**opt_data_train_seg)
+loader_train_class = DataLoaderDiskClass(**opt_data_train_class)
+loader_val_seg = DataLoaderDiskSeg(**opt_data_val_seg)
+loader_val_class = DataLoaderDiskClass(**opt_data_val_class)
 
 print ('finish loading data')
 # tf Graph input
@@ -124,12 +122,8 @@ keep_dropout = tf.placeholder(tf.float32)
 train_phase = tf.placeholder(tf.bool)
 
 # Construct model
-if selectedmodel=='vgg_seg1':
-    myModel = vgg_seg1(x, y, seg_labels, keep_dropout, train_phase)
-elif selectedmodel=='vgg_seg1_mask':
+if selectedmodel=='vgg_seg1_mask':
     myModel = vgg_seg1_mask(x, y, seg_labels, keep_dropout, train_phase)
-elif selectedmodel=='vgg_seg1_fix_mask':
-    myModel = vgg_seg1_fix_mask(x, y, seg_labels, keep_dropout, train_phase)
 else:
     raise ValueError(selectedmodel,' no such model, end of the program')
 
