@@ -4,7 +4,6 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
-from DataLoaderOld import *
 from architect import *
 from architect2 import *
 from exp import *
@@ -121,11 +120,11 @@ opt_data_val = {
     'perm' : False,
     }
 
-loader_train_seg = DataLoaderDisk(**opt_data_train_seg)
-loader_train = DataLoaderDiskOld(**opt_data_train)
-loader_val = DataLoaderDiskOld(**opt_data_val)
-loader_val_seg = DataLoaderDisk(**opt_data_val_seg)
-loader_test = DataLoaderDiskOld(**opt_data_test)
+loader_train_seg = DataLoaderDiskSeg(**opt_data_train_seg)
+loader_train = DataLoaderDiskClass(**opt_data_train)
+loader_val = DataLoaderDiskClass(**opt_data_val)
+loader_val_seg = DataLoaderDiskSeg(**opt_data_val_seg)
+loader_test = DataLoaderDiskClass(**opt_data_test)
 
 print ('finish loading data')
 # tf Graph input
