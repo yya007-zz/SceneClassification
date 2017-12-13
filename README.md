@@ -3,7 +3,23 @@
 ## Introduction
 Scene classification is a challenging but important image classification task. Variation in direction, weather, time and subject recognition directly complicate the process. Historically, deep learning is rapidly overtaking classical approaches for scene classification. However, the deep learning approach needs a large number of images. [Zhou et al.](http://places2.csail.mit.edu/PAMI_places.pdf) shows that the Alexnet and successful deep learning approach in general image classification actually achieve similar performance with large scene image dataest. In this project, we does scene classification by only using a small amount of images.
 
-The data used here is from [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces). The goal of that challenge is to identify the scene category depicted in a photograph. The origin data is from the [Places2 dataset](http://places2.csail.mit.edu/), which has 10+ million images and 400+ unique scene categories. The data used in this project only has 100 scene categories and 100,000 images for training, 9,000 images for validation, and 1,000 images for testing. 
+The data used here is from [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces). The goal of that challenge is to identify the scene category depicted in a photograph. The origin data is from the [Places2 dataset](http://places2.csail.mit.edu/), which has 10+ million images and 400+ unique scene categories. The data used in this project only has 100 scene categories and 100,000 images for training, 9,000 images for validation, and 1,000 images for testing.
+
+
+We divide all data into three dataset.
+```
+               Number of images
+   Dataset     TRAIN        VALIDATION   TEST
+  ------------------------------------------------
+   MiniPlaces  100,000      9,000       1,000
+```
+Database statistics is as follows:
+
+```
+  Training:   100,000 images, with 1000 images per category
+  Validation: 10,000 images, with 100 images per category
+  Test:   10,000 images, with 100 images per category
+```
 
 ## Dependencies
 * Python 2.6 or newer 
