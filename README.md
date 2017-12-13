@@ -63,7 +63,7 @@ We store common parameters combination inside exp.py. In order to run a the mode
 python main.py exp1
 ```
 ## Parameters
-The real meaning of each parameters are shown following:
+The real meaning of each parameter is shown below.
 ```
   'learning_rate_class' : the learning rate of classification task
   'learning_rate_seg' : the learning rate of classification task
