@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from DataLoader import *
-from architect_joe import *
+from architect_merge import *
 from exp_joe import *
 import sys
 from save import *
