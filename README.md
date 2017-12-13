@@ -3,6 +3,8 @@
 ## Introduction
 Scene classification is a challenging but important image classification task. Variation in direction, weather, time and subject recognition directly complicate the process. Historically, deep learning is rapidly overtaking classical approaches for scene classification. However, the deep learning approach needs a large number of images. [Zhou et al.](http://places2.csail.mit.edu/PAMI_places.pdf) shows that the Alexnet and successful deep learning approach in general image classification actually achieve similar performance with large scene image dataest. In this project, we does scene classification by only using a small amount of images.
 
+The data used here is from [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces). The goal of that challenge is to identify the scene category depicted in a photograph. The origin data is from the [Places2 dataset](http://places2.csail.mit.edu/), which has 10+ million images and 400+ unique scene categories. The data used in this project only has 100 scene categories and 100,000 images for training, 9,000 images for validation, and 1,000 images for testing. 
+
 ## Dependencies
 * Python 2.6 or newer 
 * numpy
@@ -50,26 +52,6 @@ python data_processsor.py
 * If you an MIT student taking 6.867 or 6.819/6.869: Advances in Computer Vision, please contact the teaching staff for any course-related problems.
 
 
-
-## Introduction
-
-We introduce the image classification benchmark, MiniPlaces Challenge, as an educational tool for practioners of deep learning in computer vision. Through improving the baseline models and building new deep neural networks for image classification, participants in the challenge are expected to gain a deeper understanding of deep neural networks and gain hands-on experience tuning models.
-
-The goal of this challenge is to identify the scene category depicted in a photograph. The data for this task comes from the [Places2 dataset](http://places2.csail.mit.edu/), which contains 10+ million images belonging to 400+ unique scene categories. The challenge data will be a subset of the full Places2 dataset, coming from 100 scene categories and consisting of 100,000 images for training, 10,000 images for validation, and 10,000 images for testing. The images will be resized to 128x128 to make the data more manageable. Furthermore, while the end goal is scene recognition, a subset of the data will contain object labels that might be helpful to build better models.
-
-The MiniPlaces challenge was first initiated by [Bolei Zhou](http://people.csail.mit.edu/bzhou/) and [Aditya Khosla](http://people.csail.mit.edu/khosla/) in the Fall 2015 [6.819/6.869 Advances in Computer Vision course](http://6.869.csail.mit.edu/fa15/index.html) at MIT, and is further contributed by various following TAs for that course.
-
-The following is the documentation of the MiniPlaces Challenge development kit.
-```
-Table of contents:
-  1. Overview of challenge dataset
-  2. Challenge details
-    2.1 Images and annotations
-    2.2 Submission format
-    2.3 Evaluation routines
-  3. Baselines
-  4. Reference
-```
 
 ## 1. Overview of challenge dataset
 
