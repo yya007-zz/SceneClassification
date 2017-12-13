@@ -30,30 +30,26 @@ conda install matplotlib
 ```
 conda install -c menpo opencv
 ```
-##Get Data
+## Get Data
 We already packaged all the data you need to download to a script. Simple run follwoing command to get all data.
 ```
 bash get_data.sh
 ```
-##Data Preprocessing
+## Data Preprocessing
 In order to run the network, we need to preprocess the data in order to standardize them.
 ```
 python data_processsor.py
 ```
 
 ## Reference 
-Link: [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces)
+* [Miniplaces Challenge](https://github.com/CSAILVision/miniplaces)
+* [Places1 Database](http://places.csail.mit.edu)
+* [Places2 Database](http://places2.csail.mit.edu)
 
-Link: [Places1 Database](http://places.csail.mit.edu)
-
-Link: [Places2 Database](http://places2.csail.mit.edu)
-
-## 5. Contact
-Yuang Yao yuangyao at mit.edu
-
-Hung-Jui Huang joehuang at mit.edu
-
-If you an MIT student taking 6.867 or 6.819/6.869: Advances in Computer Vision, please contact the teaching staff for any course-related problems.
+## Contact
+* Yuang Yao yuangyao at mit.edu
+* Hung-Jui Huang joehuang at mit.edu
+* If you an MIT student taking 6.867 or 6.819/6.869: Advances in Computer Vision, please contact the teaching staff for any course-related problems.
 
 
 
